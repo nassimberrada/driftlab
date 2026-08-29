@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>driftlab</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    color-scheme: light;
+    --surface-0: #f4f3f0; --surface-1: #fcfcfb; --surface-2: #eeede9; --border: #dcdad4;
+    --text-primary: #0b0b0b; --text-secondary: #52514e; --text-muted: #8a8884;
+    --series-1: #2a78d6; --series-2: #eb6834; --series-3: #1baf7a;
+    --good: #0ca30c; --critical: #d03b3b; --warning: #fab219; --neutral: #d7d5cf;
+    --grid: #e7e5df; --mark-event: #52514e;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --surface-0: #111110; --surface-1: #1a1a19; --surface-2: #242422; --border: #33332f;
+      --text-primary: #ffffff; --text-secondary: #c3c2b7; --text-muted: #85847c;
+      --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70;
+      --good: #0ca30c; --critical: #d03b3b; --warning: #fab219; --neutral: #383835;
+      --grid: #2b2b28; --mark-event: #c3c2b7;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --surface-0: #111110; --surface-1: #1a1a19; --surface-2: #242422; --border: #33332f;
+    --text-primary: #ffffff; --text-secondary: #c3c2b7; --text-muted: #85847c;
+    --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70;
+    --good: #0ca30c; --critical: #d03b3b; --warning: #fab219; --neutral: #383835;
+    --grid: #2b2b28; --mark-event: #c3c2b7;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { margin: 0; background: var(--surface-0); color: var(--text-primary); overflow: hidden;
+         font: 13px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; display: flex; flex-direction: column; }
+  header { display: flex; align-items: center; gap: 16px; padding: 10px 16px; background: var(--surface-1);
+           border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+  header h1 { font-size: clamp(14px, 1.4vw, 18px); margin: 0; font-weight: 600; letter-spacing: .2px; }
+  header .status { color: var(--text-secondary); font-size: 13px; }
+  header .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--critical); margin-right: 6px; }
+  header .dot.on { background: var(--good); }
+  header select, header button { font: inherit; padding: 4px 8px; border: 1px solid var(--border); background: var(--surface-2);
+           color: var(--text-primary); border-radius: 6px; }
+  header label { color: var(--text-secondary); font-size: 13px; display: flex; gap: 6px; align-items: center; }
+  main { flex: 1; min-height: 0; display: grid; gap: 8px; padding: 8px 10px;
+         grid-template-columns: 220px minmax(0, 1fr) minmax(0, 1fr);
+         grid-template-rows: auto minmax(0, 1fr) minmax(0, 1fr);
+         grid-template-areas: "side status status" "side perf agent" "side world memory"; }
+  .side { grid-area: side; } .statusbar { grid-area: status; } .perf { grid-area: perf; } .world { grid-area: world; }
+  .agentcol { grid-area: agent; } .memcol { grid-area: memory; }
+  .side, .perf, .world, .agentcol, .memcol { min-height: 0; display: flex; flex-direction: column; }
+  .stack > .panel { min-height: 0; }
+  .side .panel:first-child { flex: 1; } .side .panel:last-child { flex: 1; }
+  .perf > .panel, .world > .panel, .agentcol > .panel, .memcol > .panel { flex: 1; overflow: auto; display: flex; flex-direction: column; min-height: 0; }
+  .chartwrap { flex: 1; min-height: 90px; display: flex; }
+  .obswrap { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  .obswrap pre { flex: 1; min-height: 40px; }
+  @media (max-width: 1100px) { body { overflow: auto; } main { grid-template-columns: 1fr 1fr; grid-template-rows: auto;
+         grid-template-areas: "status status" "perf agent" "world memory" "side side"; } }
+  .panel { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; }
+  .panel h2 { font-size: 11px; text-transform: uppercase; letter-spacing: .6px; color: var(--text-secondary); margin: 0 0 6px; font-weight: 600; }
+  .panel h3 { font-size: 11px; color: var(--text-muted); margin: 8px 0 4px; font-weight: 500; }
+  .stack > .panel + .panel { margin-top: 8px; }
+  .statusbar { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .statusbar .who { min-width: 260px; flex: 1; }
+  .statusbar .who .progress { margin: 6px 0 0; }
+  .tiles { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tile { background: var(--surface-2); border-radius: 8px; padding: 6px 10px; min-width: 104px; }
+  .tile .k { font-size: 10px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: .5px; }
+  .tile .v { font-size: clamp(15px, 1.6vw, 22px); font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1.15; }
+  .tile .s { display: none; font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .tile.tutorial .v { display: none; } .tile.tutorial .s { display: block; max-width: none; }
+  .progress { height: 5px; background: var(--surface-2); border-radius: 3px; overflow: hidden; }
+  .progress > div { height: 100%; background: var(--series-1); width: 0; transition: width .2s; }
+  pre { white-space: pre-wrap; word-break: break-word; margin: 0; font: 11.5px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
+        background: var(--surface-2); padding: 6px 8px; border-radius: 6px; max-height: 120px; overflow: auto; }
+  pre.tall { max-height: none; flex: 1; }
+  .fill { display: flex; flex-direction: column; min-height: 0; }
+  .fill pre.tall { min-height: 60px; }
+  .versions { display: flex; gap: 4px; flex-wrap: wrap; margin: 0 0 6px; }
+  .versions button { font: inherit; font-size: 11px; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--border);
+                     background: var(--surface-2); color: var(--text-secondary); cursor: pointer; }
+  .versions button.on { border-color: var(--series-3); color: var(--text-primary); }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  details summary { cursor: pointer; color: var(--text-secondary); font-size: 12px; }
+  header .ctl { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-left: auto; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 600;
+           background: var(--surface-2); color: var(--text-primary); }
+  .badge::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--neutral); }
+  .badge.good::before { background: var(--good); } .badge.bad::before { background: var(--critical); }
+  .badge.warn::before { background: var(--warning); }
+  .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 6px 0; }
+  .muted { color: var(--text-muted); font-size: 12px; }
+  .runs { list-style: none; margin: 0; padding: 0; overflow: auto; flex: 1; }
+  .runs li { padding: 6px 8px; border-radius: 6px; cursor: pointer; display: flex; justify-content: space-between; gap: 8px; font-size: 13px; }
+  .runs li:hover { background: var(--surface-2); } .runs li.active { background: var(--surface-2); outline: 1px solid var(--series-1); }
+  .runs li .n { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .runs li .m { color: var(--text-secondary); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .log { list-style: none; margin: 0; padding: 0; overflow: auto; font-size: 11.5px; }
+  .log li { padding: 4px 0; border-bottom: 1px solid var(--grid); display: grid; grid-template-columns: 34px 1fr; gap: 8px; }
+  .log li .t { color: var(--text-muted); font-variant-numeric: tabular-nums; }
+  .log li.world_change .t { color: var(--series-2); font-weight: 600; }
+  .log li.notice .t { color: var(--warning); font-weight: 600; }
+  .log li.memory .t { color: var(--series-3); font-weight: 600; }
+  svg text { fill: var(--text-secondary); font-size: 11px; }
+  .chart { width: 100%; height: 100%; min-height: 90px; display: block; }
+  .strip { display: flex; flex-wrap: wrap; gap: 2px; }
+  .strip i { width: 9px; height: 9px; border-radius: 2px; background: var(--neutral); display: block; }
+  .strip i.good { background: var(--good); } .strip i.bad { background: var(--critical); } .strip i.cur { outline: 2px solid var(--series-1); }
+  .grid table { border-collapse: separate; border-spacing: 3px; font-size: 11px; }
+  .grid td, .grid th { padding: 0; }
+  .grid th { color: var(--text-secondary); font-weight: 500; text-align: left; padding-right: 6px; }
+  .grid th.c { text-align: center; padding: 0 0 2px; font-size: 10px; }
+  .grid .cell { width: 26px; height: 22px; border-radius: 4px; background: var(--neutral); display: flex; align-items: center; justify-content: center;
+                font-size: 11px; color: var(--text-primary); font-weight: 600; position: relative; }
+  .grid .cell.good { background: var(--good); color: #fff; } .grid .cell.bad { background: var(--critical); color: #fff; }
+  .grid .cell.cur { outline: 2px solid var(--series-1); outline-offset: 1px; }
+  .grid .cell.changed::after { content: ""; position: absolute; top: 2px; right: 2px; width: 6px; height: 6px; border-radius: 50%; background: var(--series-2); border: 1px solid var(--surface-1); }
+  .tooltip { position: fixed; pointer-events: none; background: var(--surface-1); border: 1px solid var(--border); border-radius: 6px;
+             padding: 6px 8px; font-size: 12px; box-shadow: 0 4px 14px rgba(0,0,0,.15); display: none; z-index: 10; max-width: 320px; }
+  .legend { display: flex; gap: 14px; font-size: 12px; color: var(--text-secondary); margin: 4px 0 0; }
+  .legend i { display: inline-block; width: 14px; height: 2px; vertical-align: middle; margin-right: 6px; }
+  .empty { color: var(--text-muted); padding: 30px 0; text-align: center; }
+  .analysis pre { max-height: 200px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>driftlab</h1>
+  <span class="status"><span id="dot" class="dot"></span><span id="conn">connecting…</span></span>
+  <div class="ctl">
+    <label><input type="checkbox" id="follow" checked> follow newest run</label>
+    <label>replay <select id="replaySel"><option value="">choose a finished log…</option></select>
+      <select id="speed"><option value="150">6×</option><option value="60" selected>16×</option><option value="15">60×</option><option value="0">instant</option></select>
+      <button id="replayBtn">play</button></label>
+    <label title="Swap the numbers for a plain-language explanation of what each one measures"><input type="checkbox" id="tutorial"> tutorial mode</label>
+  </div>
+  <span class="muted" id="evfile"></span>
+</header>
+<main>
+  <!-- RUN STATUS: who is playing what, how far along, headline numbers -->
+  <div class="panel statusbar">
+    <div class="who">
+      <div class="row" style="justify-content:space-between;margin:0">
+        <div><strong id="runTitle">—</strong> <span class="muted" id="runMeta"></span></div>
+        <div class="muted" id="stepCount"></div>
+      </div>
+      <div class="progress"><div id="prog"></div></div>
+    </div>
+    <div class="tiles">
+      <div class="tile" title="accuracy over the last 10 steps"><div class="k">rolling 10</div><div class="v" id="roll">—</div></div>
+      <div class="tile" title="mean reward so far"><div class="k">cumulative</div><div class="v" id="cum">—</div></div>
+      <div class="tile" title="replies without a parseable action"><div class="k">parse fails</div><div class="v" id="pf">—</div></div>
+      <div class="tile" title="rule flips, relabels, notices, new versions"><div class="k">world changes</div><div class="v" id="nch">—</div></div>
+    </div>
+  </div>
+
+  <!-- SIDEBAR: runs and the task the agent was given -->
+  <div class="stack side">
+    <div class="panel fill"><h2>Runs</h2><ul class="runs" id="runs"></ul></div>
+    <div class="panel fill"><h2>Task given to the agent</h2><pre id="instr" class="tall">—</pre></div>
+  </div>
+
+  <!-- PERFORMANCE: reward over time and the experiment's metrics -->
+  <div class="stack perf">
+    <div class="panel">
+      <h2>Performance</h2>
+      <div class="chartwrap"><svg class="chart" id="chart"></svg></div>
+      <div class="legend"><span><i style="background:var(--series-1)"></i>rolling accuracy (10)</span><span><i style="background:var(--series-2)"></i>cumulative</span><span><i style="background:var(--mark-event);height:1px;border-top:1px dashed var(--mark-event)"></i>world change / notice</span></div>
+      <div class="strip" id="strip" style="margin-top:8px"></div>
+    </div>
+    <div class="panel analysis" id="analysisPanel" style="display:none"><h2>Experiment metrics</h2><pre id="analysis"></pre></div>
+  </div>
+
+  <!-- WORLD: what changed, and the hidden state the agent is up against -->
+  <div class="stack world">
+    <div class="panel">
+      <h2>World</h2>
+      <div id="gridPanel" style="display:none"><h3>request keys: last outcome per key (letter = correct desk; orange dot = rule changed; blue = current)</h3><div class="grid" id="grid"></div></div>
+      <div id="extraPanel" style="display:none;flex:1;min-height:0"><h3 id="extraTitle">state</h3><div class="chartwrap" style="min-height:70px"><svg class="chart" id="extraChart"></svg></div><div class="legend" id="extraLegend"></div></div>
+      <h3>timeline of changes, notices and memory rewrites</h3><ul class="log" id="log"></ul>
+    </div>
+  </div>
+
+  <!-- AGENT AT WORK: the current exchange and the agent's memory -->
+  <div class="stack agentcol">
+    <div class="panel">
+      <h2>Agent at work</h2>
+      <div class="row" style="margin:0 0 6px"><span class="badge" id="outcome">no step yet</span><span class="muted" id="nowT"></span></div>
+      <div id="noticeBox" class="row" style="display:none;margin:0 0 6px"><span class="badge warn">notice</span><span id="noticeText" class="muted"></span></div>
+      <div class="two obswrap">
+        <div class="obswrap"><h3>observation</h3><pre id="obs">—</pre></div>
+        <div class="obswrap"><h3>agent reply</h3><pre id="reply">—</pre></div>
+      </div>
+      <h3>feedback</h3><pre id="fb" style="max-height:70px;flex:none">—</pre>
+    </div>
+  </div>
+
+  <!-- MEMORY: what the agent wrote for itself, versioned -->
+  <div class="stack memcol">
+    <div class="panel fill"><h2>Agent memory <span class="muted" id="memMeta"></span></h2>
+      <div class="versions" id="versions"></div>
+      <pre id="memory" class="empty tall">nothing yet — reference agents report notes rewrites; a harness gets a notebook file whose edits show here</pre></div>
+  </div>
+</main>
+<div class="tooltip" id="tip"></div>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const runs = new Map();          // label -> state
+  let active = null, replaying = false;
+
+  function state(label) {
+    if (!runs.has(label)) runs.set(label, { label, steps: [], events: [], metrics: null, analysis: null, cell: null, T: null,
+      instructions: "", memory: null, memories: [], memView: null, done: null, keys: new Map(), changedKeys: new Set(), extra: {} });
+    return runs.get(label);
+  }
+
+  function ingest(ev) {
+    const s = state(ev.run || "run");
+    if (ev.kind === "run_start") { Object.assign(s, { steps: [], events: [], metrics: null, analysis: null, done: null, keys: new Map(), changedKeys: new Set(), extra: {}, memories: [], memView: null });
+      s.cell = ev.cell; s.T = ev.T; s.instructions = ev.instructions || ""; s.world = ev.world; s.experiment = ev.experiment;
+      if ($("follow").checked && !replaying) active = s.label; }
+    else if (ev.kind === "step") { s.steps.push(ev); s.T = ev.T || s.T;
+      if (ev.key) { const k = ev.key.join("|"); s.keys.set(k, { reward: ev.reward, t: ev.t, correct: ev.correct }); }
+      (ev.mutations || []).forEach(m => (m.affected || []).forEach(a => s.changedKeys.add(a.join("|"))));
+      for (const f of ["stock_end", "true_rate", "lost", "version", "season", "session"]) if (ev[f] !== undefined && ev[f] !== null) (s.extra[f] = s.extra[f] || []).push({ t: ev.t, v: ev[f] }); }
+    else if (ev.kind === "event") { s.events.push({ t: s.steps.length, kind: ev.event_kind || "event", msg: ev.msg });
+      if (ev.memory !== undefined && ev.memory !== null) { s.memory = ev.memory; s.memories.push({ t: s.steps.length, text: ev.memory, kind: ev.memory_kind || "notes" }); s.memView = null; } }
+    else if (ev.kind === "metrics") s.metrics = ev;
+    else if (ev.kind === "run_end") { s.done = ev; refreshRuns(); }
+    else if (ev.kind === "analysis") { for (const r of runs.values()) if (r.experiment === ev.experiment || !r.experiment) r.analysis = ev.text; s.analysis = ev.text; }
+    if (!active) active = s.label;
+  }
+
+  // ---- rendering ---------------------------------------------------------------
+  const fmt = x => (x === null || x === undefined || Number.isNaN(x)) ? "—" : (Math.round(x * 100) / 100).toFixed(2);
+  const TUTORIAL_TILES = {
+    roll: "Mean reward over the LAST 10 steps. Shows how the agent is doing right now \u2014 reacts fast to a recent world change.",
+    cum: "Mean reward over ALL steps so far. Moves slowly; an early mistake or an early change drags it down for a long time.",
+    pf: "Replies the world couldn't turn into a valid action. Should sit near zero \u2014 a rising count points at a reply-format problem, not a learning one.",
+    nch: "Rule flips, relabels, notices and similar events logged so far. Compare against the timeline and the chart to see whether reward dipped around them.",
+  };
+  const TUTORIAL_PANELS = {
+    perf: "Reward over time. Orange (cumulative) moves slowly and shows overall competence; blue (rolling 10) reacts fast and shows current performance. Dashed lines mark a world change or notice \u2014 look for a dip just after one, and how long it takes to recover.",
+    world: "What changed, and the hidden state the agent doesn't see. The grid (RuleWorld only) shows the last outcome for every request key; an orange dot means that key's rule changed. The timeline lists every change, notice and memory update as it happened.",
+    agent: "What the agent is looking at right now, what it answered, and what it was told in return. This is the raw exchange \u2014 everything else on the page is computed from a sequence of these.",
+    memory: "Whatever the agent chose to write down for itself. Reference agents rewrite notes periodically; a harness gets notebook tools it can call. Empty here means the agent isn't using it, not that nothing is being logged.",
+    runs: "Every run this dashboard has seen, live or finished. Click one to inspect it instead of following the newest.",
+    instr: "The exact job description and reply format the agent was given at the start of this run \u2014 nothing else.",
+  };
+  let tutorial = false;
+
+  function applyTutorial() {
+    document.querySelectorAll(".tile").forEach(t => t.classList.toggle("tutorial", tutorial));
+    for (const [id, text] of Object.entries(TUTORIAL_TILES)) {
+      const valueEl = document.getElementById(id); if (!valueEl) continue;
+      let sub = valueEl.parentElement.querySelector(".s");
+      if (!sub) { sub = document.createElement("div"); sub.className = "s"; valueEl.after(sub); }
+      sub.textContent = text;
+    }
+    const targets = {
+      perf: () => document.querySelector(".perf h2"), world: () => document.querySelector(".world h2"),
+      agent: () => document.querySelector(".agentcol h2"), memory: () => document.getElementById("memMeta")?.closest(".panel")?.querySelector("h2"),
+      runs: () => document.getElementById("runs")?.closest(".panel")?.querySelector("h2"),
+      instr: () => document.getElementById("instr")?.closest(".panel")?.querySelector("h2"),
+    };
+    for (const [id, text] of Object.entries(TUTORIAL_PANELS)) {
+      const h2 = targets[id]?.(); if (!h2) continue;
+      let hint = document.getElementById(`hint-${id}`);
+      if (!hint) { hint = document.createElement("div"); hint.id = `hint-${id}`; hint.className = "muted";
+        hint.style.cssText = "margin:-2px 0 6px;font-size:11px;line-height:1.35"; h2.after(hint); }
+      hint.textContent = tutorial ? text : ""; hint.style.display = tutorial ? "block" : "none";
+    }
+  }
+
+  function render() {
+    renderRuns();
+    applyTutorial();
+    const s = runs.get(active); if (!s) return;
+    const n = s.steps.length, r = s.steps.map(x => x.reward);
+    const roll = n ? r.slice(-10).reduce((a, b) => a + b, 0) / Math.min(10, n) : null;
+    const cum = n ? r.reduce((a, b) => a + b, 0) / n : null;
+    $("runTitle").textContent = s.label;
+    $("runMeta").textContent = s.cell ? `${s.experiment || ""}  regime ${s.cell.regime ?? "—"}  seed ${s.cell.seed ?? "—"}  agent ${(s.cell.agent || {}).name || "—"}` + (s.done ? "  · finished" : "") : "";
+    $("stepCount").textContent = s.T ? `step ${n} / ${s.T}` : `step ${n}`;
+    $("prog").style.width = s.T ? `${100 * n / s.T}%` : "0";
+    $("roll").textContent = fmt(roll); $("cum").textContent = fmt(cum);
+    $("pf").textContent = s.steps.filter(x => x.parse_failed).length;
+    $("nch").textContent = s.events.filter(e => e.kind === "world_change" || e.kind === "notice").length;
+    const last = s.steps[n - 1];
+    if (last) {
+      const good = last.reward > 0, badge = $("outcome");
+      badge.className = "badge " + (good ? "good" : "bad"); badge.textContent = `${good ? "accepted / positive" : "rejected / negative"}  ${last.reward >= 0 ? "+" : ""}${fmt(last.reward)}`;
+      $("nowT").textContent = `step ${last.t + 1}`;
+      $("obs").textContent = last.observation || "—"; $("reply").textContent = last.reply || last.action || "—"; $("fb").textContent = last.feedback || "—";
+      $("noticeBox").style.display = last.notice ? "" : "none"; $("noticeText").textContent = last.notice || "";
+    }
+    $("instr").textContent = s.instructions || "—";
+    renderMemory(s);
+    renderLog(s); drawChart(s, roll, cum); drawStrip(s); drawGrid(s); drawExtra(s);
+    $("analysisPanel").style.display = s.analysis ? "" : "none"; $("analysis").textContent = s.analysis || "";
+  }
+
+  function renderMemory(s) {
+    const vs = $("versions"); vs.innerHTML = "";
+    if (!s.memories.length) { $("memory").textContent = "nothing yet — reference agents report notes rewrites; a harness gets a notebook file whose edits show here"; $("memory").className = "empty tall"; $("memMeta").textContent = ""; return; }
+    const idx = s.memView === null ? s.memories.length - 1 : s.memView, m = s.memories[idx];
+    s.memories.forEach((mm, i) => { const b = document.createElement("button"); b.textContent = `v${i + 1} · t${mm.t}`; b.className = i === idx ? "on" : "";
+      b.onclick = () => { s.memView = i; render(); }; vs.appendChild(b); });
+    $("memMeta").textContent = `${m.kind} · version ${idx + 1} of ${s.memories.length} · ${m.text.length} chars`;
+    $("memory").textContent = m.text || "(the agent cleared its notebook; nothing saved at this version)"; $("memory").className = "tall";
+  }
+
+  function renderRuns() {
+    const ul = $("runs"); ul.innerHTML = "";
+    [...runs.values()].reverse().forEach(s => {
+      const li = document.createElement("li"); li.className = s.label === active ? "active" : "";
+      const n = s.steps.length, mean = n ? s.steps.reduce((a, b) => a + b.reward, 0) / n : null;
+      li.innerHTML = `<span class="n" title="${s.label}">${s.label}</span><span class="m">${s.done ? "✓" : (n ? "▶" : "…")} ${fmt(mean)}</span>`;
+      li.onclick = () => { active = s.label; $("follow").checked = false; render(); };
+      ul.appendChild(li);
+    });
+  }
+
+  function renderLog(s) {
+    const ul = $("log"); ul.innerHTML = "";
+    s.events.slice(-60).reverse().forEach(e => {
+      const li = document.createElement("li"); li.className = e.kind;
+      li.innerHTML = `<span class="t">t${e.t}</span><span>${escapeHtml(e.msg)}</span>`; ul.appendChild(li);
+    });
+    if (!s.events.length) ul.innerHTML = `<li class="empty">no world events yet</li>`;
+  }
+
+  // ---- charts (plain SVG) ------------------------------------------------------
+  function drawChart(s) {
+    const svg = $("chart"), W = svg.clientWidth || 600, H = svg.clientHeight || 220, m = { l: 34, r: 10, t: 10, b: 22 };
+    const T = Math.max(s.T || 1, s.steps.length, 10), r = s.steps.map(x => x.reward);
+    const lo = Math.min(0, ...r), hi = Math.max(1, ...r);
+    const x = t => m.l + (t / (T - 1)) * (W - m.l - m.r), y = v => m.t + (1 - (v - lo) / (hi - lo || 1)) * (H - m.t - m.b);
+    const roll = r.map((_, i) => { const w = r.slice(Math.max(0, i - 9), i + 1); return w.reduce((a, b) => a + b, 0) / w.length; });
+    const cum = r.map((_, i) => r.slice(0, i + 1).reduce((a, b) => a + b, 0) / (i + 1));
+    const path = a => a.map((v, i) => `${i ? "L" : "M"}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
+    let g = `<g class="grid">`;
+    for (const v of [lo, (lo + hi) / 2, hi]) g += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}" stroke="var(--grid)"/><text x="${m.l - 6}" y="${y(v) + 4}" text-anchor="end">${fmt(v)}</text>`;
+    for (const t of [0, Math.round(T / 2), T - 1]) g += `<text x="${x(t)}" y="${H - 6}" text-anchor="middle">${t + 1}</text>`;
+    g += `</g>`;
+    s.events.filter(e => e.kind === "world_change" || e.kind === "notice").forEach(e => {
+      g += `<line x1="${x(e.t)}" x2="${x(e.t)}" y1="${m.t}" y2="${H - m.b}" stroke="var(--mark-event)" stroke-dasharray="3 3" stroke-width="1"/>`; });
+    if (r.length) { g += `<path d="${path(cum)}" fill="none" stroke="var(--series-2)" stroke-width="2"/>`;
+                    g += `<path d="${path(roll)}" fill="none" stroke="var(--series-1)" stroke-width="2"/>`; }
+    g += `<rect id="hit" x="${m.l}" y="${m.t}" width="${W - m.l - m.r}" height="${H - m.t - m.b}" fill="transparent"/><g id="cross"></g>`;
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`); svg.innerHTML = g;
+    const hit = svg.querySelector("#hit"), cross = svg.querySelector("#cross"), tip = $("tip");
+    hit.onmousemove = ev => { const rect = svg.getBoundingClientRect(); const px = (ev.clientX - rect.left) * (W / rect.width);
+      const t = Math.max(0, Math.min(r.length - 1, Math.round((px - m.l) / (W - m.l - m.r) * (T - 1)))); if (!r.length) return;
+      cross.innerHTML = `<line x1="${x(t)}" x2="${x(t)}" y1="${m.t}" y2="${H - m.b}" stroke="var(--text-muted)"/><circle cx="${x(t)}" cy="${y(roll[t])}" r="4" fill="var(--series-1)" stroke="var(--surface-1)" stroke-width="2"/><circle cx="${x(t)}" cy="${y(cum[t])}" r="4" fill="var(--series-2)" stroke="var(--surface-1)" stroke-width="2"/>`;
+      const st = s.steps[t]; tip.style.display = "block"; tip.style.left = (ev.clientX + 12) + "px"; tip.style.top = (ev.clientY + 12) + "px";
+      tip.innerHTML = `<b>step ${t + 1}</b><br>rolling ${fmt(roll[t])} · cumulative ${fmt(cum[t])}<br><span class="muted">${escapeHtml((st.observation || "").split("\n")[0]).slice(0, 80)}</span><br>did ${escapeHtml(String(st.action))} → ${st.reward > 0 ? "accepted" : "rejected"}`; };
+    hit.onmouseleave = () => { cross.innerHTML = ""; tip.style.display = "none"; };
+  }
+
+  function drawStrip(s) {
+    const el = $("strip"); el.innerHTML = "";
+    s.steps.forEach((st, i) => { const b = document.createElement("i"); b.className = (st.reward > 0 ? "good" : "bad") + (i === s.steps.length - 1 ? " cur" : "");
+      b.title = `step ${i + 1}: ${st.action} → ${st.reward > 0 ? "accepted" : "rejected"}`; el.appendChild(b); });
+  }
+
+  function drawGrid(s) {
+    const panel = $("gridPanel"); if (!s.keys.size) { panel.style.display = "none"; return; }
+    panel.style.display = "";
+    const types = [...new Set([...s.keys.keys()].map(k => k.split("|")[0]))], regions = ["north", "south", "east"], sizes = ["small", "large"];
+    const cur = s.steps.length ? (s.steps[s.steps.length - 1].key || []).join("|") : "";
+    let h = `<table><tr><th></th>${regions.map(r => sizes.map(z => `<th class="c">${r[0].toUpperCase()}${z[0]}</th>`).join("")).join("")}</tr>`;
+    for (const ty of types) { h += `<tr><th>${ty}</th>`;
+      for (const r of regions) for (const z of sizes) { const k = `${ty}|${r}|${z}`, v = s.keys.get(k);
+        const cls = "cell" + (v ? (v.reward > 0 ? " good" : " bad") : "") + (k === cur ? " cur" : "") + (s.changedKeys.has(k) ? " changed" : "");
+        h += `<td><div class="${cls}" title="${k}${v ? `: last ${v.reward > 0 ? "accepted" : "rejected"} at step ${v.t + 1} (correct ${v.correct})` : ": not seen"}">${v ? v.correct : ""}</div></td>`; }
+      h += `</tr>`; }
+    $("grid").innerHTML = h + `</table>`;
+  }
+
+  function drawExtra(s) {
+    const fields = Object.keys(s.extra).filter(f => ["stock_end", "true_rate", "lost"].includes(f) && s.extra[f].length > 1);
+    const panel = $("extraPanel"); if (!fields.length) { panel.style.display = "none"; return; }
+    panel.style.display = "flex"; $("extraTitle").textContent = "Inventory: stock on hand vs true demand rate";
+    const svg = $("extraChart"), W = svg.clientWidth || 600, H = svg.clientHeight || 130, m = { l: 34, r: 10, t: 10, b: 22 };
+    const series = fields.map((f, i) => ({ f, pts: s.extra[f], color: ["var(--series-1)", "var(--series-2)", "var(--series-3)"][i % 3] }));
+    const all = series.flatMap(x => x.pts.map(p => p.v)), lo = Math.min(0, ...all), hi = Math.max(1, ...all), T = Math.max(s.T || 1, s.steps.length);
+    const x = t => m.l + (t / (T - 1)) * (W - m.l - m.r), y = v => m.t + (1 - (v - lo) / (hi - lo || 1)) * (H - m.t - m.b);
+    let g = `<line x1="${m.l}" x2="${W - m.r}" y1="${y(lo)}" y2="${y(lo)}" stroke="var(--grid)"/><text x="${m.l - 6}" y="${y(hi) + 4}" text-anchor="end">${fmt(hi)}</text><text x="${m.l - 6}" y="${y(lo) + 4}" text-anchor="end">${fmt(lo)}</text>`;
+    series.forEach(sr => { g += `<path d="${sr.pts.map((p, i) => `${i ? "L" : "M"}${x(p.t).toFixed(1)},${y(p.v).toFixed(1)}`).join(" ")}" fill="none" stroke="${sr.color}" stroke-width="2"/>`; });
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`); svg.innerHTML = g;
+    $("extraLegend").innerHTML = series.map(sr => `<span><i style="background:${sr.color}"></i>${sr.f.replace("_", " ")}</span>`).join("");
+  }
+
+  function escapeHtml(s) { return String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+
+  // ---- live stream ----------------------------------------------------------------
+  let pending = false;
+  function scheduleRender() { if (pending) return; pending = true; requestAnimationFrame(() => { pending = false; render(); }); }
+  const es = new EventSource("/events");
+  es.onopen = () => { $("dot").className = "dot on"; $("conn").textContent = "live"; };
+  es.onerror = () => { $("dot").className = "dot"; $("conn").textContent = "reconnecting…"; };
+  es.onmessage = e => { if (replaying) return; try { ingest(JSON.parse(e.data)); scheduleRender(); } catch (err) { console.warn(err); } };
+
+  // ---- replay from a finished log -------------------------------------------------
+  async function refreshRuns() {
+    const sel = $("replaySel");
+    if (document.activeElement === sel) return;  // don't yank the list out from under an open dropdown
+    const list = await (await fetch("/runs")).json();
+    const keep = sel.value;
+    sel.innerHTML = '<option value="">choose a finished log…</option>';
+    list.forEach(p => { const o = document.createElement("option"); o.value = p; o.textContent = p; sel.appendChild(o); });
+    if (list.includes(keep)) sel.value = keep;
+  }
+  refreshRuns();
+  setInterval(refreshRuns, 4000);
+  $("replayBtn").onclick = async () => {
+    const path = $("replaySel").value; if (!path) return;
+    const data = await (await fetch("/log?path=" + encodeURIComponent(path))).json();
+    const label = "replay:" + path.split("/").pop().replace(".jsonl", ""); const h = data.header;
+    replaying = true; active = label; $("follow").checked = false;
+    runs.delete(label);
+    ingest({ run: label, kind: "run_start", cell: h.cell, T: data.steps.length, instructions: "(instructions are not stored in logs; see the experiment's world)", experiment: path.split("/")[1] });
+    const delay = +$("speed").value;
+    for (const st of data.steps) {
+      (st.mutations || []).forEach(mu => ingest({ run: label, kind: "event", event_kind: "world_change", msg: `rule flip ${JSON.stringify(mu.key)} ${mu.old} → ${mu.new} (affects ${(mu.affected || []).length} keys)` }));
+      if (st.notice) ingest({ run: label, kind: "event", event_kind: "notice", msg: "notice shown: " + st.notice });
+      ingest({ run: label, kind: "step", t: st.t, T: data.steps.length, ...st });
+      if (delay) { scheduleRender(); await new Promise(res => setTimeout(res, delay)); }
+    }
+    ingest({ run: label, kind: "run_end", steps: data.steps.length });
+    replaying = false; render();
+  };
+  $("tutorial").onchange = e => { tutorial = e.target.checked; applyTutorial(); render(); };
+  window.addEventListener("resize", scheduleRender);
+  if (window.ResizeObserver) {
+    const ro = new ResizeObserver(() => scheduleRender());
+    ["chart", "extraChart"].forEach(id => { const el = $(id); if (el) ro.observe(el.parentElement || el); });
+  }
+  $("evfile").textContent = "";
+})();
+</script>
+</body>
+</html>
