@@ -69,6 +69,18 @@ class CostLedger:
         for f in ("input_tokens", "cached_tokens", "output_tokens", "reasoning_tokens"):
             b[f] += usage[f]
         b["cost_usd"] += cost
+        self._check_budget()
+
+    def record_costed(self, model: str, cost_usd: float, input_tokens: int = 0, output_tokens: int = 0):
+        """Record a call whose price is already known (a harness CLI reporting its own spend)."""
+        b = self._bucket(model)
+        b["calls"] += 1
+        b["input_tokens"] += input_tokens
+        b["output_tokens"] += output_tokens
+        b["cost_usd"] += cost_usd
+        self._check_budget()
+
+    def _check_budget(self):
         if self.budget_usd is not None and self.total_cost() > self.budget_usd:
             raise BudgetExceeded(f"spent ${self.total_cost():.2f} > budget ${self.budget_usd:.2f}")
 

@@ -19,6 +19,8 @@ Logs go to runs/<experiment>/ like any other run; analyze with
 import asyncio
 import hashlib
 import importlib
+import json
+import os
 import pkgutil
 import sys
 import time
@@ -178,9 +180,18 @@ def _resolve(name: str) -> str:
     raise KeyError(f"unknown experiment {name!r}; available: {sorted(mods)}")
 
 
+# Agent identity recorded in every run header. The launcher (path A: driftlab.harness.launch)
+# enforces a profile through the environment; a harness may also self-declare one via
+# run_experiment(agent_profile=...). Enforced keys win over self-declared ones.
+ENFORCED_PROFILE = json.loads(os.environ.get("DRIFTLAB_AGENT_PROFILE") or "null")
+
+
 async def _begin_episode(idx: int) -> dict:
     m = _experiments()[STATE["experiment"]]
-    cell = {**STATE["cells"][idx], "agent": {"name": STATE["agent_label"], "type": "harness"}}
+    profile = {**(STATE.get("agent_profile") or {}), **(ENFORCED_PROFILE or {})}
+    if ENFORCED_PROFILE:
+        profile["profile_enforced"] = True
+    cell = {**STATE["cells"][idx], "agent": {"name": STATE["agent_label"], "type": "harness", **profile}}
     scenario, agent, task, out = _launch(m, cell, STATE["agent_label"], STATE["experiment"])
     STATE.update(task=task, agent=agent, cell=cell, t=0, T=scenario.steps, idx=idx, scenario=scenario, out=out)
     first = await agent.to_harness.get()
@@ -192,7 +203,8 @@ async def _begin_episode(idx: int) -> dict:
 
 @server.tool()
 async def run_experiment(experiment: str, agent_label: str = "harness", seeds: int = 1,
-                         independent_worlds: bool = True, quick: bool = False, world: str = "rule_world") -> dict:
+                         independent_worlds: bool = True, quick: bool = False, world: str = "rule_world",
+                         agent_profile: dict | None = None) -> dict:
     """Run a whole experiment: every environment configuration in turn, then the metrics.
     Call once, then keep calling act(text) until the result says finished. `experiment` may be
     'exp04', 'exp04_surface_vs_latent' or just '4'. `seeds` = independent repeats per configuration.
@@ -201,6 +213,8 @@ async def run_experiment(experiment: str, agent_label: str = "harness", seeds: i
     an in-process agent would see (paired comparison), accepting that carry-over then inflates results.
     `quick` runs tenth-length episodes with scaled schedules: a sense-check, not a measurement.
     `world`: rule_world | form_filler | inventory | codebase (experiments refuse worlds lacking what they need).
+    `agent_profile`: optional facts about yourself (model, version, memory strategy, ...) recorded
+    verbatim in every run header so results stay attributable.
     You get a personal notebook file; whatever you write there is versioned and shown on the dashboard."""
     if STATE.get("task") and not STATE["task"].done():
         return {"error": "a run is in progress; call abort() or finish it first"}
@@ -210,7 +224,8 @@ async def run_experiment(experiment: str, agent_label: str = "harness", seeds: i
     if independent_worlds:
         cells = [{**c, "seed": c["seed"] + 1000 * (i + 1)} for i, c in enumerate(cells)]
     STATE.clear()
-    STATE.update(experiment=name, agent_label=agent_label, cells=cells, auto=True, quick=quick, memory_versions=[], notebook_digest=None)
+    STATE.update(experiment=name, agent_label=agent_label, cells=cells, auto=True, quick=quick,
+                 agent_profile=agent_profile, memory_versions=[], notebook_digest=None)
     return {"experiment": name, "episodes": len(STATE["cells"]), "quick": quick, **(await _begin_episode(0))}
 
 

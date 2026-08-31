@@ -73,6 +73,41 @@ world, and returns the computed metrics when the last one finishes. Logs land in
 
 `start_run` / `describe_experiment` give single-configuration control for when you want it.
 
+### Two ways to benchmark a harness
+
+**Path A — autonomous (harness benchmarking).** The harness plays through the MCP
+server as above, pacing its own act() calls, managing its own context across
+episodes, choosing when to use the notebook: the whole agentic system is the
+object of study. To pin its configuration instead of trusting a self-description,
+launch it:
+
+```bash
+python -m driftlab.harness.launch --harness claude --model claude-opus-5 \
+    --experiment 4 --label claude_opus5 --profile scaffold_version=2.1
+```
+
+The launcher spawns the harness with the model and MCP wiring fixed and injects
+the profile through the environment; the server stamps it into every run header
+with `profile_enforced: true` (enforced keys beat anything the harness declares
+via `run_experiment(agent_profile=...)`).
+
+**Path B — controlled (agent benchmarking).** The harness is invoked
+programmatically, one call per step, and slots into the normal grid runner like
+any other agent — paired seeds, concurrency, cost tracked from the CLI's own
+usage reports, one fresh session per episode (enforced no-carry-over):
+
+```bash
+python -m experiments.exp02_detect_adapt_lag --agent cli:claude:claude-opus-5
+python -m experiments.benchmark --agent cli:codex:gpt-5.1
+```
+
+Full control (allowed tools, max turns per step, timeouts, custom commands) via
+a `{"type": "harness_cli", ...}` spec in `--agent-spec` — see
+`driftlab/agents/harness_cli.py`. A measures ecological behavior (the harness's
+autonomy is part of the result); B measures the configured agent under matched
+conditions, directly comparable with the reference substrates. Where they
+disagree is itself a finding.
+
 ## Worlds
 
 Every world is a job at a fictional company. The agent is never told it is in an experiment.

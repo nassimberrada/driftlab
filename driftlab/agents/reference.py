@@ -76,6 +76,7 @@ def make_agent(spec: dict, cell: dict, scenario, ctx) -> object:
 
     {"type": "reference", "substrate": {...}, "model"?, "mock"?}   LLM + memory substrate
     {"type": "tabular"}                                             RuleWorld baseline
+    {"type": "harness_cli", "harness": "claude"|"codex"|"custom"}   a harness CLI driven per step (path B)
     {"type": "custom", "factory": "pkg.module:callable"}            your own; called as factory(spec, cell, scenario, ctx)
     """
     kind = spec.get("type", "reference")
@@ -83,6 +84,9 @@ def make_agent(spec: dict, cell: dict, scenario, ctx) -> object:
         return ReferenceLLMAgent(make_brain(spec, str(ctx["cache_dir"])), make_substrate(spec.get("substrate", {"kind": "none"})))
     if kind == "tabular":
         return TabularRuleAgent(seed=cell["seed"])
+    if kind == "harness_cli":
+        from .harness_cli import HarnessCLIAgent
+        return HarnessCLIAgent(spec)
     if kind == "custom":
         mod, fn = spec["factory"].split(":")
         import importlib

@@ -7,6 +7,7 @@ The CLI decides which world hosts it and which agent plays:
                                                          world that lacks a capability it needs)
     (default agent)               the experiment's REFERENCE_AGENTS (in-process LLM + memory plugins)
     --agent tabular               the RuleWorld memorization baseline
+    --agent cli:claude[:model]    a harness CLI driven per step, pinned config (path B; also cli:codex)
     --agent custom:pkg.mod:fn     your own factory(spec, cell, scenario, ctx) -> Agent
     --agent-spec agents.json      a JSON list of agent specs
     (harness)                     run the MCP server and let an external harness play; --analyze reads its logs
@@ -88,7 +89,7 @@ def cli(name: str, description: str, extra=None) -> argparse.Namespace:
     ap.add_argument("--seeds", type=int, default=None)
     ap.add_argument("--model", default=None, help="override the reference agents' model id (default gpt-5-mini)")
     ap.add_argument("--effort", default=None, help="reasoning effort for reasoning models")
-    ap.add_argument("--agent", default=None, help="tabular | custom:pkg.module:factory")
+    ap.add_argument("--agent", default=None, help="tabular | cli:claude[:model] | cli:codex[:model] | custom:pkg.module:factory")
     ap.add_argument("--agent-spec", default=None, help="JSON file with a list of agent specs")
     ap.add_argument("--concurrency", type=int, default=6)
     ap.add_argument("--out", default=None, help="log directory (default runs/<exp>/<world>)")
@@ -115,6 +116,10 @@ def resolve_agents(args, reference_agents: list[dict]) -> list[dict]:
         specs = json.loads(Path(args.agent_spec).read_text())
     elif args.agent == "tabular":
         specs = [{"name": "tabular", "type": "tabular"}]
+    elif args.agent and args.agent.startswith("cli:"):
+        _, harness, *model = args.agent.split(":", 2)
+        specs = [{"name": f"{harness}_cli", "type": "harness_cli", "harness": harness,
+                  **({"model": model[0]} if model else {})}]
     elif args.agent and args.agent.startswith("custom:"):
         specs = [{"name": "custom", "type": "custom", "factory": args.agent[len("custom:"):]}]
     else:
