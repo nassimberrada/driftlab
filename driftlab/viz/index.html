@@ -44,48 +44,75 @@
   header select, header button { font: inherit; padding: 4px 8px; border: 1px solid var(--border); background: var(--surface-2);
            color: var(--text-primary); border-radius: 6px; }
   header label { color: var(--text-secondary); font-size: 13px; display: flex; gap: 6px; align-items: center; }
+  header .ctl { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-left: auto; }
+
   main { flex: 1; min-height: 0; display: grid; gap: 8px; padding: 8px 10px;
-         grid-template-columns: 220px minmax(0, 1fr) minmax(0, 1fr);
-         grid-template-rows: auto minmax(0, 1fr) minmax(0, 1fr);
-         grid-template-areas: "side status status" "side perf agent" "side world memory"; }
-  .side { grid-area: side; } .statusbar { grid-area: status; } .perf { grid-area: perf; } .world { grid-area: world; }
-  .agentcol { grid-area: agent; } .memcol { grid-area: memory; }
-  .side, .perf, .world, .agentcol, .memcol { min-height: 0; display: flex; flex-direction: column; }
-  .stack > .panel { min-height: 0; }
-  .side .panel:first-child { flex: 1; } .side .panel:last-child { flex: 1; }
-  .perf > .panel, .world > .panel, .agentcol > .panel, .memcol > .panel { flex: 1; overflow: auto; display: flex; flex-direction: column; min-height: 0; }
-  .chartwrap { flex: 1; min-height: 90px; display: flex; }
-  .obswrap { flex: 1; min-height: 0; display: flex; flex-direction: column; }
-  .obswrap pre { flex: 1; min-height: 40px; }
-  @media (max-width: 1100px) { body { overflow: auto; } main { grid-template-columns: 1fr 1fr; grid-template-rows: auto;
-         grid-template-areas: "status status" "perf agent" "world memory" "side side"; } }
+         grid-template-columns: minmax(190px, 1fr) minmax(0, 4fr); }
+  .side { min-height: 0; display: flex; flex-direction: column; }
+  .side .panel { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  .content { min-height: 0; display: flex; flex-direction: column; gap: 8px; }
+  @media (max-width: 1000px) { body { overflow: auto; } main { grid-template-columns: 1fr; }
+    .side { max-height: 200px; } }
+
   .panel { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; }
   .panel h2 { font-size: 11px; text-transform: uppercase; letter-spacing: .6px; color: var(--text-secondary); margin: 0 0 6px; font-weight: 600; }
   .panel h3 { font-size: 11px; color: var(--text-muted); margin: 8px 0 4px; font-weight: 500; }
-  .stack > .panel + .panel { margin-top: 8px; }
+
+  /* status bar above the tabs */
   .statusbar { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
   .statusbar .who { min-width: 260px; flex: 1; }
   .statusbar .who .progress { margin: 6px 0 0; }
+  .progress { height: 5px; background: var(--surface-2); border-radius: 3px; overflow: hidden; }
+  .progress > div { height: 100%; background: var(--series-1); width: 0; transition: width .2s; }
+
+  /* tabs */
+  .tabbar { display: flex; gap: 4px; }
+  .tabbar button { font: inherit; font-size: 13px; font-weight: 600; padding: 6px 16px; cursor: pointer;
+    border: 1px solid transparent; border-radius: 8px; background: none; color: var(--text-secondary); }
+  .tabbar button:hover { color: var(--text-primary); }
+  .tabbar button.on { background: var(--surface-1); border-color: var(--border); color: var(--text-primary); }
+  section[hidden] { display: none !important; }
+  section.tab { flex: 1; min-height: 0; display: grid; gap: 8px; }
+
+  /* activity tab */
+  #secActivity { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+                 grid-template-areas: "work world" "memory world"; }
+  #secActivity .work { grid-area: work; } #secActivity .memory { grid-area: memory; } #secActivity .worldp { grid-area: world; }
+  #secActivity .panel { min-height: 0; overflow: auto; display: flex; flex-direction: column; }
+
+  /* performance tab */
+  #secPerformance { grid-template-rows: auto minmax(0, 2fr) minmax(0, 1fr); grid-template-columns: minmax(0, 1fr); }
+  #secPerformance .panel { min-height: 0; overflow: auto; display: flex; flex-direction: column; }
   .tiles { display: flex; gap: 8px; flex-wrap: wrap; }
-  .tile { background: var(--surface-2); border-radius: 8px; padding: 6px 10px; min-width: 104px; }
+  .tile { background: var(--surface-2); border-radius: 8px; padding: 6px 10px; min-width: 120px; flex: 1; }
   .tile .k { font-size: 10px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: .5px; }
   .tile .v { font-size: clamp(15px, 1.6vw, 22px); font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1.15; }
   .tile .s { display: none; font-size: 11px; color: var(--text-muted); margin-top: 2px; }
   .tile.tutorial .v { display: none; } .tile.tutorial .s { display: block; max-width: none; }
-  .progress { height: 5px; background: var(--surface-2); border-radius: 3px; overflow: hidden; }
-  .progress > div { height: 100%; background: var(--series-1); width: 0; transition: width .2s; }
+  .chartwrap { flex: 1; min-height: 90px; display: flex; }
+
+  /* configuration tab */
+  #secConfig { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: minmax(0, auto) minmax(0, 1fr);
+               grid-template-areas: "agent worldcfg" "exp exp"; align-content: start; }
+  #secConfig .agentcfg { grid-area: agent; } #secConfig .worldcfg { grid-area: worldcfg; } #secConfig .expcfg { grid-area: exp; }
+  #secConfig .panel { min-height: 0; overflow: auto; }
+  .kv { display: grid; grid-template-columns: max-content 1fr; gap: 4px 16px; font-size: 12.5px; margin: 4px 0; }
+  .kv .k { color: var(--text-secondary); }
+  .kv .v { font-variant-numeric: tabular-nums; word-break: break-word; }
+  .blurb { color: var(--text-secondary); font-size: 12.5px; line-height: 1.45; margin: 2px 0 6px; }
+
   pre { white-space: pre-wrap; word-break: break-word; margin: 0; font: 11.5px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
         background: var(--surface-2); padding: 6px 8px; border-radius: 6px; max-height: 120px; overflow: auto; }
   pre.tall { max-height: none; flex: 1; }
   .fill { display: flex; flex-direction: column; min-height: 0; }
   .fill pre.tall { min-height: 60px; }
+  .obswrap { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  .obswrap pre { flex: 1; min-height: 40px; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .versions { display: flex; gap: 4px; flex-wrap: wrap; margin: 0 0 6px; }
   .versions button { font: inherit; font-size: 11px; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--border);
                      background: var(--surface-2); color: var(--text-secondary); cursor: pointer; }
   .versions button.on { border-color: var(--series-3); color: var(--text-primary); }
-  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  details summary { cursor: pointer; color: var(--text-secondary); font-size: 12px; }
-  header .ctl { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-left: auto; }
   .badge { display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 600;
            background: var(--surface-2); color: var(--text-primary); }
   .badge::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--neutral); }
@@ -123,7 +150,6 @@
   .legend { display: flex; gap: 14px; font-size: 12px; color: var(--text-secondary); margin: 4px 0 0; }
   .legend i { display: inline-block; width: 14px; height: 2px; vertical-align: middle; margin-right: 6px; }
   .empty { color: var(--text-muted); padding: 30px 0; text-align: center; }
-  .analysis pre { max-height: 200px; }
 </style>
 </head>
 <body>
@@ -140,69 +166,88 @@
   <span class="muted" id="evfile"></span>
 </header>
 <main>
-  <!-- RUN STATUS: who is playing what, how far along, headline numbers -->
-  <div class="panel statusbar">
-    <div class="who">
-      <div class="row" style="justify-content:space-between;margin:0">
-        <div><strong id="runTitle">—</strong> <span class="muted" id="runMeta"></span></div>
-        <div class="muted" id="stepCount"></div>
+  <!-- SIDEBAR: every run seen, live or replayed; click to inspect -->
+  <div class="side">
+    <div class="panel"><h2 id="hRuns">Runs</h2><ul class="runs" id="runs"></ul></div>
+  </div>
+
+  <div class="content">
+    <!-- STATUS: who is playing what, how far along -->
+    <div class="panel statusbar">
+      <div class="who">
+        <div class="row" style="justify-content:space-between;margin:0">
+          <div><strong id="runTitle">—</strong> <span class="muted" id="runMeta"></span></div>
+          <div class="muted" id="stepCount"></div>
+        </div>
+        <div class="progress"><div id="prog"></div></div>
       </div>
-      <div class="progress"><div id="prog"></div></div>
+      <nav class="tabbar">
+        <button id="tabActivity" class="on">Activity</button>
+        <button id="tabPerformance">Performance</button>
+        <button id="tabConfig">Configuration</button>
+      </nav>
     </div>
-    <div class="tiles">
-      <div class="tile" title="accuracy over the last 10 steps"><div class="k">rolling 10</div><div class="v" id="roll">—</div></div>
-      <div class="tile" title="mean reward so far"><div class="k">cumulative</div><div class="v" id="cum">—</div></div>
-      <div class="tile" title="replies without a parseable action"><div class="k">parse fails</div><div class="v" id="pf">—</div></div>
-      <div class="tile" title="rule flips, relabels, notices, new versions"><div class="k">world changes</div><div class="v" id="nch">—</div></div>
-    </div>
-  </div>
 
-  <!-- SIDEBAR: runs and the task the agent was given -->
-  <div class="stack side">
-    <div class="panel fill"><h2>Runs</h2><ul class="runs" id="runs"></ul></div>
-    <div class="panel fill"><h2>Task given to the agent</h2><pre id="instr" class="tall">—</pre></div>
-  </div>
-
-  <!-- PERFORMANCE: reward over time and the experiment's metrics -->
-  <div class="stack perf">
-    <div class="panel">
-      <h2>Performance</h2>
-      <div class="chartwrap"><svg class="chart" id="chart"></svg></div>
-      <div class="legend"><span><i style="background:var(--series-1)"></i>rolling accuracy (10)</span><span><i style="background:var(--series-2)"></i>cumulative</span><span><i style="background:var(--mark-event);height:1px;border-top:1px dashed var(--mark-event)"></i>world change / notice</span></div>
-      <div class="strip" id="strip" style="margin-top:8px"></div>
-    </div>
-    <div class="panel analysis" id="analysisPanel" style="display:none"><h2>Experiment metrics</h2><pre id="analysis"></pre></div>
-  </div>
-
-  <!-- WORLD: what changed, and the hidden state the agent is up against -->
-  <div class="stack world">
-    <div class="panel">
-      <h2>World</h2>
-      <div id="gridPanel" style="display:none"><h3>request keys: last outcome per key (letter = correct desk; orange dot = rule changed; blue = current)</h3><div class="grid" id="grid"></div></div>
-      <div id="extraPanel" style="display:none;flex:1;min-height:0"><h3 id="extraTitle">state</h3><div class="chartwrap" style="min-height:70px"><svg class="chart" id="extraChart"></svg></div><div class="legend" id="extraLegend"></div></div>
-      <h3>timeline of changes, notices and memory rewrites</h3><ul class="log" id="log"></ul>
-    </div>
-  </div>
-
-  <!-- AGENT AT WORK: the current exchange and the agent's memory -->
-  <div class="stack agentcol">
-    <div class="panel">
-      <h2>Agent at work</h2>
-      <div class="row" style="margin:0 0 6px"><span class="badge" id="outcome">no step yet</span><span class="muted" id="nowT"></span></div>
-      <div id="noticeBox" class="row" style="display:none;margin:0 0 6px"><span class="badge warn">notice</span><span id="noticeText" class="muted"></span></div>
-      <div class="two obswrap">
-        <div class="obswrap"><h3>observation</h3><pre id="obs">—</pre></div>
-        <div class="obswrap"><h3>agent reply</h3><pre id="reply">—</pre></div>
+    <!-- ACTIVITY: the agent working, its memory, and the world changing -->
+    <section class="tab" id="secActivity">
+      <div class="panel work">
+        <h2 id="hAgent">Agent at work</h2>
+        <div class="row" style="margin:0 0 6px"><span class="badge" id="outcome">no step yet</span><span class="muted" id="nowT"></span></div>
+        <div id="noticeBox" class="row" style="display:none;margin:0 0 6px"><span class="badge warn">notice</span><span id="noticeText" class="muted"></span></div>
+        <div class="two obswrap">
+          <div class="obswrap"><h3>what the agent sees</h3><pre id="obs">—</pre></div>
+          <div class="obswrap"><h3>what the agent replied</h3><pre id="reply">—</pre></div>
+        </div>
+        <h3>what it was told in return</h3><pre id="fb" style="max-height:70px;flex:none">—</pre>
       </div>
-      <h3>feedback</h3><pre id="fb" style="max-height:70px;flex:none">—</pre>
-    </div>
-  </div>
+      <div class="panel memory fill">
+        <h2 id="hMemory">Agent memory <span class="muted" id="memMeta"></span></h2>
+        <div class="versions" id="versions"></div>
+        <pre id="memory" class="empty tall">nothing yet — reference agents report notes rewrites; an MCP harness gets a notebook whose edits show here. A CLI-driven agent (path B) keeps its memory inside its own session, invisible by design.</pre>
+      </div>
+      <div class="panel worldp">
+        <h2 id="hWorld">The world</h2>
+        <div id="gridPanel" style="display:none"><h3>request keys — last outcome per key (letter = correct desk; orange dot = rule changed; blue = current)</h3><div class="grid" id="grid"></div></div>
+        <div id="extraPanel" style="display:none;flex:1;min-height:0"><h3 id="extraTitle">state</h3><div class="chartwrap" style="min-height:70px"><svg class="chart" id="extraChart"></svg></div><div class="legend" id="extraLegend"></div></div>
+        <h3>timeline of changes, notices and memory rewrites</h3><ul class="log" id="log"></ul>
+      </div>
+    </section>
 
-  <!-- MEMORY: what the agent wrote for itself, versioned -->
-  <div class="stack memcol">
-    <div class="panel fill"><h2>Agent memory <span class="muted" id="memMeta"></span></h2>
-      <div class="versions" id="versions"></div>
-      <pre id="memory" class="empty tall">nothing yet — reference agents report notes rewrites; an MCP harness gets a notebook whose edits show here. A cli: agent (path B) keeps its memory inside its own session, invisible by design.</pre></div>
+    <!-- PERFORMANCE: headline numbers, reward over time, experiment metrics -->
+    <section class="tab" id="secPerformance" hidden>
+      <div class="tiles">
+        <div class="tile" title="mean reward over the last 10 steps"><div class="k">rolling accuracy</div><div class="v" id="roll">—</div></div>
+        <div class="tile" title="mean reward over the whole run so far"><div class="k">cumulative reward</div><div class="v" id="cum">—</div></div>
+        <div class="tile" title="replies the world could not turn into a valid action"><div class="k">parse failures</div><div class="v" id="pf">—</div></div>
+        <div class="tile" title="rule flips, relabels, notices, new versions"><div class="k">world changes</div><div class="v" id="nch">—</div></div>
+      </div>
+      <div class="panel">
+        <h2 id="hPerf">Reward over time</h2>
+        <div class="chartwrap"><svg class="chart" id="chart"></svg></div>
+        <div class="legend"><span><i style="background:var(--series-1)"></i>rolling accuracy (last 10)</span><span><i style="background:var(--series-2)"></i>cumulative</span><span><i style="background:var(--mark-event);height:1px;border-top:1px dashed var(--mark-event)"></i>world change / notice</span></div>
+        <div class="strip" id="strip" style="margin-top:8px"></div>
+      </div>
+      <div class="panel" id="analysisPanel" style="display:none"><h2>Experiment metrics</h2><pre id="analysis" class="tall" style="max-height:none"></pre></div>
+    </section>
+
+    <!-- CONFIGURATION: the agent's profile, the world, and the experiment -->
+    <section class="tab" id="secConfig" hidden>
+      <div class="panel agentcfg">
+        <h2 id="hAgentCfg">Agent profile</h2>
+        <div class="kv" id="agentProf"><span class="muted">no run selected</span></div>
+        <div class="blurb" id="agentNote"></div>
+      </div>
+      <div class="panel worldcfg">
+        <h2 id="hWorldCfg">World</h2>
+        <div class="blurb" id="worldBlurb"></div>
+        <div class="kv" id="worldProf"></div>
+      </div>
+      <div class="panel expcfg fill">
+        <h2 id="hExp">Experiment</h2>
+        <div class="kv" id="expProf"></div>
+        <h3>task given to the agent (verbatim)</h3><pre id="instr" class="tall">—</pre>
+      </div>
+    </section>
   </div>
 </main>
 <div class="tooltip" id="tip"></div>
@@ -210,7 +255,25 @@
 (() => {
   const $ = id => document.getElementById(id);
   const runs = new Map();          // label -> state
-  let active = null, replaying = false;
+  let active = null, replaying = false, tab = "Activity";
+  let REGISTRY = {};               // experiment definitions, served by /registry
+
+  // ---- humanizing ---------------------------------------------------------------
+  const human = x => String(x).replace(/_/g, " ");
+  const humanRun = l => human(String(l).replace(/^replay:/, "replay · ").replace(/__/g, " · ")).replace(/seed(\d+)/, "seed $1");
+  const WORLD_INFO = {
+    rule_world: ["Intake desk", "Assign each incoming request to one of four handling desks. Hidden routing rules decide what is correct; a substantive change flips a rule, a cosmetic change relabels the desks, and a desk the agent overloads can shed work by itself."],
+    form_filler: ["Order-form data entry", "Copy source records into an order form. A substantive change renames a field or changes its format, requirements or caps; a cosmetic change renames the source columns; IT may quietly add an alias for a field name the agent keeps typing."],
+    inventory: ["Inventory buyer", "Order stock for one product line against hidden demand. A substantive change jumps the demand rate; a cosmetic change re-words the daily report; a big order strains the supplier and lengthens lead times for a while."],
+    codebase: ["Platform developer", "Implement tickets against a hidden style guide. A substantive change revises the guide; a cosmetic change re-words the ticket template; the reviewer adopts habits seen in the agent's recent submissions."],
+  };
+  const AGENT_NOTES = {
+    reference: "An in-process LLM agent with a pluggable memory substrate; its notes rewrites appear on the Activity tab.",
+    tabular: "A non-LLM memorization baseline: recency-weighted success counts per request key. A floor, not a contender.",
+    harness: "An external harness playing autonomously through the MCP server (path A). It paces itself and may keep a notebook.",
+    harness_cli: "A harness CLI driven one call per step under pinned configuration (path B). Its memory lives in its own session, which driftlab deliberately cannot read.",
+    custom: "A user-supplied agent factory.",
+  };
 
   function state(label) {
     if (!runs.has(label)) runs.set(label, { label, steps: [], events: [], metrics: null, analysis: null, cell: null, T: null,
@@ -238,18 +301,20 @@
   // ---- rendering ---------------------------------------------------------------
   const fmt = x => (x === null || x === undefined || Number.isNaN(x)) ? "—" : (Math.round(x * 100) / 100).toFixed(2);
   const TUTORIAL_TILES = {
-    roll: "Mean reward over the LAST 10 steps. Shows how the agent is doing right now \u2014 reacts fast to a recent world change.",
+    roll: "Mean reward over the LAST 10 steps. Shows how the agent is doing right now — reacts fast to a recent world change.",
     cum: "Mean reward over ALL steps so far. Moves slowly; an early mistake or an early change drags it down for a long time.",
-    pf: "Replies the world couldn't turn into a valid action. Should sit near zero \u2014 a rising count points at a reply-format problem, not a learning one.",
+    pf: "Replies the world couldn't turn into a valid action. Should sit near zero — a rising count points at a reply-format problem, not a learning one.",
     nch: "Rule flips, relabels, notices and similar events logged so far. Compare against the timeline and the chart to see whether reward dipped around them.",
   };
   const TUTORIAL_PANELS = {
-    perf: "Reward over time. Orange (cumulative) moves slowly and shows overall competence; blue (rolling 10) reacts fast and shows current performance. Dashed lines mark a world change or notice \u2014 look for a dip just after one, and how long it takes to recover.",
-    world: "What changed, and the hidden state the agent doesn't see. The grid (RuleWorld only) shows the last outcome for every request key; an orange dot means that key's rule changed. The timeline lists every change, notice and memory update as it happened.",
-    agent: "What the agent is looking at right now, what it answered, and what it was told in return. This is the raw exchange \u2014 everything else on the page is computed from a sequence of these.",
-    memory: "Whatever the agent chose to write down for itself. Reference agents rewrite notes periodically; an MCP harness gets notebook tools it can call. A cli: agent (path B) holds its memory in its own session, which driftlab deliberately cannot read. Empty here means the agent isn't using a visible store, not that nothing is being logged.",
-    runs: "Every run this dashboard has seen, live or finished. Click one to inspect it instead of following the newest.",
-    instr: "The exact job description and reply format the agent was given at the start of this run \u2014 nothing else.",
+    hPerf: "Reward over time. Orange (cumulative) moves slowly and shows overall competence; blue (rolling 10) reacts fast and shows current performance. Dashed lines mark a world change or notice — look for a dip just after one, and how long it takes to recover.",
+    hWorld: "What changed, and the hidden state the agent doesn't see. The grid (RuleWorld only) shows the last outcome for every request key; an orange dot means that key's rule changed. The timeline lists every change, notice and memory update as it happened.",
+    hAgent: "What the agent is looking at right now, what it answered, and what it was told in return. This is the raw exchange — everything else on the page is computed from a sequence of these.",
+    hMemory: "Whatever the agent chose to write down for itself. Reference agents rewrite notes periodically; an MCP harness gets notebook tools it can call. A CLI-driven agent (path B) holds its memory in its own session, which driftlab deliberately cannot read. Empty here means the agent isn't using a visible store, not that nothing is being logged.",
+    hRuns: "Every run this dashboard has seen, live or finished. Click one to inspect it instead of following the newest.",
+    hExp: "What this experiment tests — its hypothesis and variables from the registry — and the exact job description the agent was given at the start of the run.",
+    hAgentCfg: "The agent's recorded identity: everything the run header knows about who played. For an enforced profile (path A launcher, path B specs) this is pinned configuration, not self-description.",
+    hWorldCfg: "The job the agent was doing, and what kinds of change this world can undergo.",
   };
   let tutorial = false;
 
@@ -261,19 +326,18 @@
       if (!sub) { sub = document.createElement("div"); sub.className = "s"; valueEl.after(sub); }
       sub.textContent = text;
     }
-    const targets = {
-      perf: () => document.querySelector(".perf h2"), world: () => document.querySelector(".world h2"),
-      agent: () => document.querySelector(".agentcol h2"), memory: () => document.getElementById("memMeta")?.closest(".panel")?.querySelector("h2"),
-      runs: () => document.getElementById("runs")?.closest(".panel")?.querySelector("h2"),
-      instr: () => document.getElementById("instr")?.closest(".panel")?.querySelector("h2"),
-    };
     for (const [id, text] of Object.entries(TUTORIAL_PANELS)) {
-      const h2 = targets[id]?.(); if (!h2) continue;
+      const h2 = document.getElementById(id); if (!h2) continue;
       let hint = document.getElementById(`hint-${id}`);
       if (!hint) { hint = document.createElement("div"); hint.id = `hint-${id}`; hint.className = "muted";
         hint.style.cssText = "margin:-2px 0 6px;font-size:11px;line-height:1.35"; h2.after(hint); }
       hint.textContent = tutorial ? text : ""; hint.style.display = tutorial ? "block" : "none";
     }
+  }
+
+  function expId(s) {
+    const m = String(s.experiment || "").match(/exp\d+/);
+    return m ? m[0] : null;
   }
 
   function render() {
@@ -283,8 +347,11 @@
     const n = s.steps.length, r = s.steps.map(x => x.reward);
     const roll = n ? r.slice(-10).reduce((a, b) => a + b, 0) / Math.min(10, n) : null;
     const cum = n ? r.reduce((a, b) => a + b, 0) / n : null;
-    $("runTitle").textContent = s.label;
-    $("runMeta").textContent = s.cell ? `${s.experiment || ""}  regime ${s.cell.regime ?? "—"}  seed ${s.cell.seed ?? "—"}  agent ${(s.cell.agent || {}).name || "—"}` + (s.done ? "  · finished" : "") : "";
+    const reg = REGISTRY[expId(s)] || null;
+    $("runTitle").textContent = humanRun(s.label);
+    $("runMeta").textContent = s.cell ? [reg ? `${reg.title} (${expId(s)})` : (s.experiment ? human(s.experiment) : ""),
+      s.cell.regime != null ? `regime ${human(s.cell.regime)}` : "", s.cell.seed != null ? `seed ${s.cell.seed}` : "",
+      `agent ${human((s.cell.agent || {}).name || "—")}`, s.done ? "finished" : ""].filter(Boolean).join("  ·  ") : "";
     $("stepCount").textContent = s.T ? `step ${n} / ${s.T}` : `step ${n}`;
     $("prog").style.width = s.T ? `${100 * n / s.T}%` : "0";
     $("roll").textContent = fmt(roll); $("cum").textContent = fmt(cum);
@@ -298,19 +365,58 @@
       $("obs").textContent = last.observation || "—"; $("reply").textContent = last.reply || last.action || "—"; $("fb").textContent = last.feedback || "—";
       $("noticeBox").style.display = last.notice ? "" : "none"; $("noticeText").textContent = last.notice || "";
     }
-    $("instr").textContent = s.instructions || "—";
     renderMemory(s);
     renderLog(s); drawChart(s, roll, cum); drawStrip(s); drawGrid(s); drawExtra(s);
+    renderConfig(s, reg);
     $("analysisPanel").style.display = s.analysis ? "" : "none"; $("analysis").textContent = s.analysis || "";
+  }
+
+  function kvRows(el, entries) {
+    el.innerHTML = entries.map(([k, v]) => `<span class="k">${escapeHtml(k)}</span><span class="v">${escapeHtml(v)}</span>`).join("") ||
+                   '<span class="muted">nothing recorded</span>';
+  }
+
+  function renderConfig(s, reg) {
+    const agent = (s.cell || {}).agent || {};
+    const rows = [];
+    for (const [k, v] of Object.entries(agent)) {
+      if (v === null || v === undefined) continue;
+      if (typeof v === "object") { for (const [k2, v2] of Object.entries(v)) rows.push([`${human(k)} ${human(k2)}`, String(v2)]); }
+      else rows.push([human(k), human(k === "type" ? v : String(v))]);
+    }
+    kvRows($("agentProf"), rows);
+    $("agentNote").textContent = AGENT_NOTES[agent.type] || "";
+
+    const wname = s.world || (s.cell || {}).world || "";
+    const info = WORLD_INFO[wname];
+    $("worldBlurb").textContent = info ? `${info[0]} — ${info[1]}` : "";
+    kvRows($("worldProf"), [
+      ["world", human(wname || "—")],
+      ["regime", human((s.cell || {}).regime ?? "—")],
+      ["seed", String((s.cell || {}).seed ?? "—")],
+      ["episode length", s.T ? `${s.T} steps` : "—"],
+    ]);
+
+    const e = [];
+    if (reg) {
+      e.push(["experiment", `${reg.title} (${expId(s)}, version ${reg.version})`]);
+      e.push(["hypothesis", reg.hypothesis]);
+      e.push(["varies", (reg.independent || []).map(human).join("; ")]);
+      e.push(["measures", (reg.dependent || []).map(human).join("; ")]);
+      e.push(["kinds of change", (reg.drift || []).join("; ")]);
+      e.push(["bears on", (reg.hypotheses || []).join(", ") + " (see research/hypotheses/)"]);
+    } else if (s.experiment) e.push(["experiment", human(s.experiment)]);
+    kvRows($("expProf"), e);
+    $("instr").textContent = s.instructions || "—";
   }
 
   function renderMemory(s) {
     const vs = $("versions"); vs.innerHTML = "";
-    if (!s.memories.length) { $("memory").textContent = "nothing yet — reference agents report notes rewrites; a harness gets a notebook file whose edits show here"; $("memory").className = "empty tall"; $("memMeta").textContent = ""; return; }
+    if (!s.memories.length) { $("memory").textContent = "nothing yet — reference agents report notes rewrites; an MCP harness gets a notebook whose edits show here. A CLI-driven agent (path B) keeps its memory inside its own session, invisible by design."; $("memory").className = "empty tall"; $("memMeta").textContent = ""; return; }
     const idx = s.memView === null ? s.memories.length - 1 : s.memView, m = s.memories[idx];
-    s.memories.forEach((mm, i) => { const b = document.createElement("button"); b.textContent = `v${i + 1} · t${mm.t}`; b.className = i === idx ? "on" : "";
+    s.memories.forEach((mm, i) => { const b = document.createElement("button"); b.textContent = `v${i + 1} · step ${mm.t}`; b.className = i === idx ? "on" : "";
       b.onclick = () => { s.memView = i; render(); }; vs.appendChild(b); });
-    $("memMeta").textContent = `${m.kind} · version ${idx + 1} of ${s.memories.length} · ${m.text.length} chars`;
+    $("memMeta").textContent = `${human(m.kind)} · version ${idx + 1} of ${s.memories.length} · ${m.text.length} chars`;
     $("memory").textContent = m.text || "(the agent cleared its notebook; nothing saved at this version)"; $("memory").className = "tall";
   }
 
@@ -319,7 +425,7 @@
     [...runs.values()].reverse().forEach(s => {
       const li = document.createElement("li"); li.className = s.label === active ? "active" : "";
       const n = s.steps.length, mean = n ? s.steps.reduce((a, b) => a + b.reward, 0) / n : null;
-      li.innerHTML = `<span class="n" title="${s.label}">${s.label}</span><span class="m">${s.done ? "✓" : (n ? "▶" : "…")} ${fmt(mean)}</span>`;
+      li.innerHTML = `<span class="n" title="${escapeHtml(s.label)}">${escapeHtml(humanRun(s.label))}</span><span class="m">${s.done ? "✓" : (n ? "▶" : "…")} ${fmt(mean)}</span>`;
       li.onclick = () => { active = s.label; $("follow").checked = false; render(); };
       ul.appendChild(li);
     });
@@ -354,6 +460,7 @@
     g += `<rect id="hit" x="${m.l}" y="${m.t}" width="${W - m.l - m.r}" height="${H - m.t - m.b}" fill="transparent"/><g id="cross"></g>`;
     svg.setAttribute("viewBox", `0 0 ${W} ${H}`); svg.innerHTML = g;
     const hit = svg.querySelector("#hit"), cross = svg.querySelector("#cross"), tip = $("tip");
+    if (!hit) return;
     hit.onmousemove = ev => { const rect = svg.getBoundingClientRect(); const px = (ev.clientX - rect.left) * (W / rect.width);
       const t = Math.max(0, Math.min(r.length - 1, Math.round((px - m.l) / (W - m.l - m.r) * (T - 1)))); if (!r.length) return;
       cross.innerHTML = `<line x1="${x(t)}" x2="${x(t)}" y1="${m.t}" y2="${H - m.b}" stroke="var(--text-muted)"/><circle cx="${x(t)}" cy="${y(roll[t])}" r="4" fill="var(--series-1)" stroke="var(--surface-1)" stroke-width="2"/><circle cx="${x(t)}" cy="${y(cum[t])}" r="4" fill="var(--series-2)" stroke="var(--surface-1)" stroke-width="2"/>`;
@@ -387,16 +494,29 @@
     const panel = $("extraPanel"); if (!fields.length) { panel.style.display = "none"; return; }
     panel.style.display = "flex"; $("extraTitle").textContent = "Inventory: stock on hand vs true demand rate";
     const svg = $("extraChart"), W = svg.clientWidth || 600, H = svg.clientHeight || 130, m = { l: 34, r: 10, t: 10, b: 22 };
+    const NAMES = { stock_end: "stock on hand", true_rate: "true demand rate", lost: "lost demand" };
     const series = fields.map((f, i) => ({ f, pts: s.extra[f], color: ["var(--series-1)", "var(--series-2)", "var(--series-3)"][i % 3] }));
     const all = series.flatMap(x => x.pts.map(p => p.v)), lo = Math.min(0, ...all), hi = Math.max(1, ...all), T = Math.max(s.T || 1, s.steps.length);
     const x = t => m.l + (t / (T - 1)) * (W - m.l - m.r), y = v => m.t + (1 - (v - lo) / (hi - lo || 1)) * (H - m.t - m.b);
     let g = `<line x1="${m.l}" x2="${W - m.r}" y1="${y(lo)}" y2="${y(lo)}" stroke="var(--grid)"/><text x="${m.l - 6}" y="${y(hi) + 4}" text-anchor="end">${fmt(hi)}</text><text x="${m.l - 6}" y="${y(lo) + 4}" text-anchor="end">${fmt(lo)}</text>`;
     series.forEach(sr => { g += `<path d="${sr.pts.map((p, i) => `${i ? "L" : "M"}${x(p.t).toFixed(1)},${y(p.v).toFixed(1)}`).join(" ")}" fill="none" stroke="${sr.color}" stroke-width="2"/>`; });
     svg.setAttribute("viewBox", `0 0 ${W} ${H}`); svg.innerHTML = g;
-    $("extraLegend").innerHTML = series.map(sr => `<span><i style="background:${sr.color}"></i>${sr.f.replace("_", " ")}</span>`).join("");
+    $("extraLegend").innerHTML = series.map(sr => `<span><i style="background:${sr.color}"></i>${NAMES[sr.f] || human(sr.f)}</span>`).join("");
   }
 
   function escapeHtml(s) { return String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+
+  // ---- tabs -------------------------------------------------------------------
+  function setTab(name) {
+    tab = name;
+    for (const t of ["Activity", "Performance", "Config"]) {
+      const btn = $("tab" + t), sec = $("sec" + t);
+      if (btn) btn.className = t === name ? "on" : "";
+      if (sec) sec.hidden = t !== name;
+    }
+    render();  // charts drawn while hidden had no size; redraw now that the tab is visible
+  }
+  for (const t of ["Activity", "Performance", "Config"]) { const b = $("tab" + t); if (b) b.onclick = () => setTab(t); }
 
   // ---- live stream ----------------------------------------------------------------
   let pending = false;
@@ -405,6 +525,7 @@
   es.onopen = () => { $("dot").className = "dot on"; $("conn").textContent = "live"; };
   es.onerror = () => { $("dot").className = "dot"; $("conn").textContent = "reconnecting…"; };
   es.onmessage = e => { if (replaying) return; try { ingest(JSON.parse(e.data)); scheduleRender(); } catch (err) { console.warn(err); } };
+  fetch("/registry").then(r => r.json()).then(d => { if (d && !Array.isArray(d)) { REGISTRY = d; scheduleRender(); } }).catch(() => {});
 
   // ---- replay from a finished log -------------------------------------------------
   async function refreshRuns() {
@@ -424,7 +545,7 @@
     const label = "replay:" + path.split("/").pop().replace(".jsonl", ""); const h = data.header;
     replaying = true; active = label; $("follow").checked = false;
     runs.delete(label);
-    ingest({ run: label, kind: "run_start", cell: h.cell, T: data.steps.length, instructions: "(instructions are not stored in logs; see the experiment's world)", experiment: path.split("/")[1] });
+    ingest({ run: label, kind: "run_start", cell: h.cell, T: data.steps.length, instructions: "(instructions are not stored in logs; see the experiment's world)", experiment: path.split("/")[1], world: (h.cell || {}).world });
     const delay = +$("speed").value;
     const memVersions = (h.memory_versions || []).slice(); // harness notebook edits, stored in the header
     for (const st of data.steps) {

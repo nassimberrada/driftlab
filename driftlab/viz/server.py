@@ -48,6 +48,13 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(200, (HERE / "index.html").read_bytes(), "text/html; charset=utf-8")
         if u.path == "/events":
             return self._sse()
+        if u.path == "/registry":
+            try:
+                sys.path.insert(0, str(ROOT))
+                from experiments.registry import REGISTRY
+                return self._send(200, json.dumps(REGISTRY))
+            except Exception:  # noqa: BLE001  (the page renders fine without it)
+                return self._send(200, "{}")
         if u.path == "/runs":
             logs = sorted(ROOT.joinpath("runs").rglob("*.jsonl"))
             return self._send(200, json.dumps([str(p.relative_to(ROOT)) for p in logs if p.name != "events.jsonl"]))

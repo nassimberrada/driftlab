@@ -60,7 +60,9 @@ async def run_cells(cells: list[dict], scenario_factory, agent_factory, out_dir:
             current_run.set(rid)
             scenario = scenario_factory(cell, ctx)
             agent = agent_factory(cell, scenario, ctx)
-            LIVE.run_start(cell, scenario.steps, scenario.instructions, experiment=out.name,
+            # out is runs/<exp>/<world>; the parent is the experiment (out.name is the world dir)
+            exp = out.parent.name if out.parent.name.startswith("exp") else out.name
+            LIVE.run_start(cell, scenario.steps, scenario.instructions, experiment=exp,
                            world=getattr(scenario.world, "name", None))
             async with lock:
                 before = LEDGER.snapshot()

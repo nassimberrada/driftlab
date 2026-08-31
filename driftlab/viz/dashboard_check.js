@@ -21,7 +21,7 @@ function fakeEl(id) {
     id, textContent: '', innerHTML: '', className: '', style: {}, value: '',
     checked: false, children: [],
     classList: { toggle() {}, add() {}, remove() {} },
-    addEventListener() {}, appendChild(c) { el.children.push(c); return c; },
+    addEventListener() {}, setAttribute() {}, getBoundingClientRect: () => ({ left: 0, top: 0, width: 600, height: 200 }), appendChild(c) { el.children.push(c); return c; },
     querySelector: () => null, querySelectorAll: () => [],
     closest: () => null, after: () => {}, focus() {},
     parentElement: null,
@@ -61,7 +61,7 @@ vm.createContext(sandbox);
 // functions onto a global we can call afterward. Easiest: eval with a trailing debugger
 // hook isn't available, so instead we rewrite the closing `})();` to expose what we need.
 const exposed = js.replace(/\}\)\(\);\s*$/, `
-  globalThis.__test = { applyTutorial, render, setTutorial: (v) => { tutorial = v; }, tutorial: () => tutorial };
+  globalThis.__test = { applyTutorial, render, ingest, setTab, setTutorial: (v) => { tutorial = v; }, tutorial: () => tutorial };
 })();`);
 
 try {
@@ -117,3 +117,25 @@ try {
   process.exit(1);
 }
 console.log('ALL RUNTIME CHECKS PASSED');
+
+// deep check: feed a realistic run through ingest -> render -> tab switches, then
+// assert the configuration tab rendered the agent profile and humanized labels.
+try {
+  const T = sandbox.__test;
+  T.ingest({ run: "agy__changing__seed0", kind: "run_start", T: 12, experiment: "exp02", world: "rule_world",
+             instructions: "You work on the intake desk.",
+             cell: { world: "rule_world", regime: "changing", seed: 0,
+                     agent: { name: "agy_cli", type: "harness_cli", harness: "antigravity", model: "gemini-3.5-flash-medium" } } });
+  T.ingest({ run: "agy__changing__seed0", kind: "step", t: 0, T: 12, observation: "Request: a large refund.", reply: "CHOICE: A",
+             action: "A", reward: 1, feedback: "Accepted.", key: ["refund", "north", "large"], correct: "A",
+             changes: [{ t: 0, kind: "latent", desc: "rule flip", affected: [["refund", "north", "large"]] }] });
+  T.ingest({ run: "agy__changing__seed0", kind: "event", event_kind: "memory", msg: "notebook updated", memory: "notes text", memory_kind: "notebook" });
+  T.ingest({ run: "agy__changing__seed0", kind: "analysis", experiment: "exp02", text: "table" });
+  T.render();
+  for (const tabName of ["Performance", "Config", "Activity"]) T.setTab(tabName);
+  const prof = elements["agentProf"].innerHTML;
+  if (!prof.includes("antigravity") || !prof.includes("model")) throw new Error("agent profile rows missing: " + prof);
+  if (!elements["runTitle"].textContent.includes("agy · changing · seed 0")) throw new Error("run title not humanized: " + elements["runTitle"].textContent);
+  if (elements["instr"].textContent !== "You work on the intake desk.") throw new Error("instructions missing");
+  console.log("DEEP CHECKS PASSED: ingest/render/tabs/config with a realistic run");
+} catch (e) { console.error("DEEP FAIL:", e.message); process.exit(1); }
