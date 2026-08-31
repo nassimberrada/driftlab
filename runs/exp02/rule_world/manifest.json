@@ -1,0 +1,51 @@
+{
+  "runs": [
+    {
+      "run": "antigravity_cli__changing__seed0",
+      "path": "/home/nb/Code/driftlab/runs/exp02/rule_world/antigravity_cli__changing__seed0.jsonl",
+      "cost": {
+        "gemini-3.5-flash-medium": {
+          "calls": 12,
+          "cache_hits": 0,
+          "input_tokens": 447322,
+          "cached_tokens": 0,
+          "output_tokens": 40271,
+          "reasoning_tokens": 0,
+          "cost_usd": 0.0,
+          "cache_saved_usd": 0
+        }
+      },
+      "wall_s": 106.54335713386536
+    }
+  ],
+  "grid_costs": [],
+  "config": {
+    "T": 12,
+    "quick": true,
+    "world": "rule_world",
+    "registry": {
+      "version": 1,
+      "title": "Detect vs adapt lag",
+      "hypothesis": "Detecting a change and adapting to it are different skills; they come apart depending on how the agent remembers.",
+      "independent": [
+        "agent memory architecture"
+      ],
+      "dependent": [
+        "detection_lag",
+        "recovery_lag",
+        "stable_lag",
+        "detection-recovery gap"
+      ],
+      "drift": [
+        "abrupt latent"
+      ],
+      "worlds": [
+        "any"
+      ],
+      "hypotheses": [
+        "H001"
+      ]
+    }
+  },
+  "unpriced_models": []
+}

@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "run_dir": "/home/nb/Code/driftlab/runs/exp02/rule_world",
+  "generated": 1788191535.820033,
+  "world": "rule_world",
+  "agents": {
+    "antigravity_cli": {
+      "n_runs": 1,
+      "metrics": {
+        "detection_lag": 0.0,
+        "recovery_lag": NaN,
+        "final_accuracy": 0.3,
+        "retention": NaN,
+        "stale_rate": NaN,
+        "interference": 0.008253968253968258,
+        "calibration_error": NaN,
+        "overconfidence": NaN,
+        "parse_failure_rate": 0.0,
+        "cost_per_success": NaN,
+        "final_reward": 0.3,
+        "n_changes": 5.0,
+        "cost_usd": 0.0
+      },
+      "dimensions": {
+        "adaptation": 0.5,
+        "knowledge": 0.65,
+        "epistemics": NaN,
+        "efficiency": 1.0
+      },
+      "driftlab_score": 0.7166666666666667
+    }
+  },
+  "effects": {
+    "field": "final_accuracy",
+    "agent": [],
+    "regime": []
+  },
+  "runs": [
+    {
+      "agent": "antigravity_cli",
+      "regime": "changing",
+      "seed": 0,
+      "world": "rule_world",
+      "n_steps": 12,
+      "n_changes": 5,
+      "detection_lag": 0.0,
+      "recovery_lag": NaN,
+      "final_accuracy": 0.3,
+      "final_reward": 0.3,
+      "retention": NaN,
+      "stale_rate": NaN,
+      "interference": 0.008253968253968258,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.0,
+      "cost_per_success": NaN
+    }
+  ]
+}
