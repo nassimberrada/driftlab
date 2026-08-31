@@ -24,6 +24,7 @@ driftlab/
   core.py                Agent protocol, Scenario (world + drift/notice/probe hooks), the episode loop
   runner.py              cells x agents -> one JSONL trajectory per run, cost in every manifest
   metrics.py             log loading, tables, change metrics (detection/recovery lags, dips)
+  profile.py             the standardized result: adaptation profile + drift-profile scoring for any run dir
   costs.py               `python -m driftlab.costs runs`
   live.py                --live streaming of steps, world events and running metrics
   worlds/                RuleWorld, FormWorld, InventoryWorld (+ oracle), CodebaseWorld; base.py = protocol
@@ -112,6 +113,47 @@ experiment runs on any world that has what it needs. `--world` picks the world
 
 On worlds without `task_key`, lag metrics are time-based (steps until rolling
 reward recovers) instead of encounter-based.
+
+## The standardized result
+
+Besides its own analysis tables, every experiment reduces to the same report
+(printed after `--analyze` and at the end of every run, harness runs included,
+and written as `profile.json` next to the logs):
+
+```
+ADAPTATION PROFILE            DRIFT PROFILE (0-1)
+detection latency    0.9      adaptation      0.79
+recovery latency     2.1      knowledge       0.81
+final accuracy       0.688    epistemics      0.80
+retention            0.750    efficiency      1.00
+stale-memory rate    0.195    ---------------------
+interference        +0.082    driftlab score  0.85
+calibration error    0.089
+...
+```
+
+The **adaptation profile** is the raw metric vector, computed post-hoc from any
+JSONL trajectory: lags around each substantive change, accuracy late in the
+episode, accuracy on the changed tasks long after the change (retention), how
+often the agent still acts on an obsolete rule once it has seen the new one
+(stale-memory rate), collateral accuracy loss on untouched tasks
+(interference), Brier score when the world elicits confidence, plus parse
+failures and cost per successful step. A metric a world or run cannot measure
+(no task keys, no confidence, cost untracked) stays `—` and is skipped, never
+zeroed.
+
+The **drift profile** normalizes those into four 0-1 dimensions — adaptation
+(detection/recovery), knowledge (accuracy/retention/interference), epistemics
+(calibration/stale memory), efficiency (parsing/cost) — with the constants
+documented in `driftlab/profile.py`. The vector is the result; the single
+`driftlab score` (mean of the measured dimensions) is a convenience for
+ranking agents whose profiles measure the same dimensions, not a substitute
+for reading the profile.
+
+```bash
+python -m driftlab.profile runs/exp02/rule_world   # one run directory
+python -m driftlab.profile runs                    # every run directory under runs/
+```
 
 ## Framing
 

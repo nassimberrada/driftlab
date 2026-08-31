@@ -137,9 +137,13 @@ def run_experiment(name, doc, cells, scenario, reference_agents, analyze, config
     from driftlab.agents.reference import make_agent
     from driftlab.runner import expand, run_cells
 
+    from driftlab.profile import report
+
     args = cli(name, doc, extra_args)
     if args.analyze:
         analyze(args.out)
+        print()
+        report(args.out)
         return
     env = [{"world": args.world, **c} for c in cells(args.seeds or (1 if QUICK else DEFAULT_SEEDS))]  # a cell may pin its own world
     grid = expand(env, resolve_agents(args, reference_agents))
@@ -152,6 +156,8 @@ def run_experiment(name, doc, cells, scenario, reference_agents, analyze, config
     buf = io.StringIO()
     with contextlib.redirect_stdout(buf):
         analyze(args.out)
+        print()
+        report(args.out)
     LIVE.analysis(name, buf.getvalue())
     print(buf.getvalue())
     print(f"done -> {args.out}   (dashboard: python -m driftlab.viz.server)")

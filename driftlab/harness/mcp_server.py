@@ -234,6 +234,9 @@ def _analysis_text() -> str:
     with contextlib.redirect_stdout(buf):
         try:
             _experiments()[STATE["experiment"]].analyze(str(STATE["out"]))
+            print()
+            from driftlab.profile import report
+            report(str(STATE["out"]))
         except Exception as e:  # noqa: BLE001
             print(f"(analysis failed: {e!r})")
     return buf.getvalue()
