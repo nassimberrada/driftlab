@@ -84,12 +84,17 @@ launch it:
 ```bash
 python -m driftlab.harness.launch --harness claude --model claude-opus-5 \
     --experiment 4 --label claude_opus5 --profile scaffold_version=2.1
+python -m driftlab.harness.launch --harness antigravity --model gemini-3.5-flash-medium \
+    --effort medium --experiment 2 --label agy_g35
 ```
 
-The launcher spawns the harness with the model and MCP wiring fixed and injects
-the profile through the environment; the server stamps it into every run header
-with `profile_enforced: true` (enforced keys beat anything the harness declares
-via `run_experiment(agent_profile=...)`).
+Harnesses: `claude`, `codex`, `antigravity` (the `agy` CLI; the launcher writes
+the workspace's `.agents/mcp_config.json`), `gemini`. The launcher spawns the
+harness with the model and MCP wiring fixed and injects the profile through the
+environment; the server stamps it into every run header with
+`profile_enforced: true` (enforced keys beat anything the harness declares via
+`run_experiment(agent_profile=...)`). `--dry-run` prints the exact commands and
+config without running.
 
 **Path B — controlled (agent benchmarking).** The harness is invoked
 programmatically, one call per step, and slots into the normal grid runner like
@@ -98,6 +103,7 @@ usage reports, one fresh session per episode (enforced no-carry-over):
 
 ```bash
 python -m experiments.exp02_detect_adapt_lag --agent cli:claude:claude-opus-5
+python -m experiments.benchmark --agent cli:antigravity:gemini-3.5-flash-medium
 python -m experiments.benchmark --agent cli:codex:gpt-5.1
 ```
 

@@ -12,8 +12,9 @@ path A: `python -m driftlab.harness.launch`.
 Spec (in an --agent-spec JSON list, or --agent cli:claude[:model]):
 
     {"name": "claude_opus", "type": "harness_cli",
-     "harness": "claude" | "codex" | "custom",
+     "harness": "claude" | "codex" | "antigravity" (alias "agy") | "gemini" | "custom",
      "model": "...",                 # pinned, recorded in the run header
+     "effort": "low|medium|high",    # antigravity only: reasoning intensity
      "allowed_tools": [...],         # claude only; default: no tools allowed
      "max_turns": 8,                 # claude only: agentic turns per step
      "timeout_s": 180,               # per step; a timeout is a parse failure
@@ -22,13 +23,15 @@ Spec (in an --agent-spec JSON list, or --agent cli:claude[:model]):
      "cmd": ["mytool", "--flag"]}    # harness=custom: stateless command; the
                                      # prompt is appended as the last argument
 
-Sessions: claude resumes one session per episode (--resume), so the harness
-keeps its own conversational memory within an episode and never across
-episodes — enforced no-carry-over. codex tries `codex exec resume`; custom
-commands are stateless and get the system prompt re-sent every call.
-Feedback is delivered by prepending it to the next step's prompt (one harness
-call per step). Claude reports cost per call, which lands in the ledger and
-the manifest like any reference agent's spend.
+Sessions: claude resumes one session per episode (--resume), antigravity via
+--conversation <id> from its JSON envelope — either way the harness keeps its
+own conversational memory within an episode and never across episodes:
+enforced no-carry-over. codex tries `codex exec resume`. gemini continues via
+`--resume latest`, which is only safe at --concurrency 1. custom commands are
+stateless and get the system prompt re-sent every call. Feedback is delivered
+by prepending it to the next step's prompt (one harness call per step).
+claude reports cost per call, which lands in the ledger and the manifest;
+antigravity reports token usage (recorded, unpriced).
 """
 
 import asyncio
@@ -40,7 +43,7 @@ from .brain import LEDGER
 class HarnessCLIAgent:
     def __init__(self, spec: dict):
         self.spec = spec
-        self.harness = spec.get("harness", "claude")
+        self.harness = {"agy": "antigravity"}.get(spec.get("harness", "claude"), spec.get("harness", "claude"))
         self.session: str | None = None
         self.system = ""
         self.pending: str | None = None
@@ -84,6 +87,26 @@ class HarnessCLIAgent:
             if self.session is None:
                 text = f"{self.system}\n\n{text}"
             return cmd + list(s.get("extra_args", [])) + [text]
+        if self.harness == "antigravity":
+            if self.session is None:
+                text = f"{self.system}\n\n{text}"
+            cmd = [s.get("bin", "agy"), "-p", text, "--output-format", "json"]
+            if self.session:
+                cmd += ["--conversation", self.session]
+            if s.get("model"):
+                cmd += ["--model", s["model"]]
+            if s.get("effort"):
+                cmd += ["--effort", s["effort"]]
+            return cmd + list(s.get("extra_args", []))
+        if self.harness == "gemini":
+            if self.session is None:
+                text = f"{self.system}\n\n{text}"
+            cmd = [s.get("bin", "gemini"), "-p", text, "-o", "json"]
+            if self.session:  # `latest` is the only headless continuation; safe only at --concurrency 1
+                cmd += ["--resume", "latest"]
+            if s.get("model"):
+                cmd += ["-m", s["model"]]
+            return cmd + list(s.get("extra_args", []))
         # claude
         cmd = [s.get("bin", "claude"), "-p", "--output-format", "json"]
         if self.session:
@@ -108,6 +131,20 @@ class HarnessCLIAgent:
             LEDGER.record_costed(self.spec.get("model", "claude-cli"), float(data.get("total_cost_usd") or 0.0),
                                  usage.get("input_tokens", 0), usage.get("output_tokens", 0))
             return data.get("result", "") or ""
+        if self.harness in ("antigravity", "gemini"):
+            try:
+                data = json.loads(out)
+            except ValueError:
+                self.session = self.session or "started"
+                return out.strip()
+            self.session = data.get("conversation_id") or data.get("session_id") or self.session or "started"
+            usage = data.get("usage") or {}
+            if usage.get("input_tokens") or usage.get("output_tokens"):
+                LEDGER.record_costed(self.spec.get("model", f"{self.harness}-cli"), float(data.get("total_cost_usd") or 0.0),
+                                     usage.get("input_tokens", 0), usage.get("output_tokens", 0))
+            reply = next((data[k] for k in ("result", "response", "output", "text", "content")
+                          if isinstance(data.get(k), str)), "")
+            return reply or out.strip()
         if self.harness == "codex":
             reply = ""
             for line in out.splitlines():  # JSONL events; keep the last agent message, remember the session
