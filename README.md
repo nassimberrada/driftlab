@@ -17,6 +17,20 @@ metrics apply whether the agent is an in-process LLM loop, a memorization
 baseline, or an external harness (Claude Code, Codex, Cursor, a script) playing
 through the MCP server.
 
+## Setup
+
+```bash
+uv sync --all-extras              # .venv with numpy/scipy + openai (reference agents) + mcp (harness server)
+uv run python -m experiments.exp02_detect_adapt_lag --quick --mock   # uv run auto-syncs, so this alone works too
+# or, without uv:
+pip install numpy scipy openai mcp
+```
+
+`numpy` and `scipy` are required for everything; `openai` only for the
+reference LLM agents (`--mock`, `--agent tabular` and harness runs don't need
+it); `mcp` only for the MCP server. Harness CLIs (`claude`, `codex`, `agy`,
+`gemini`) are installed separately and found on PATH.
+
 ## Layout
 
 ```

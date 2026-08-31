@@ -18,6 +18,7 @@ Spec (in an --agent-spec JSON list, or --agent cli:claude[:model]):
      "allowed_tools": [...],         # claude only; default: no tools allowed
      "max_turns": 8,                 # claude only: agentic turns per step
      "timeout_s": 180,               # per step; a timeout is a parse failure
+     "reply_only": true,             # append a no-tools directive; calls run in an empty temp cwd
      "bin": "claude",                # executable override (used by tests)
      "extra_args": [...],            # appended verbatim
      "cmd": ["mytool", "--flag"]}    # harness=custom: stateless command; the
@@ -36,20 +37,37 @@ antigravity reports token usage (recorded, unpriced).
 
 import asyncio
 import json
+import shutil
+import tempfile
 
 from .brain import LEDGER
+
+BINS = {"claude": "claude", "codex": "codex", "antigravity": "agy", "gemini": "gemini"}
+
+# Agentic CLIs given a bare question will reach for their tools — explore the cwd,
+# grep for the answer, hang on a permission prompt. Every call therefore runs in an
+# empty temp directory (so exploring finds nothing, and never driftlab's own source,
+# which contains the worlds' hidden rules), and the instructions end with:
+REPLY_ONLY = ("\n\nAnswer each message directly in plain text. Do not use tools, read files, "
+              "run commands, or search; just reply to the message.")
 
 
 class HarnessCLIAgent:
     def __init__(self, spec: dict):
         self.spec = spec
         self.harness = {"agy": "antigravity"}.get(spec.get("harness", "claude"), spec.get("harness", "claude"))
+        binary = spec.get("bin") or (spec["cmd"][0] if self.harness == "custom" else BINS.get(self.harness))
+        if binary and shutil.which(binary) is None:  # fail fast, not one parse failure per step
+            raise SystemExit(f"harness_cli: {binary!r} not found on PATH (agent {spec.get('name')!r}); "
+                             f"install the {self.harness} CLI or point \"bin\" at it")
         self.session: str | None = None
         self.system = ""
         self.pending: str | None = None
+        self.workdir = tempfile.mkdtemp(prefix="driftlab_cli_")
 
     async def start(self, system_prompt: str):
-        self.system, self.session, self.pending = system_prompt, None, None
+        self.system = system_prompt + (REPLY_ONLY if self.spec.get("reply_only", True) else "")
+        self.session, self.pending = None, None
 
     async def act(self, prompt: str) -> str:
         text = f"(outcome of your previous action) {self.pending}\n\n{prompt}" if self.pending else prompt
@@ -57,7 +75,7 @@ class HarnessCLIAgent:
         cmd = self._command(text)
         try:
             proc = await asyncio.create_subprocess_exec(
-                *cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
+                *cmd, cwd=self.workdir, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
             out, err = await asyncio.wait_for(proc.communicate(), timeout=self.spec.get("timeout_s", 180))
         except (asyncio.TimeoutError, OSError):
             return ""  # unparseable -> the world's default action, counted as a parse failure
