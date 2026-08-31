@@ -147,9 +147,11 @@ def run_experiment(name, doc, cells, scenario, reference_agents, analyze, config
         return
     env = [{"world": args.world, **c} for c in cells(args.seeds or (1 if QUICK else DEFAULT_SEEDS))]  # a cell may pin its own world
     grid = expand(env, resolve_agents(args, reference_agents))
+    from experiments.registry import REGISTRY
     factory = lambda cell, scen, ctx: make_agent(cell["agent"], cell, scen, ctx)  # noqa: E731
     asyncio.run(run_cells(grid, scenario, factory, args.out, args.concurrency,
-                          config={**(config or {}), "quick": QUICK, "world": args.world}))
+                          config={**(config or {}), "quick": QUICK, "world": args.world,
+                                  "registry": REGISTRY.get(name)}))
     import contextlib
     import io
     from driftlab.live import LIVE

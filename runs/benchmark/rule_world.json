@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "suite": [
+    "exp02",
+    "exp04",
+    "exp05",
+    "exp06",
+    "exp15"
+  ],
+  "world": "rule_world",
+  "generated": 1788186569.2193732,
+  "versions": {
+    "exp02": 1,
+    "exp04": 1,
+    "exp05": 1,
+    "exp06": 1,
+    "exp15": 1
+  },
+  "agents": {
+    "harness": {
+      "experiments": {
+        "exp04": {
+          "n_runs": 4,
+          "metrics": {
+            "detection_lag": 0.0,
+            "recovery_lag": 0.0,
+            "final_accuracy": 0.35,
+            "retention": NaN,
+            "stale_rate": NaN,
+            "interference": -0.030952380952380946,
+            "calibration_error": NaN,
+            "overconfidence": NaN,
+            "parse_failure_rate": 0.0,
+            "cost_per_success": NaN,
+            "final_reward": 0.35,
+            "n_changes": 1.5,
+            "cost_usd": 0
+          },
+          "dimensions": {
+            "adaptation": 1.0,
+            "knowledge": 0.644047619047619,
+            "epistemics": NaN,
+            "efficiency": 1.0
+          },
+          "driftlab_score": 0.8813492063492063
+        }
+      },
+      "mean_score": 0.8813492063492063,
+      "mean_dimensions": {
+        "adaptation": 1.0,
+        "knowledge": 0.644047619047619,
+        "epistemics": NaN,
+        "efficiency": 1.0
+      }
+    }
+  }
+}

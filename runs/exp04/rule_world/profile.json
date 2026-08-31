@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "run_dir": "runs/exp04/rule_world",
-  "generated": 1788179470.620644,
+  "run_dir": "/home/nb/Code/driftlab/runs/exp04/rule_world",
+  "generated": 1788186569.2184098,
   "world": "rule_world",
   "agents": {
     "harness": {
@@ -29,6 +29,11 @@
       },
       "driftlab_score": 0.8813492063492063
     }
+  },
+  "effects": {
+    "field": "final_accuracy",
+    "agent": [],
+    "regime": []
   },
   "runs": [
     {

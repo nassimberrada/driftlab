@@ -32,9 +32,13 @@ driftlab/
   harness/channel.py     ChannelAgent: bridges the episode loop to the MCP tools
   agents/                PLUGINS, optional: reference LLM agent + memory substrates, tabular baseline, teacher
 experiments/
-  exp01..exp14           each exposes cells(seeds), scenario(cell, ctx), REFERENCE_AGENTS, analyze(run_dir)
+  exp01..exp15           each exposes cells(seeds), scenario(cell, ctx), REFERENCE_AGENTS, analyze(run_dir)
+  registry.py            machine-readable definition of each experiment (hypothesis, variables, version)
+  benchmark.py           the reference suite: five canonical experiments -> one agent x experiment matrix
   world_demo.py          run any world with any agent
   common.py              shared CLI
+research/
+  hypotheses/            the hypothesis notebook: one claim per file, status + evidence accumulating across experiments
 ```
 
 ## Choosing the agent
@@ -154,6 +158,47 @@ for reading the profile.
 python -m driftlab.profile runs/exp02/rule_world   # one run directory
 python -m driftlab.profile runs                    # every run directory under runs/
 ```
+
+Because the runner crosses the same seeded cells over every agent, the report
+also prints **paired effects**: agent-vs-agent and regime-vs-regime deltas
+matched on the shared cells, with 95% bootstrap confidence intervals — "B
+improves on A by +0.031 [+0.01, +0.05] across 12 paired cells", never
+"A=81%, B=84%". Effects are computed on final accuracy (final reward where
+accuracy is undefined) and land in `profile.json` under `effects`.
+
+## The reference suite
+
+```bash
+python -m experiments.benchmark --agent-spec agents.json   # run your agent through the yardstick
+python -m experiments.benchmark --analyze                  # rebuild the matrix from existing logs
+```
+
+Five canonical experiments — exp02 (detect+adapt), exp04 (surface vs latent),
+exp05 (forgetting), exp06 (calibration), exp15 (endogenous) — run against any
+agent spec, producing the agent × experiment matrix of driftlab scores plus
+mean dimensions, written to `runs/benchmark/<world>.json`. Runs land in the
+normal `runs/expNN/<world>/` directories, so a benchmarked agent is directly
+comparable with every agent that ever played those experiments, external
+harnesses included (`--analyze` picks their logs up). The suite is the stable
+yardstick; the research experiments evolve independently.
+
+## The research log
+
+Every experiment has a machine-readable definition in
+`experiments/registry.py` — hypothesis, independent/dependent variables,
+drift types, version — stamped into every run's manifest so a log directory
+carries its own interpretation. Bump the version when a schedule or world
+parameter changes; never silently mutate an experiment after results exist.
+
+```bash
+python -m experiments.registry          # what each experiment tests, one line each
+python -m experiments.registry exp15    # full entry + status of the hypotheses it bears on
+```
+
+Hypotheses live in `research/hypotheses/` (one claim per file, spanning
+multiple experiments, with status and an evidence table pointing back at run
+directories). Experiments produce numbers; the research log is where they
+accumulate into knowledge — including the contradictions.
 
 ## Framing
 

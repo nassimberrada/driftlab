@@ -7,6 +7,8 @@ world, or agent that produced the logs:
                          stale-memory rate, interference, calibration, cost)
     DRIFT PROFILE        the same metrics normalized to 0-1 and grouped into four
                          dimensions: adaptation, knowledge, epistemics, efficiency
+    PAIRED EFFECTS       agent-vs-agent and regime-vs-regime deltas paired on the
+                         shared seeded cells, with bootstrap confidence intervals
 
 The vector is the result; the single `driftlab_score` (mean of the measured
 dimensions) is a secondary convenience for ranking, never a substitute for the
@@ -181,7 +183,68 @@ def profile_dir(run_dir: str) -> dict:
         dims = dimension_scores(p)
         agents[name] = {"n_runs": len(rs), "metrics": p, "dimensions": dims, "driftlab_score": driftlab_score(dims)}
     return {"schema": SCHEMA_VERSION, "run_dir": str(run_dir), "generated": time.time(),
-            "world": runs[0]["world"] if runs else None, "agents": agents, "runs": runs}
+            "world": runs[0]["world"] if runs else None, "agents": agents,
+            "effects": all_effects(runs) if runs else None, "runs": runs}
+
+
+# ---- paired effects ---------------------------------------------------------
+# The runner crosses the same seeded cells over every agent, so paired
+# comparisons exist in the logs already; these helpers stop throwing the
+# pairing away. Report "B - A = +0.031 [CI], n pairs", not "A=81%, B=84%".
+
+BOOT_N, BOOT_SEED = 2000, 0
+
+
+def effect_field(runs: list[dict]) -> str:
+    """The per-run outcome effects are computed on: accuracy where defined, else raw reward."""
+    return "final_accuracy" if any(not math.isnan(r["final_accuracy"]) for r in runs) else "final_reward"
+
+
+def paired_effects(runs: list[dict], field: str, vary: str, within: str | None = None) -> list[dict]:
+    """Paired deltas of `field` between every pair of values of `vary` ('agent' or
+    'regime'), matched on the remaining cell coordinates (seed, world, ...). Pass
+    within='agent' to estimate a regime effect separately per agent. Each result:
+    {vary, a, b, delta (mean of b-a), ci (95% bootstrap, n>=3), n}."""
+    if within:
+        return [{within: w, **e} for w in sorted({r[within] for r in runs})
+                for e in paired_effects([r for r in runs if r[within] == w], field, vary)]
+    coords = tuple(k for k in ("agent", "regime", "seed", "world") if k != vary)
+    table: dict = {}
+    for r in runs:
+        v = r.get(field)
+        if v is not None and not math.isnan(v):
+            table.setdefault(r[vary], {})[tuple(r[k] for k in coords)] = v
+    out, vals = [], sorted(table)
+    for i, a in enumerate(vals):
+        for b in vals[i + 1:]:
+            shared = sorted(set(table[a]) & set(table[b]), key=str)
+            deltas = np.array([table[b][k] - table[a][k] for k in shared])
+            if len(deltas) < 2:
+                continue
+            ci = None
+            if len(deltas) >= 3:
+                rng = np.random.default_rng(BOOT_SEED)
+                boots = deltas[rng.integers(0, len(deltas), (BOOT_N, len(deltas)))].mean(axis=1)
+                ci = [float(np.percentile(boots, 2.5)), float(np.percentile(boots, 97.5))]
+            out.append({"vary": vary, "a": a, "b": b, "delta": float(deltas.mean()), "ci": ci, "n": len(deltas)})
+    return out
+
+
+def all_effects(runs: list[dict]) -> dict:
+    field = effect_field(runs)
+    return {"field": field, "agent": paired_effects(runs, field, "agent"),
+            "regime": paired_effects(runs, field, "regime", within="agent")}
+
+
+def print_effects(effects: dict):
+    rows = effects["agent"] + effects["regime"]
+    if not rows:
+        return
+    print(f"\nPAIRED EFFECTS on {effects['field']}  (delta = b - a on matched cells; 95% bootstrap CI)")
+    for e in rows:
+        label = f"{e['b']} - {e['a']}" + (f"  ({e['agent']})" if e["vary"] == "regime" else "")
+        ci = f"[{e['ci'][0]:+.3f}, {e['ci'][1]:+.3f}]" if e["ci"] else "[n<3]"
+        print(f"  {label:<44} {e['delta']:+.3f}  {ci:<20} n={e['n']}")
 
 
 def _fmt(v, spec="{:.3f}", width=12) -> str:
@@ -205,6 +268,8 @@ def print_profile(prof: dict):
     for d in DIMENSIONS:
         print(f"{d:<24}" + "".join(_fmt(agents[n]["dimensions"][d], "{:.2f}", 16) for n in names))
     print(f"{'driftlab score':<24}" + "".join(_fmt(agents[n]["driftlab_score"], "{:.2f}", 16) for n in names))
+    if prof.get("effects"):
+        print_effects(prof["effects"])
 
 
 def report(run_dir: str, save: bool = True) -> dict:
