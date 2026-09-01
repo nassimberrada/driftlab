@@ -1,0 +1,1024 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DriftLab System Map</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --ground:#F5F7F4; --panel:#FFFFFF; --panel2:#EDF1EC;
+  --ink:#1D2733; --muted:#5C6875; --line:#D6DCD6; --line-soft:#E4E9E3;
+  --accent:#0E7568; --accent-ink:#0B5B51; --accent-soft:rgba(14,117,104,.09);
+  --drift:#A8641F; --drift-soft:rgba(168,100,31,.10);
+  --code-bg:#EEF2ED;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#131A1F; --panel:#1B242B; --panel2:#202B33;
+    --ink:#E4EAE9; --muted:#98A5AB; --line:#313D44; --line-soft:#28333A;
+    --accent:#3FBFAE; --accent-ink:#5FD0C1; --accent-soft:rgba(63,191,174,.13);
+    --drift:#D89A55; --drift-soft:rgba(216,154,85,.14);
+    --code-bg:#232E36;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#131A1F; --panel:#1B242B; --panel2:#202B33;
+  --ink:#E4EAE9; --muted:#98A5AB; --line:#313D44; --line-soft:#28333A;
+  --accent:#3FBFAE; --accent-ink:#5FD0C1; --accent-soft:rgba(63,191,174,.13);
+  --drift:#D89A55; --drift-soft:rgba(216,154,85,.14);
+  --code-bg:#232E36;
+}
+*{box-sizing:border-box}
+body{
+  background:var(--ground); color:var(--ink); margin:0;
+  font:15px/1.55 "IBM Plex Sans",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1280px; margin:0 auto; padding:32px 24px 72px}
+header.masthead{display:flex; flex-wrap:wrap; align-items:baseline; gap:10px 20px; border-bottom:2px solid var(--ink); padding-bottom:18px}
+h1{font:700 34px/1.05 "IBM Plex Sans Condensed","IBM Plex Sans",sans-serif; letter-spacing:.01em; margin:0; text-wrap:balance}
+.masthead .sub{color:var(--muted); font-size:15px; max-width:66ch}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace}
+code{font:13px/1.5 "IBM Plex Mono",ui-monospace,monospace; background:var(--code-bg); padding:1px 5px; border-radius:3px}
+pre.cmd{font:12.5px/1.6 "IBM Plex Mono",ui-monospace,monospace; background:var(--code-bg); border:1px solid var(--line-soft);
+  padding:10px 12px; border-radius:4px; overflow-x:auto; margin:8px 0}
+h2.sec{font:700 22px/1.2 "IBM Plex Sans Condensed",sans-serif; margin:28px 0 6px}
+p.lede{color:var(--muted); max-width:72ch; margin:4px 0 14px}
+
+/* tabs */
+.tabs{display:flex; gap:6px; flex-wrap:wrap; margin:26px 0 0; border-bottom:1px solid var(--line); padding-bottom:0}
+.tabs button{
+  font:600 14px/1 "IBM Plex Sans Condensed","IBM Plex Sans",sans-serif; letter-spacing:.03em;
+  background:none; border:1px solid transparent; border-bottom:none; color:var(--muted);
+  padding:11px 15px 12px; cursor:pointer; border-radius:4px 4px 0 0; margin-bottom:-1px;
+}
+.tabs button[aria-selected="true"]{color:var(--ink); background:var(--panel); border-color:var(--line); border-bottom:1px solid var(--panel)}
+.tabs button:hover{color:var(--ink)}
+.tabs button:focus-visible{outline:2px solid var(--accent); outline-offset:-2px}
+
+/* stage: diagram + detail panel; .full drops the panel */
+.stage{display:grid; grid-template-columns:minmax(0,1fr) 320px; background:var(--panel); border:1px solid var(--line); border-top:none; border-radius:0 0 6px 6px}
+.stage.full{grid-template-columns:1fr}
+.stage.full .panelside{display:none}
+.diagram{padding:20px 8px 12px 16px; overflow-x:auto; min-width:0}
+.diagram figure{margin:0 0 18px; min-width:720px}
+.diagram figcaption{color:var(--muted); font-size:13px; padding:10px 12px 12px; max-width:82ch}
+svg{max-width:100%; height:auto; display:block}
+.prose{padding:22px 26px 26px; min-width:0}
+
+/* detail panel */
+.panelside{border-left:1px solid var(--line); background:var(--panel2); padding:18px 18px 22px; border-radius:0 0 6px 0}
+.panelside .eyebrow{font:500 11px/1 "IBM Plex Mono",monospace; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin:0 0 8px}
+.panelside h2{font:700 19px/1.2 "IBM Plex Sans Condensed",sans-serif; margin:0 0 2px; text-wrap:balance}
+.panelside .path{font:12.5px/1.4 "IBM Plex Mono",monospace; color:var(--accent-ink); margin:0 0 12px; word-break:break-all}
+.panelside .body{font-size:14px}
+.panelside .body p{margin:0 0 10px}
+.panelside .body ul{margin:0 0 10px; padding-left:18px}
+.panelside .body li{margin-bottom:5px}
+.panelside .hint{color:var(--muted); font-size:12.5px; border-top:1px solid var(--line); padding-top:10px; margin-top:14px}
+
+/* SVG node + edge styling */
+.node{cursor:pointer}
+.node rect.box{fill:var(--panel); stroke:var(--line); stroke-width:1.25; rx:4}
+.node:hover rect.box{stroke:var(--muted)}
+.node.sel rect.box{stroke:var(--ink); stroke-width:1.75}
+.node.acc rect.box{stroke:var(--accent); fill:var(--accent-soft)}
+.node.acc.sel rect.box{stroke-width:2}
+.node.drift rect.box{stroke:var(--drift); fill:var(--drift-soft)}
+.node:focus{outline:none}
+.node:focus-visible rect.box{stroke:var(--accent); stroke-width:2.25}
+.node .t{font:600 13px "IBM Plex Sans",sans-serif; fill:var(--ink)}
+.node .m{font:500 11px "IBM Plex Mono",monospace; fill:var(--muted)}
+.node .mi{font:400 11px "IBM Plex Mono",monospace; fill:var(--muted)}
+.node .mi.acc{fill:var(--accent-ink); font-weight:500}
+.colhead{font:600 11px "IBM Plex Mono",monospace; letter-spacing:.14em; fill:var(--muted)}
+.edge{stroke:var(--muted); stroke-width:1.25; fill:none}
+.edge.acc{stroke:var(--accent); stroke-width:1.5}
+.edge.dash{stroke-dasharray:4 4}
+.edge.soft{stroke:var(--line)}
+.elabel{font:400 10.5px "IBM Plex Mono",monospace; fill:var(--muted)}
+.elabel.acc{fill:var(--accent-ink); font-weight:500}
+.note{font:400 11.5px "IBM Plex Sans",sans-serif; fill:var(--muted)}
+
+/* cards / tables */
+.cards{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:14px; margin:14px 0}
+.card{background:var(--panel2); border:1px solid var(--line); border-radius:6px; padding:14px 16px; min-width:0}
+.card h3{margin:0 0 2px; font:700 16px/1.25 "IBM Plex Sans Condensed",sans-serif}
+.card .role{color:var(--accent-ink); font:500 12px/1.4 "IBM Plex Mono",monospace; margin:0 0 8px; word-break:break-word}
+.card p{margin:0 0 8px; font-size:13.5px}
+.card .kv{display:grid; grid-template-columns:max-content 1fr; gap:3px 12px; font-size:12.5px; margin-top:8px}
+.card .kv .k{color:var(--muted)}
+.card .kv span{min-width:0; overflow-wrap:break-word}
+.chip{display:inline-block; font:500 10.5px/1.5 "IBM Plex Mono",monospace; letter-spacing:.05em; border:1px solid var(--line);
+  border-radius:999px; padding:2px 8px 1px; margin:2px 3px 0 0; color:var(--muted); white-space:normal}
+.chip.acc{border-color:var(--accent); color:var(--accent-ink)}
+.chip.drift{border-color:var(--drift); color:var(--drift)}
+table.reg{border-collapse:collapse; width:100%; font-size:13px}
+table.reg th{font:600 11px/1.3 "IBM Plex Mono",monospace; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
+  text-align:left; padding:8px 10px; border-bottom:2px solid var(--ink)}
+table.reg td{padding:8px 10px; border-bottom:1px solid var(--line-soft); vertical-align:top}
+table.reg tr.exp{cursor:pointer}
+table.reg tr.exp:hover td{background:var(--accent-soft)}
+table.reg tr.exp.sel td{background:var(--accent-soft); box-shadow:inset 3px 0 0 var(--accent)}
+.tablewrap{overflow-x:auto}
+table.caps{border-collapse:collapse; font-size:12.5px; margin:10px 0}
+table.caps th, table.caps td{padding:6px 12px; border-bottom:1px solid var(--line-soft); text-align:center}
+table.caps th{font:600 11px "IBM Plex Mono",monospace; color:var(--muted)}
+table.caps td:first-child, table.caps th:first-child{text-align:left; font-family:"IBM Plex Mono",monospace; font-size:12px}
+.tick{color:var(--accent-ink); font-weight:600}
+.grid2{display:grid; grid-template-columns:minmax(0,2fr) minmax(0,1fr); gap:18px; align-items:start}
+@media (max-width:900px){ .grid2{grid-template-columns:1fr} .stage{grid-template-columns:1fr} .panelside{border-left:none;border-top:1px solid var(--line)} }
+.detailcard{position:sticky; top:16px; background:var(--panel2); border:1px solid var(--line); border-radius:6px; padding:14px 16px; font-size:13.5px; min-width:0}
+.detailcard h3{margin:0 0 2px; font:700 17px/1.25 "IBM Plex Sans Condensed",sans-serif}
+.detailcard .kv{display:grid; grid-template-columns:max-content 1fr; gap:5px 12px; font-size:12.5px; margin-top:10px}
+.detailcard .kv .k{color:var(--muted)}
+.detailcard .kv span{min-width:0; overflow-wrap:break-word}
+.stats{display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; margin:18px 0}
+.stat{background:var(--panel2); border:1px solid var(--line); border-radius:6px; padding:12px 14px}
+.stat .v{font:700 26px/1.1 "IBM Plex Sans Condensed",sans-serif; font-variant-numeric:tabular-nums}
+.stat .k{color:var(--muted); font-size:12.5px; margin-top:2px}
+.jump{display:inline-block; font:600 13px "IBM Plex Sans Condensed",sans-serif; color:var(--accent-ink); background:none;
+  border:1px solid var(--accent); border-radius:4px; padding:6px 12px; cursor:pointer; margin:4px 6px 0 0}
+.jump:hover{background:var(--accent-soft)}
+footer.gen{color:var(--muted); font-size:12.5px; border-top:1px solid var(--line); margin-top:36px; padding-top:12px}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+<header class="masthead">
+  <h1>DriftLab System Map</h1>
+  <p class="sub">How driftlab fits together and how to run it: the architecture, the episode loop, where state lives, how scoring works, the four worlds, all fifteen experiments, and a command reference. Click any box in a diagram for detail.</p>
+</header>
+
+<div class="tabs" role="tablist" aria-label="Views">
+  <button role="tab" aria-selected="true" data-view="over">Overview</button>
+  <button role="tab" aria-selected="false" data-view="arch">Architecture</button>
+  <button role="tab" aria-selected="false" data-view="life">Lifecycle</button>
+  <button role="tab" aria-selected="false" data-view="data">State &amp; scoring</button>
+  <button role="tab" aria-selected="false" data-view="worlds">Worlds</button>
+  <button role="tab" aria-selected="false" data-view="exps">Experiments</button>
+  <button role="tab" aria-selected="false" data-view="usage">Using driftlab</button>
+</div>
+
+<div class="stage full" id="stage">
+<div class="diagram" id="diagramCol">
+
+<!-- ======================= OVERVIEW ======================= -->
+<div id="view-over" class="prose">
+  <h2 class="sec" style="margin-top:0">One loop, measured against hidden truth</h2>
+  <p class="lede">driftlab is a controlled laboratory for studying how agents form, update, retain, invalidate, and act on knowledge while the world keeps changing. An agent is anything that answers text with text. It gets a job at a fictional company, and the rules of that job change: on a schedule, cosmetically, or in reaction to what the agent does. Every step is logged next to the world's hidden ground truth, so learning is measured against reality rather than a benchmark score, and the same metrics apply to an in-process LLM loop, a lookup table, or Claude Code playing over MCP.</p>
+
+  <figure>
+  <svg viewBox="0 0 900 290" role="img" aria-label="The core loop: a scenario schedules drift into a world; the agent observes and acts; every step is logged with privileged truth; profiles and evidence derive from the log.">
+    <defs><marker id="arrO" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="var(--muted)"/></marker>
+    <marker id="arrOD" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="var(--drift)"/></marker>
+    <marker id="arrOA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="var(--accent)"/></marker></defs>
+    <g class="node drift" data-id="ov-drift" tabindex="0" role="button" aria-label="drift">
+      <rect class="box" x="20" y="30" width="190" height="64"/>
+      <text class="t" x="34" y="56">Drift</text>
+      <text class="mi" x="34" y="76">three kinds of change</text>
+    </g>
+    <g class="node" data-id="ov-world" tabindex="0" role="button" aria-label="world">
+      <rect class="box" x="240" y="30" width="190" height="64"/>
+      <text class="t" x="254" y="56">World</text>
+      <text class="mi" x="254" y="76">a job with hidden rules</text>
+    </g>
+    <g class="node" data-id="ov-agent" tabindex="0" role="button" aria-label="agent">
+      <rect class="box" x="480" y="30" width="170" height="64"/>
+      <text class="t" x="494" y="56">Agent</text>
+      <text class="mi" x="494" y="76">text in, text out</text>
+    </g>
+    <g class="node" data-id="ov-log" tabindex="0" role="button" aria-label="log">
+      <rect class="box" x="240" y="180" width="190" height="64"/>
+      <text class="t" x="254" y="206">Trajectory log</text>
+      <text class="mi" x="254" y="226">each step + hidden truth</text>
+    </g>
+    <g class="node acc" data-id="ov-analysis" tabindex="0" role="button" aria-label="analysis">
+      <rect class="box" x="480" y="180" width="190" height="64"/>
+      <text class="t" x="494" y="206">Measurement</text>
+      <text class="mi" x="494" y="226">profiles and effects</text>
+    </g>
+    <g class="node acc" data-id="ov-research" tabindex="0" role="button" aria-label="research">
+      <rect class="box" x="700" y="180" width="180" height="64"/>
+      <text class="t" x="714" y="206">Research log</text>
+      <text class="mi" x="714" y="226">hypotheses + evidence</text>
+    </g>
+    <path class="edge" d="M210 62 H240" marker-end="url(#arrOD)" style="stroke:var(--drift)"/>
+    <path class="edge" d="M430 48 H480" marker-end="url(#arrO)"/>
+    <text class="elabel" x="436" y="42">observation</text>
+    <path class="edge" d="M480 76 H430" marker-end="url(#arrO)"/>
+    <text class="elabel" x="436" y="92">action</text>
+    <path class="edge dash" d="M565 94 V130 H115 V94" marker-end="url(#arrOD)" style="stroke:var(--drift)"/>
+    <text class="elabel" x="200" y="124" fill="var(--drift)">endogenous: behavior changes the world</text>
+    <path class="edge" d="M335 94 V180" marker-end="url(#arrO)"/>
+    <text class="elabel" x="343" y="140">append-only</text>
+    <path class="edge acc" d="M430 212 H480" marker-end="url(#arrOA)"/>
+    <text class="elabel acc" x="436" y="205">post-hoc</text>
+    <path class="edge acc" d="M670 212 H700" marker-end="url(#arrOA)"/>
+  </svg>
+  <figcaption>The agent never sees world state or ground truth, and measurement reads only the log. A metric invented later can be computed for every run ever recorded.</figcaption>
+  </figure>
+
+  <div class="stats">
+    <div class="stat"><div class="v">4</div><div class="k">worlds, each a job with hidden rules</div></div>
+    <div class="stat"><div class="v">15</div><div class="k">registered experiments</div></div>
+    <div class="stat"><div class="v">11 → 4</div><div class="k">profile metrics into score dimensions</div></div>
+    <div class="stat"><div class="v">5</div><div class="k">open hypotheses (H001 to H005)</div></div>
+    <div class="stat"><div class="v">2</div><div class="k">harness paths: autonomous, controlled</div></div>
+    <div class="stat"><div class="v">1</div><div class="k">source of truth: the JSONL trajectory</div></div>
+  </div>
+
+  <p><strong>Where to go:</strong></p>
+  <div>
+    <button class="jump" data-goto="arch">How the pieces fit</button>
+    <button class="jump" data-goto="life">What one step does</button>
+    <button class="jump" data-goto="data">State and scoring</button>
+    <button class="jump" data-goto="worlds">The four worlds</button>
+    <button class="jump" data-goto="exps">Experiments and hypotheses</button>
+    <button class="jump" data-goto="usage">Commands</button>
+  </div>
+</div>
+
+<!-- ======================= ARCHITECTURE ======================= -->
+<figure id="view-arch" hidden>
+<svg viewBox="0 0 1120 680" role="img" aria-label="DriftLab architecture: experiment CLIs and harnesses drive the episode loop over agents and worlds; trajectories land in JSONL logs; analysis, profiles, the benchmark matrix and the research log derive from them.">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="var(--muted)"/></marker>
+    <marker id="arrA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="var(--accent)"/></marker>
+  </defs>
+
+  <text class="colhead" x="24" y="36">ENTRY</text>
+  <text class="colhead" x="236" y="36">ORCHESTRATION</text>
+  <text class="colhead" x="484" y="36">EPISODE ENGINE</text>
+  <text class="colhead" x="732" y="36">LOGS</text>
+  <text class="colhead" x="928" y="36">ANALYSIS</text>
+
+  <g class="node" data-id="expcli" tabindex="0" role="button" aria-label="experiment CLIs">
+    <rect class="box" x="24" y="72" width="172" height="66"/>
+    <text class="t" x="38" y="98">15 experiments</text>
+    <text class="m" x="38" y="118">experiments/expNN…</text>
+  </g>
+  <g class="node" data-id="harness" tabindex="0" role="button" aria-label="external harness">
+    <rect class="box" x="24" y="428" width="172" height="66"/>
+    <text class="t" x="38" y="454">External harness</text>
+    <text class="m" x="38" y="474">Claude, Codex, agy, …</text>
+  </g>
+  <g class="node" data-id="launch" tabindex="0" role="button" aria-label="path A launcher">
+    <rect class="box" x="24" y="560" width="172" height="90"/>
+    <text class="t" x="38" y="586">Launcher (path A)</text>
+    <text class="m" x="38" y="605">harness/launch.py</text>
+    <text class="mi" x="38" y="626">spawns a harness with</text>
+    <text class="mi" x="38" y="642">pinned model + profile</text>
+  </g>
+
+  <g class="node" data-id="common" tabindex="0" role="button" aria-label="run_experiment">
+    <rect class="box" x="236" y="60" width="200" height="90"/>
+    <text class="t" x="250" y="84">run_experiment()</text>
+    <text class="m" x="250" y="103">experiments/common.py</text>
+    <text class="mi" x="250" y="122">analyze + profile after</text>
+    <text class="mi" x="250" y="138">every grid</text>
+  </g>
+  <g class="node" data-id="runner" tabindex="0" role="button" aria-label="grid runner">
+    <rect class="box" x="236" y="186" width="200" height="66"/>
+    <text class="t" x="250" y="210">run_cells()</text>
+    <text class="m" x="250" y="230">driftlab/runner.py</text>
+  </g>
+  <g class="node" data-id="channel" tabindex="0" role="button" aria-label="ChannelAgent">
+    <rect class="box" x="236" y="306" width="200" height="58"/>
+    <text class="t" x="250" y="330">ChannelAgent</text>
+    <text class="m" x="250" y="349">harness/channel.py</text>
+  </g>
+  <g class="node" data-id="mcp" tabindex="0" role="button" aria-label="MCP server">
+    <rect class="box" x="236" y="408" width="200" height="106"/>
+    <text class="t" x="250" y="432">MCP server</text>
+    <text class="m" x="250" y="451">harness/mcp_server.py</text>
+    <text class="mi" x="250" y="472">run_experiment · act ·</text>
+    <text class="mi" x="250" y="488">notebook · agent profile</text>
+  </g>
+  <g class="node acc" data-id="registry" tabindex="0" role="button" aria-label="experiment registry">
+    <rect class="box" x="236" y="560" width="200" height="90"/>
+    <text class="t" x="250" y="586">Experiment registry</text>
+    <text class="m" x="250" y="605">experiments/registry.py</text>
+    <text class="mi" x="250" y="626">hypothesis · variables ·</text>
+    <text class="mi" x="250" y="642">drift types · version</text>
+  </g>
+
+  <g class="node" data-id="agents" tabindex="0" role="button" aria-label="agent implementations">
+    <rect class="box" x="484" y="52" width="204" height="106"/>
+    <text class="t" x="498" y="76">Agents (plugins)</text>
+    <text class="m" x="498" y="95">driftlab/agents/</text>
+    <text class="mi" x="498" y="116">LLM + memory substrates,</text>
+    <text class="mi" x="498" y="132">tabular baseline, custom,</text>
+    <text class="mi" x="498" y="148">harness CLIs (path B)</text>
+  </g>
+  <g class="node" data-id="corerun" tabindex="0" role="button" aria-label="the episode loop">
+    <rect class="box" x="484" y="238" width="204" height="94"/>
+    <text class="t" x="498" y="264">Episode loop: run()</text>
+    <text class="m" x="498" y="283">driftlab/core.py</text>
+    <text class="mi" x="498" y="304">act() in · observe() out ·</text>
+    <text class="mi" x="498" y="320">drift hooks · logged truth</text>
+  </g>
+  <g class="node" data-id="worlds" tabindex="0" role="button" aria-label="worlds">
+    <rect class="box" x="484" y="428" width="204" height="106"/>
+    <text class="t" x="498" y="452">Worlds</text>
+    <text class="m" x="498" y="471">driftlab/worlds/</text>
+    <text class="mi" x="498" y="492">Rule · Form · Inventory ·</text>
+    <text class="mi" x="498" y="508">Codebase · seeded state</text>
+  </g>
+  <g class="node acc" data-id="benchmark" tabindex="0" role="button" aria-label="reference suite">
+    <rect class="box" x="484" y="560" width="204" height="90"/>
+    <text class="t" x="498" y="586">Reference suite</text>
+    <text class="m" x="498" y="605">experiments/benchmark.py</text>
+    <text class="mi" x="498" y="626">exp02 · 04 · 05 · 06 · 15 →</text>
+    <text class="mi" x="498" y="642">agent × experiment matrix</text>
+  </g>
+
+  <g class="node" data-id="logs" tabindex="0" role="button" aria-label="run logs">
+    <rect class="box" x="732" y="238" width="168" height="122"/>
+    <text class="t" x="746" y="262">runs/exp/world/</text>
+    <text class="mi" x="746" y="284">*.jsonl trajectories</text>
+    <text class="mi" x="746" y="302">manifest.json (cost,</text>
+    <text class="mi" x="746" y="318">registry stamp)</text>
+    <text class="mi acc" x="746" y="340">profile.json</text>
+  </g>
+  <g class="node" data-id="events" tabindex="0" role="button" aria-label="live event log">
+    <rect class="box" x="732" y="428" width="168" height="58"/>
+    <text class="t" x="746" y="452">events.jsonl</text>
+    <text class="m" x="746" y="471">live event stream</text>
+  </g>
+  <g class="node acc" data-id="benchjson" tabindex="0" role="button" aria-label="benchmark matrix">
+    <rect class="box" x="732" y="560" width="168" height="72"/>
+    <text class="t" x="746" y="584">Benchmark matrix</text>
+    <text class="mi" x="746" y="604">runs/benchmark/</text>
+    <text class="mi" x="746" y="620">&lt;world&gt;.json</text>
+  </g>
+
+  <g class="node" data-id="analyze" tabindex="0" role="button" aria-label="per-experiment analyze">
+    <rect class="box" x="928" y="72" width="172" height="66"/>
+    <text class="t" x="942" y="96">analyze(run_dir)</text>
+    <text class="m" x="942" y="116">tables per experiment</text>
+  </g>
+  <g class="node" data-id="metrics" tabindex="0" role="button" aria-label="metric helpers">
+    <rect class="box" x="928" y="166" width="172" height="52"/>
+    <text class="t" x="942" y="188">metrics.py</text>
+    <text class="m" x="942" y="206">lags, dips, recovery</text>
+  </g>
+  <g class="node acc" data-id="profile" tabindex="0" role="button" aria-label="standardized profile">
+    <rect class="box" x="928" y="248" width="172" height="106"/>
+    <text class="t" x="942" y="272">profile.py</text>
+    <text class="m" x="942" y="291">driftlab/profile.py</text>
+    <text class="mi" x="942" y="312">adaptation profile,</text>
+    <text class="mi" x="942" y="328">dimensions, effects</text>
+  </g>
+  <g class="node" data-id="viz" tabindex="0" role="button" aria-label="dashboard">
+    <rect class="box" x="928" y="428" width="172" height="90"/>
+    <text class="t" x="942" y="452">Dashboard</text>
+    <text class="m" x="942" y="471">driftlab/viz/</text>
+    <text class="mi" x="942" y="492">activity, performance,</text>
+    <text class="mi" x="942" y="508">configuration</text>
+  </g>
+  <g class="node acc" data-id="research" tabindex="0" role="button" aria-label="research log">
+    <rect class="box" x="928" y="560" width="172" height="90"/>
+    <text class="t" x="942" y="586">Research log</text>
+    <text class="m" x="942" y="605">research/hypotheses/</text>
+    <text class="mi" x="942" y="626">H001-H005: status +</text>
+    <text class="mi" x="942" y="642">evidence tables</text>
+  </g>
+
+  <!-- edges -->
+  <path class="edge" d="M196 105 H236" marker-end="url(#arr)"/>
+  <path class="edge" d="M336 150 V186" marker-end="url(#arr)"/>
+  <text class="elabel" x="346" y="172">cells × agents</text>
+  <path class="edge" d="M436 219 H452 V270 H484" marker-end="url(#arr)"/>
+  <text class="elabel" x="448" y="243">one run per cell</text>
+
+  <path class="edge" d="M560 158 V238" marker-end="url(#arr)"/>
+  <text class="elabel" x="568" y="196">reply</text>
+  <path class="edge" d="M624 238 V158" marker-end="url(#arr)"/>
+  <text class="elabel" x="632" y="210">prompt · feedback</text>
+
+  <path class="edge" d="M560 428 V332" marker-end="url(#arr)"/>
+  <text class="elabel" x="568" y="390">observation · reward</text>
+  <path class="edge" d="M624 332 V428" marker-end="url(#arr)"/>
+  <text class="elabel" x="632" y="418">action · change hooks</text>
+
+  <path class="edge" d="M196 461 H236" marker-end="url(#arr)"/>
+  <path class="edge" d="M336 408 V364" marker-end="url(#arr)"/>
+  <path class="edge" d="M436 335 H452 V308 H484" marker-end="url(#arr)"/>
+  <text class="elabel" x="368" y="390">plays as the Agent</text>
+
+  <path class="edge" d="M688 285 H732" marker-end="url(#arr)"/>
+  <text class="elabel" x="692" y="277">trajectory</text>
+  <path class="edge" d="M688 320 H710 V457 H732" marker-end="url(#arr)"/>
+  <text class="elabel" x="716" y="404">live events</text>
+
+  <path class="edge" d="M900 268 H912 V105 H928" marker-end="url(#arr)"/>
+  <path class="edge acc" d="M900 316 H928" marker-end="url(#arrA)"/>
+  <text class="elabel acc" x="822" y="386">reads any run dir</text>
+  <path class="edge acc dash" d="M928 340 H914 V330 H900" marker-end="url(#arrA)"/>
+  <text class="elabel acc" x="822" y="402">writes profile.json</text>
+  <path class="edge" d="M900 457 H928" marker-end="url(#arr)"/>
+  <text class="elabel" x="904" y="449">tails</text>
+  <path class="edge soft dash" d="M1014 138 V166"/>
+  <path class="edge soft dash" d="M1014 248 V218"/>
+  <text class="elabel" x="1022" y="237">uses</text>
+
+  <!-- research & benchmark band -->
+  <path class="edge" d="M110 560 V494" marker-end="url(#arr)"/>
+  <text class="elabel" x="118" y="532">spawns</text>
+  <path class="edge acc dash" d="M196 596 H216 V480 H236" marker-end="url(#arrA)"/>
+  <text class="elabel acc" x="244" y="545">enforced profile via env</text>
+  <path class="edge acc" d="M236 596 H224 V140 H236" marker-end="url(#arrA)"/>
+  <text class="elabel acc" x="244" y="170">stamped into manifests</text>
+  <path class="edge acc" d="M688 590 H716 V360" marker-end="url(#arrA)"/>
+  <text class="elabel acc" x="590" y="548">aggregates profiles</text>
+  <path class="edge acc" d="M688 612 H732" marker-end="url(#arrA)"/>
+  <path class="edge acc dash" d="M1100 300 H1108 V596 H1100" marker-end="url(#arrA)"/>
+  <text class="elabel acc" x="1030" y="556">evidence</text>
+</svg>
+<figcaption>Entry points on the left, the episode engine in the middle, logs, then everything derived from them, with the research layer along the bottom. Click any box for its role and file path.</figcaption>
+</figure>
+
+<!-- ======================= LIFECYCLE ======================= -->
+<figure id="view-life" hidden>
+<svg viewBox="0 0 1120 500" role="img" aria-label="One episode step: scheduled drift, notice, observe, act, parse, world reaction, delayed feedback, agent observe, logging with ground truth, optional probes, looped for T steps; then the run is written and both analyses run.">
+  <defs>
+    <marker id="arrL" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="var(--muted)"/></marker>
+    <marker id="arrLA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="var(--accent)"/></marker>
+  </defs>
+  <text class="colhead" x="24" y="34">ONE STEP OF core.run()</text>
+
+  <g class="node drift" data-id="lf-drift" tabindex="0" role="button" aria-label="scheduled drift hooks">
+    <rect class="box" x="24" y="56" width="190" height="72"/>
+    <text class="t" x="38" y="80">Drift hooks</text>
+    <text class="m" x="38" y="99">scenario.before_step(t)</text>
+    <text class="mi" x="38" y="116">latent, surface, novelty</text>
+  </g>
+  <g class="node" data-id="lf-notice" tabindex="0" role="button" aria-label="notice">
+    <rect class="box" x="252" y="56" width="160" height="72"/>
+    <text class="t" x="266" y="80">Notice</text>
+    <text class="m" x="266" y="99">notice_fn(t)</text>
+    <text class="mi" x="266" y="116">optional memo</text>
+  </g>
+  <g class="node" data-id="lf-observe" tabindex="0" role="button" aria-label="world observation">
+    <rect class="box" x="450" y="56" width="160" height="72"/>
+    <text class="t" x="464" y="80">Observe</text>
+    <text class="m" x="464" y="99">world.observe(t)</text>
+    <text class="mi" x="464" y="116">the task, in role</text>
+  </g>
+  <g class="node" data-id="lf-act" tabindex="0" role="button" aria-label="agent acts">
+    <rect class="box" x="648" y="56" width="160" height="72"/>
+    <text class="t" x="662" y="80">Agent acts</text>
+    <text class="m" x="662" y="99">agent.act(prompt)</text>
+    <text class="mi" x="662" y="116">text in, text out</text>
+  </g>
+  <g class="node" data-id="lf-parse" tabindex="0" role="button" aria-label="parse the reply">
+    <rect class="box" x="846" y="56" width="160" height="72"/>
+    <text class="t" x="860" y="80">Parse</text>
+    <text class="m" x="860" y="99">world.parse(text)</text>
+    <text class="mi" x="860" y="116">invalid → default</text>
+  </g>
+
+  <g class="node" data-id="lf-worldact" tabindex="0" role="button" aria-label="world reacts">
+    <rect class="box" x="846" y="196" width="160" height="72"/>
+    <text class="t" x="860" y="220">World reacts</text>
+    <text class="m" x="860" y="239">world.act(t, action)</text>
+    <text class="mi" x="860" y="256">→ reward, feedback</text>
+  </g>
+  <g class="node" data-id="lf-delay" tabindex="0" role="button" aria-label="feedback delay">
+    <rect class="box" x="648" y="196" width="160" height="72"/>
+    <text class="t" x="662" y="220">Delay queue</text>
+    <text class="m" x="662" y="239">feedback_delay</text>
+    <text class="mi" x="662" y="256">0 by default</text>
+  </g>
+  <g class="node" data-id="lf-obsagent" tabindex="0" role="button" aria-label="agent observes outcome">
+    <rect class="box" x="450" y="196" width="160" height="72"/>
+    <text class="t" x="464" y="220">Agent observes</text>
+    <text class="m" x="464" y="239">agent.observe(fb, r)</text>
+    <text class="mi" x="464" y="256">memory updates here</text>
+  </g>
+  <g class="node" data-id="lf-record" tabindex="0" role="button" aria-label="record with ground truth">
+    <rect class="box" x="252" y="196" width="160" height="72"/>
+    <text class="t" x="266" y="220">Record</text>
+    <text class="m" x="266" y="239">world.privileged(t)</text>
+    <text class="mi" x="266" y="256">for the log only</text>
+  </g>
+  <g class="node" data-id="lf-after" tabindex="0" role="button" aria-label="after-step probes">
+    <rect class="box" x="24" y="196" width="190" height="72"/>
+    <text class="t" x="38" y="220">Probes</text>
+    <text class="m" x="38" y="239">scenario.after_step</text>
+    <text class="mi" x="38" y="256">attribution, eval probes</text>
+  </g>
+
+  <path class="edge" d="M214 92 H252" marker-end="url(#arrL)"/>
+  <path class="edge" d="M412 92 H450" marker-end="url(#arrL)"/>
+  <path class="edge" d="M610 92 H648" marker-end="url(#arrL)"/>
+  <path class="edge" d="M808 92 H846" marker-end="url(#arrL)"/>
+  <path class="edge" d="M926 128 V196" marker-end="url(#arrL)"/>
+  <text class="elabel" x="936" y="166">action</text>
+  <path class="edge" d="M846 232 H808" marker-end="url(#arrL)"/>
+  <path class="edge" d="M648 232 H610" marker-end="url(#arrL)"/>
+  <path class="edge" d="M450 232 H412" marker-end="url(#arrL)"/>
+  <path class="edge" d="M252 232 H214" marker-end="url(#arrL)"/>
+  <path class="edge" d="M119 268 V300 H10 V92 H24" marker-end="url(#arrL)"/>
+  <text class="elabel" x="30" y="296">t + 1, until T</text>
+
+  <text class="colhead" x="24" y="366">ONE RUN, THEN THE GRID</text>
+  <g class="node" data-id="lf-start" tabindex="0" role="button" aria-label="episode start">
+    <rect class="box" x="24" y="386" width="190" height="58"/>
+    <text class="t" x="38" y="410">agent.start()</text>
+    <text class="m" x="38" y="429">the job description</text>
+  </g>
+  <g class="node" data-id="lf-write" tabindex="0" role="button" aria-label="write the run">
+    <rect class="box" x="252" y="386" width="190" height="58"/>
+    <text class="t" x="266" y="410">write_run()</text>
+    <text class="m" x="266" y="429">JSONL + manifest cost</text>
+  </g>
+  <g class="node" data-id="lf-nextcell" tabindex="0" role="button" aria-label="next cell">
+    <rect class="box" x="480" y="386" width="190" height="58"/>
+    <text class="t" x="494" y="410">Next cell</text>
+    <text class="m" x="494" y="429">regimes × seeds × agents</text>
+  </g>
+  <g class="node acc" data-id="lf-report" tabindex="0" role="button" aria-label="analyze plus profile">
+    <rect class="box" x="708" y="386" width="240" height="58"/>
+    <text class="t" x="722" y="410">analyze() + profile.report()</text>
+    <text class="m" x="722" y="429">one report for all experiments</text>
+  </g>
+  <path class="edge" d="M214 415 H252" marker-end="url(#arrL)"/>
+  <path class="edge" d="M442 415 H480" marker-end="url(#arrL)"/>
+  <path class="edge acc" d="M670 415 H708" marker-end="url(#arrLA)"/>
+</svg>
+<figcaption>The loop is the whole agent contract: everything the agent sees passes through <span class="mono">act()</span>, every outcome through <span class="mono">observe()</span>. Ground truth (changes, task keys, the correct answer, stated confidence) is logged beside each step but never shown to the agent. That is what lets the profile measure detection, retention and staleness against reality.</figcaption>
+</figure>
+
+<!-- ======================= STATE & SCORING ======================= -->
+<div id="view-data" hidden>
+<figure>
+<svg viewBox="0 0 1120 540" role="img" aria-label="Where state lives: world hidden state and agent memory on the left, the append-only trajectory log and derived results on the right, with the episode loop mediating every flow.">
+  <defs>
+    <marker id="arrS" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="var(--muted)"/></marker>
+    <marker id="arrSA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="var(--accent)"/></marker>
+  </defs>
+
+  <g class="node drift" data-id="st-world" tabindex="0" role="button" aria-label="world hidden state">
+    <rect class="box" x="24" y="48" width="316" height="164"/>
+    <text class="t" x="38" y="74">World hidden state</text>
+    <text class="m" x="38" y="93">seeded; never shown to the agent</text>
+    <text class="mi" x="38" y="118">· rules / schemas / rates / conventions</text>
+    <text class="mi" x="38" y="136">· surface labels (cosmetic layer)</text>
+    <text class="mi" x="38" y="154">· drift schedule (owned by the scenario)</text>
+    <text class="mi" x="38" y="172">· endogenous triggers</text>
+    <text class="mi" x="38" y="190">· pipelines (orders, sessions, strain)</text>
+  </g>
+
+  <g class="node" data-id="st-agent" tabindex="0" role="button" aria-label="agent memory">
+    <rect class="box" x="24" y="330" width="316" height="146"/>
+    <text class="t" x="38" y="356">Agent memory</text>
+    <text class="m" x="38" y="375">opaque to driftlab; the variable</text>
+    <text class="mi" x="38" y="400">· transcript window / notes / skills</text>
+    <text class="mi" x="38" y="418">· tabular counts (baseline)</text>
+    <text class="mi" x="38" y="436">· MCP notebook, versioned in the log</text>
+    <text class="mi" x="38" y="454">· a CLI session (path B), or nothing</text>
+  </g>
+
+  <g class="node" data-id="st-loop" tabindex="0" role="button" aria-label="episode loop as mediator">
+    <rect class="box" x="452" y="216" width="216" height="94"/>
+    <text class="t" x="466" y="244">Episode loop</text>
+    <text class="m" x="466" y="263">core.run()</text>
+    <text class="mi" x="466" y="284">holds no state of its own;</text>
+    <text class="mi" x="466" y="300">moves text, logs truth</text>
+  </g>
+
+  <g class="node" data-id="st-log" tabindex="0" role="button" aria-label="trajectory log">
+    <rect class="box" x="780" y="48" width="316" height="164"/>
+    <text class="t" x="794" y="74">Trajectory log (append-only)</text>
+    <text class="m" x="794" y="93">runs/exp/world/run.jsonl</text>
+    <text class="mi" x="794" y="118">header: cell, agent spec, cost,</text>
+    <text class="mi" x="794" y="136">parse failures, memory versions</text>
+    <text class="mi" x="794" y="154">steps: observation, reply, action,</text>
+    <text class="mi" x="794" y="172">reward, feedback + hidden truth:</text>
+    <text class="mi" x="794" y="190">changes, task key, correct, confidence</text>
+  </g>
+
+  <g class="node acc" data-id="st-derived" tabindex="0" role="button" aria-label="derived results">
+    <rect class="box" x="780" y="330" width="316" height="146"/>
+    <text class="t" x="794" y="356">Derived, recomputable anytime</text>
+    <text class="m" x="794" y="375">post-hoc: old runs get new metrics</text>
+    <text class="mi" x="794" y="400">· manifest.json: cost + registry stamp</text>
+    <text class="mi" x="794" y="418">· events.jsonl: the dashboard stream</text>
+    <text class="mi acc" x="794" y="436">· profile.json: metrics, dims, effects</text>
+    <text class="mi acc" x="794" y="454">· runs/benchmark/: the score matrix</text>
+  </g>
+
+  <path class="edge" d="M340 130 H400 V240 H452" marker-end="url(#arrS)"/>
+  <text class="elabel" x="352" y="122">observe · reward · feedback</text>
+  <path class="edge" d="M452 286 H400 V403 H340" marker-end="url(#arrS)"/>
+  <text class="elabel" x="352" y="395">act() prompt · observe() outcome</text>
+  <path class="edge" d="M668 240 H720 V130 H780" marker-end="url(#arrS)"/>
+  <text class="elabel" x="676" y="232">records + truth</text>
+  <path class="edge acc" d="M938 212 V330" marker-end="url(#arrSA)"/>
+  <text class="elabel acc" x="946" y="266">metrics.py · profile.py</text>
+  <text class="elabel acc" x="946" y="282">read only the log</text>
+</svg>
+<figcaption>Four stores and one boundary: the agent never reads world state, and driftlab never reads agent memory. Every derived number is a pure function of the append-only log, so the same profile applies to a run played by an in-process agent or an external harness, today or retroactively.</figcaption>
+</figure>
+
+<figure>
+<svg viewBox="0 0 1120 620" role="img" aria-label="Scoring data-flow: trajectory logs reduce to eleven raw metrics per run, averaged per agent, normalized into four 0-to-1 dimensions, with a secondary aggregate driftlab score.">
+  <defs>
+    <marker id="arrC" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="var(--muted)"/></marker>
+    <marker id="arrCA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="var(--accent)"/></marker>
+  </defs>
+
+  <g class="node" data-id="sc-logs" tabindex="0" role="button" aria-label="run directory">
+    <rect class="box" x="24" y="230" width="168" height="90"/>
+    <text class="t" x="38" y="256">Run directory</text>
+    <text class="m" x="38" y="275">runs/expNN/world/</text>
+    <text class="mi" x="38" y="296">every *.jsonl in the</text>
+    <text class="mi" x="38" y="312">directory</text>
+  </g>
+
+  <g class="node acc" data-id="sc-runprofile" tabindex="0" role="button" aria-label="run_profile raw metrics">
+    <rect class="box" x="250" y="40" width="300" height="486"/>
+    <text class="t" x="264" y="66">run_profile(): raw metrics per run</text>
+    <text class="m" x="264" y="85">NaN = unmeasured, printed as "—"</text>
+    <text class="mi" x="264" y="122">detection_lag</text>
+    <text class="mi" x="264" y="156">recovery_lag</text>
+    <text class="mi" x="264" y="196">final_accuracy</text>
+    <text class="mi" x="264" y="230">retention</text>
+    <text class="mi" x="264" y="264">interference</text>
+    <text class="mi" x="264" y="304">calibration_error (Brier)</text>
+    <text class="mi" x="264" y="338">stale_rate</text>
+    <text class="mi" x="264" y="378">parse_failure_rate</text>
+    <text class="mi" x="264" y="412">cost_per_success</text>
+    <text class="mi" x="264" y="452">overconfidence</text>
+    <text class="mi" x="264" y="486">final_reward</text>
+  </g>
+
+  <g class="node" data-id="sc-agg" tabindex="0" role="button" aria-label="mean per agent">
+    <rect class="box" x="592" y="230" width="120" height="90"/>
+    <text class="t" x="604" y="258">Mean per</text>
+    <text class="t" x="604" y="276">agent</text>
+    <text class="m" x="604" y="298">NaN-aware</text>
+  </g>
+
+  <g class="node acc" data-id="sc-adapt" tabindex="0" role="button" aria-label="adaptation dimension">
+    <rect class="box" x="756" y="52" width="212" height="76"/>
+    <text class="t" x="770" y="76">adaptation</text>
+    <text class="mi" x="770" y="96">1 / (1 + lag/5)</text>
+    <text class="mi" x="770" y="112">never adapted scores 0</text>
+  </g>
+  <g class="node acc" data-id="sc-know" tabindex="0" role="button" aria-label="knowledge dimension">
+    <rect class="box" x="756" y="162" width="212" height="76"/>
+    <text class="t" x="770" y="186">knowledge</text>
+    <text class="mi" x="770" y="206">accuracy · retention ·</text>
+    <text class="mi" x="770" y="222">clip(1 + 2·min(0, interf))</text>
+  </g>
+  <g class="node acc" data-id="sc-epist" tabindex="0" role="button" aria-label="epistemics dimension">
+    <rect class="box" x="756" y="272" width="212" height="76"/>
+    <text class="t" x="770" y="296">epistemics</text>
+    <text class="mi" x="770" y="316">1 − Brier · 1 − stale rate</text>
+  </g>
+  <g class="node acc" data-id="sc-eff" tabindex="0" role="button" aria-label="efficiency dimension">
+    <rect class="box" x="756" y="382" width="212" height="76"/>
+    <text class="t" x="770" y="406">efficiency</text>
+    <text class="mi" x="770" y="426">1 − parse-fail rate ·</text>
+    <text class="mi" x="770" y="442">1 / (1 + cps / $0.01)</text>
+  </g>
+
+  <g class="node acc" data-id="sc-score" tabindex="0" role="button" aria-label="driftlab score">
+    <rect class="box" x="1000" y="216" width="100" height="118"/>
+    <text class="t" x="1014" y="244">driftlab</text>
+    <text class="t" x="1014" y="262">score</text>
+    <text class="mi" x="1014" y="286">mean of</text>
+    <text class="mi" x="1014" y="302">measured</text>
+    <text class="mi" x="1014" y="318">dims</text>
+  </g>
+
+  <path class="edge" d="M192 275 H250" marker-end="url(#arrC)"/>
+  <text class="elabel" x="198" y="267">per run</text>
+  <path class="edge" d="M550 275 H592" marker-end="url(#arrC)"/>
+
+  <path class="edge soft" d="M550 118 H664 V80 H756"/>
+  <path class="edge soft" d="M550 152 H680 V96 H756"/>
+  <path class="edge soft" d="M550 192 H664 V186 H756"/>
+  <path class="edge soft" d="M550 226 H680 V202 H756"/>
+  <path class="edge soft" d="M550 260 H696 V218 H756"/>
+  <path class="edge soft" d="M550 300 H664 V296 H756"/>
+  <path class="edge soft" d="M550 334 H680 V312 H756"/>
+  <path class="edge soft" d="M550 374 H664 V406 H756"/>
+  <path class="edge soft" d="M550 408 H680 V422 H756"/>
+  <path class="edge soft dash" d="M550 448 H660 V560 H700"/>
+  <path class="edge soft dash" d="M550 482 H660"/>
+  <text class="note" x="706" y="556">reported in the profile,</text>
+  <text class="note" x="706" y="572">never scored</text>
+
+  <path class="edge acc" d="M968 90 H984 V244 H1000" marker-end="url(#arrCA)"/>
+  <path class="edge acc" d="M968 200 H984" />
+  <path class="edge acc" d="M968 310 H984" />
+  <path class="edge acc" d="M968 420 H984 V306" />
+
+  <text class="note" x="756" y="496">The vector is the result. The score is a convenience;</text>
+  <text class="note" x="756" y="512">compare it only between agents whose profiles</text>
+  <text class="note" x="756" y="528">measure the same dimensions.</text>
+</svg>
+<figcaption>Eleven raw metrics per run, averaged per agent, normalized into four dimensions with documented constants (<span class="mono">LAG_HALF=5</span>, <span class="mono">COST_HALF=$0.01</span>). Because the runner crosses the same seeded cells over every agent, the report also derives paired agent-vs-agent and regime-vs-regime deltas with bootstrap confidence intervals, rather than unpaired means.</figcaption>
+</figure>
+</div>
+
+<!-- ======================= WORLDS ======================= -->
+<div id="view-worlds" class="prose" hidden>
+  <h2 class="sec" style="margin-top:0">Four jobs at fictional companies</h2>
+  <p class="lede">Every world is a plain job. The agent is never told it is in an experiment: episode transitions read as reassignment to a different site, notices read as office memos, and evaluation probes as a supervisor's quick check. Each world can change substantively (the correct behavior changes), cosmetically (only the wording changes), or endogenously (the agent's own behavior triggers the change).</p>
+  <div class="cards" id="worldCards"></div>
+  <h2 class="sec">Capabilities</h2>
+  <p class="lede">Experiments declare what they need; worlds declare what they have (<code>driftlab/worlds/base.py</code>). A world missing a needed capability refuses the experiment at startup.</p>
+  <div class="tablewrap"><table class="caps" id="capsTable"></table></div>
+</div>
+
+<!-- ======================= EXPERIMENTS ======================= -->
+<div id="view-exps" class="prose" hidden>
+  <h2 class="sec" style="margin-top:0">The experiment registry</h2>
+  <p class="lede">Every experiment has a machine-readable definition in <code>experiments/registry.py</code>: hypothesis, variables, drift types, version. The definition is stamped into every run's manifest, and versions bump instead of experiments mutating, so old results stay interpretable. Click a row for the full entry.</p>
+  <div class="grid2">
+    <div class="tablewrap"><table class="reg" id="expTable"></table></div>
+    <div class="detailcard" id="expDetail"><h3>Pick an experiment</h3><p style="color:var(--muted)">The full registry entry appears here.</p></div>
+  </div>
+  <h2 class="sec">Research hypotheses</h2>
+  <p class="lede">Claims rather than experiments: one file each in <code>research/hypotheses/</code>, with a status and an evidence table that accumulates across experiments, contradictions included.</p>
+  <div class="cards" id="hypCards"></div>
+</div>
+
+<!-- ======================= USAGE ======================= -->
+<div id="view-usage" class="prose" hidden>
+  <h2 class="sec" style="margin-top:0">Every way to run driftlab</h2>
+  <p class="lede">All commands run from the repo root; <code>uv run</code> auto-syncs the environment. Add <code>--quick</code> to anything for a tenth-length run. Quick mode checks the setup, and its numbers are noise; don't draw conclusions from it.</p>
+  <div class="cards" id="useCards" style="grid-template-columns:repeat(auto-fit,minmax(420px,1fr))"></div>
+</div>
+
+</div>
+
+<aside class="panelside" aria-live="polite">
+  <p class="eyebrow" id="p-eyebrow">Component</p>
+  <h2 id="p-title">Pick a box</h2>
+  <p class="path" id="p-path"></p>
+  <div class="body" id="p-body"><p>Click any node in the diagram. Its role, file path and contracts appear here.</p></div>
+  <p class="hint">Teal marks the measurement and research layer, derived entirely from the logs. Amber marks drift: the change the world undergoes.</p>
+</aside>
+</div>
+
+<footer class="gen">Generated from the driftlab repo on 2026-09-01, registry v1 entries embedded verbatim. When the system changes, regenerate this page. Also committed to the repo as DESIGN.html.</footer>
+</div>
+
+<script>
+const DATA = {"registry": {"exp01": {"version": 1, "title": "Curriculum targeting", "hypothesis": "Frontier difficulty targeting acquires held-out skill fastest; a novelty term prevents pure frontier targeting from narrowing the task distribution.", "independent": ["teacher policy (random | monotonic | frontier | failure_replay | frontier_novelty)"], "dependent": ["held-out ladder accuracy over time", "steps to competence"], "drift": ["none (curriculum, not drift)"], "worlds": ["rule_world"], "hypotheses": ["H004"]}, "exp02": {"version": 1, "title": "Detect vs adapt lag", "hypothesis": "Detecting a change and adapting to it are different skills; they come apart depending on how the agent remembers.", "independent": ["agent memory architecture"], "dependent": ["detection_lag", "recovery_lag", "stable_lag", "detection-recovery gap"], "drift": ["abrupt latent"], "worlds": ["any"], "hypotheses": ["H001"]}, "exp03": {"version": 1, "title": "Attribution", "hypothesis": "Agents over-attribute failures to 'unknown rule' (blame themselves) rather than 'rule changed', and the next action after a misattribution is worse.", "independent": ["ground truth of each rejection (rule_changed | unknown_rule)"], "dependent": ["attribution accuracy", "next-action accuracy after right vs wrong attribution"], "drift": ["abrupt latent", "novelty"], "worlds": ["rule_world", "form_filler"], "hypotheses": ["H003"]}, "exp04": {"version": 1, "title": "Surface vs latent change", "hypothesis": "Agents over-react to appearance and under-react to substance; over-reaction index = dip(surface)/dip(latent) > 1.", "independent": ["drift type (none | surface | latent | both)"], "dependent": ["accuracy dip per change", "steps to competence", "final accuracy"], "drift": ["surface", "latent"], "worlds": ["any"], "hypotheses": ["H002"]}, "exp05": {"version": 1, "title": "Forgetting window", "hypothesis": "The best retention setting moves with drift rate: at high drift a short memory wins because old evidence has expired; at zero drift the longest wins.", "independent": ["drift rate (0 | 4 | 12 changes)", "retention setting (transcript window, notes budget)"], "dependent": ["post-warmup accuracy per (setting, drift rate)"], "drift": ["none", "abrupt latent x4", "abrupt latent x12"], "worlds": ["any"], "hypotheses": ["H001"]}, "exp06": {"version": 1, "title": "Calibration under drift", "hypothesis": "Stated confidence is a continual-learning signal: it should fall on affected tasks after a change, and its lag can be compared with behavioral recovery.", "independent": ["agent memory architecture"], "dependent": ["Brier score", "overconfidence gap", "confidence lag vs recovery lag"], "drift": ["abrupt latent"], "worlds": ["any"], "hypotheses": ["H005"]}, "exp07": {"version": 1, "title": "Predicting change", "hypothesis": "With a learnable change schedule (periodic or triggered), the dip after later changes is smaller than after early ones (anticipation).", "independent": ["change schedule (jittered | periodic | triggered)"], "dependent": ["dip after k-th change, by schedule"], "drift": ["abrupt latent; learnable timing"], "worlds": ["any (triggered: rule_world)"], "hypotheses": ["H005"]}, "exp08": {"version": 1, "title": "Feedback richness", "hypothesis": "Hints about WHY beat hints about WHAT, most of all right after the world changes.", "independent": ["feedback level (terse | standard/fields/names | verbose)", "world"], "dependent": ["accuracy", "recovery after change, by feedback level"], "drift": ["world-scheduled latent"], "worlds": ["form_filler", "inventory", "codebase"], "hypotheses": ["H004"]}, "exp09": {"version": 1, "title": "Feedback delay", "hypothesis": "Learning speed degrades quickly with feedback delay; how quickly depends on whether the agent can re-associate a late outcome with the task that caused it.", "independent": ["feedback delay k (0 | 1 | 3 | 6)", "stable vs changing world"], "dependent": ["accuracy and recovery per delay"], "drift": ["none", "abrupt latent"], "worlds": ["any"], "hypotheses": ["H004", "H001"]}, "exp10": {"version": 1, "title": "Teaching by contrast", "hypothesis": "Minimal contrast pairs reach a given held-out accuracy in fewer steps than random or frontier ordering, with the largest gain on deep exceptions.", "independent": ["teaching policy (random | frontier | contrast pairs)"], "dependent": ["held-out accuracy over time, by depth"], "drift": ["none (curriculum, not drift)"], "worlds": ["rule_world"], "hypotheses": ["H004"]}, "exp11": {"version": 1, "title": "Warning shots", "hypothesis": "Reliable warnings cut recovery lag; false alarms cost more than they save because the agent second-guesses things that did not change.", "independent": ["warning lead time (0 | 1 | 3)", "false-alarm rate"], "dependent": ["recovery lag", "dip on unaffected tasks after false alarms"], "drift": ["abrupt latent, announced"], "worlds": ["any"], "hypotheses": ["H002", "H004"]}, "exp12": {"version": 1, "title": "Scheduled reflection", "hypothesis": "Event-triggered reflection beats time-triggered at equal cost, because failures cluster right after changes. Scored as accuracy per dollar.", "independent": ["reflection schedule (every 5/10/20 | on failure | both | never)"], "dependent": ["accuracy", "cost", "accuracy per dollar"], "drift": ["abrupt latent"], "worlds": ["any"], "hypotheses": ["H001"]}, "exp13": {"version": 1, "title": "Paced drift", "hypothesis": "Adaptive pacing (change only once the learner has recovered) yields a better final learner than fixed pacing with the same number of changes.", "independent": ["pacing (fixed | adaptive | adversarial)"], "dependent": ["final accuracy", "dip and recovery per change"], "drift": ["abrupt latent; learner-coupled timing"], "worlds": ["any"], "hypotheses": ["H004"]}, "exp14": {"version": 1, "title": "Eval shift", "hypothesis": "Day-one accuracy collapses on new rules and new task types, but the 20-step re-adaptation is faster than a fresh agent's (the learner acquired something transferable).", "independent": ["evaluation phase (in_dist | new_rules | new_types)", "trained vs fresh control"], "dependent": ["day-one probe accuracy", "re-adaptation speed"], "drift": ["evaluation shift"], "worlds": ["rule_world"], "hypotheses": ["H001"]}, "exp15": {"version": 1, "title": "Endogenous drift", "hypothesis": "(1) Agents recover more slowly from self-caused changes than from scheduled ones, because nothing external marks the moment of change. (2) An agent that notices the feedback loop stops triggering it.", "independent": ["change source (stable | scheduled | endogenous)"], "dependent": ["recovery lag by source", "count of endogenous changes over the run"], "drift": ["endogenous", "abrupt latent (control)"], "worlds": ["any"], "hypotheses": ["H003"]}},
+"hypotheses": {"H001": {"title": "Memory architecture sets the terms of adaptation", "status": "UNTESTED", "file": "H001-memory-shapes-adaptation.md"}, "H002": {"title": "Agents over-react to appearance and under-react to substance", "status": "UNTESTED", "file": "H002-surface-overreaction.md"}, "H003": {"title": "Self-caused change is the hardest change to see", "status": "UNTESTED", "file": "H003-self-caused-drift.md"}, "H004": {"title": "The environment can be engineered to optimize the agent's learning", "status": "UNTESTED", "file": "H004-environment-engineering.md"}, "H005": {"title": "Confidence is a usable drift signal", "status": "UNTESTED", "file": "H005-calibration-tracks-drift.md"}}};
+
+const WORLDS = [
+  { id:"rule_world", name:"RuleWorld", job:"Intake desk",
+    desc:"Assign each incoming request to one of four handling desks. Hidden routing rules over request type, region and size decide what is correct.",
+    latent:"a routing rule flips", surface:"desk descriptions relabeled", endo:"a desk the agent overloads sheds a request type to another desk",
+    reward:"1 accepted / 0 rejected", extra:"Identical tasks repeat (task keys), so lags can be counted in encounters rather than steps." },
+  { id:"form_filler", name:"FormWorld", job:"Data entry",
+    desc:"Copy source records into an order form against a hidden schema of fields, formats, requirements and caps.",
+    latent:"a field is renamed; a format, enum, requirement or cap changes", surface:"source-record column names change", endo:"IT adds an alias for a field name the agent keeps typing",
+    reward:"1 accepted / 0 rejected", extra:"Schema versions make drift compositional: one field can change while everything else holds." },
+  { id:"inventory", name:"InventoryWorld", job:"Buyer",
+    desc:"Order stock for one product line against hidden Poisson demand, holding, stockout and ordering costs, and a delivery pipeline.",
+    latent:"the demand rate jumps", surface:"the daily report is re-worded", endo:"a big order strains the supplier; lead time grows for a week",
+    reward:"negative daily cost (continuous)", extra:"Rewards are costs rather than accuracies, so lag metrics fall back to time-based recovery and accuracy-style profile metrics stay NaN here." },
+  { id:"codebase", name:"CodebaseWorld", job:"Developer",
+    desc:"Implement tickets as Python functions against a hidden style guide; submissions are executed in a subprocess and reviewed.",
+    latent:"the style guide is revised", surface:"the ticket template is re-worded", endo:"the reviewer adopts a habit seen in the agent's last three submissions",
+    reward:"1 accepted / 0 rejected", extra:"The closest world to real agent work: free-form output, with conventions as the hidden state." },
+];
+const CAPS = ["change_latent","change_surface","introduce_novelty","probe","sample_task","sample_contrast_pair","ask_confidence","task_key","endogenous"];
+const WORLD_CAPS = {
+  rule_world:   ["change_latent","change_surface","introduce_novelty","probe","sample_task","sample_contrast_pair","ask_confidence","task_key","endogenous"],
+  form_filler:  ["change_latent","change_surface","introduce_novelty","probe","ask_confidence","endogenous"],
+  inventory:    ["change_latent","change_surface","probe","ask_confidence","endogenous"],
+  codebase:     ["change_latent","change_surface","ask_confidence","endogenous"],
+};
+
+const USES = [
+  { t:"Set up", w:"Once per checkout.",
+    c:"uv sync --all-extras            # numpy/scipy + openai (reference agents) + mcp (harness server)\nuv run python -m experiments.exp02_detect_adapt_lag --quick --mock   # end-to-end check, no credentials",
+    p:"A working environment, and a 12-step mock episode proving the pipeline." },
+  { t:"Run an experiment", w:"One protocol, any world, any agent.",
+    c:"python -m experiments.exp04_surface_vs_latent                 # reference LLM agents (needs OPENAI_API_KEY)\npython -m experiments.exp02_detect_adapt_lag --world inventory --agent tabular\npython -m experiments.exp05_forgetting_window --agent-spec agents.json --seeds 10",
+    p:"One JSONL per run in runs/expNN/<world>/, the experiment's own tables, the standardized profile with paired effects, and profile.json." },
+  { t:"Benchmark an agent", w:"Five canonical experiments, one comparable matrix. The suite stays fixed while the research experiments evolve.",
+    c:"python -m experiments.benchmark --agent-spec agents.json --seeds 10\npython -m experiments.benchmark --analyze        # rebuild the matrix from existing logs, harness runs included",
+    p:"The agent × experiment matrix of driftlab scores and mean dimensions, in runs/benchmark/<world>.json, comparable with every past and future run." },
+  { t:"Harness path A: autonomous", w:"Benchmark the whole agentic system. The harness paces itself, manages its own context, and chooses when to take notes; that autonomy is part of the result.",
+    c:"claude mcp add driftlab -- python3 /abs/path/driftlab/driftlab/harness/mcp_server.py\n# then ask the harness to \"run experiment 4 in quick mode\", or pin its config:\npython -m driftlab.harness.launch --harness antigravity --model gemini-3.5-flash-medium \\\n    --experiment 2 --label agy_g35 --profile scaffold=agy-2.0    # --dry-run to preview",
+    p:"Normal run logs with the enforced profile in every header (profile_enforced: true). The final MCP result carries the metrics and profile." },
+  { t:"Harness path B: controlled", w:"Benchmark the configured agent under matched conditions. driftlab owns the loop, sessions reset each episode, and cost is tracked.",
+    c:"python -m experiments.exp02_detect_adapt_lag --agent cli:claude:claude-opus-5\npython -m experiments.benchmark --agent cli:antigravity:gemini-3.5-flash-medium\n# full control (tools, turns, timeouts): a {\"type\": \"harness_cli\", ...} spec in --agent-spec",
+    p:"Grid runs with paired seeds and the CLI's own cost reports in the ledger, directly comparable with reference substrates. Calls run in an empty temp directory with a reply-only directive, so the harness can't read the answer key." },
+  { t:"Watch it work", w:"Live while running, or replayed from any finished log.",
+    c:"python -m driftlab.viz.server --open        # http://localhost:8765\npython -m experiments.exp04_surface_vs_latent --live   # terminal stream, forces concurrency 1",
+    p:"The tabbed dashboard: Activity (the exchange, agent memory, the world changing), Performance (tiles, reward chart, metrics), Configuration (agent profile, world, registry entry)." },
+  { t:"Analyze and compare", w:"Post-hoc, any time, over anyone's runs. Old logs get new metrics free.",
+    c:"python -m experiments.exp04_surface_vs_latent --analyze   # tables + profile over every log in the dir\npython -m driftlab.profile runs                            # adaptation + drift profiles for every run dir\npython -m driftlab.costs runs                              # spend by model and experiment",
+    p:"The experiment's tables, the standardized profile, paired effects with bootstrap CIs, and profile.json per directory." },
+  { t:"The research loop", w:"Claims with statuses and evidence that accumulates across experiments.",
+    c:"python -m experiments.registry              # what each experiment tests, one line each\npython -m experiments.registry exp15        # full entry + status of the hypotheses it bears on\n$EDITOR research/hypotheses/H003-self-caused-drift.md   # update status + evidence after a result",
+    p:"Hypothesis, experiments, paired effects, status update, next test. Bump an experiment's registry version instead of mutating it." },
+];
+
+const INFO = {
+  // overview
+  "ov-drift":{e:"Overview", t:"Drift", p:"scheduled · cosmetic · endogenous", b:`<p>Three kinds of change: <strong>latent</strong> (the correct behavior changes), <strong>surface</strong> (only the wording changes, so reacting is a mistake), and <strong>endogenous</strong> (the agent's own behavior triggers the change, and nothing external marks the moment). Experiments own the timing; worlds own the mechanics.</p>`},
+  "ov-world":{e:"Overview", t:"World", p:"driftlab/worlds/", b:`<p>A job at a fictional company with seeded hidden state. Because the world knows its own truth, learning is measured against reality. The Worlds tab covers all four.</p>`},
+  "ov-agent":{e:"Overview", t:"Agent", p:"act(prompt) → str · observe(feedback, reward)", b:`<p>The whole contract is two methods of text, which is what makes an in-process LLM loop, a lookup table, and an external harness interchangeable and comparable.</p>`},
+  "ov-log":{e:"Overview", t:"Trajectory log", p:"runs/expNN/<world>/*.jsonl", b:`<p>The primary scientific artifact: every step the agent took, next to the truth it never saw. Everything else on this page derives from it.</p>`},
+  "ov-analysis":{e:"Overview", t:"Measurement", p:"metrics.py · profile.py · benchmark.py", b:`<p>Post-hoc functions of the logs: per-experiment tables, the standardized profile, paired effects with bootstrap CIs, and the benchmark matrix.</p>`},
+  "ov-research":{e:"Overview", t:"Research log", p:"research/hypotheses/", b:`<p>Claims with statuses and evidence tables that accumulate across experiments. The loop the lab runs on: experiment, observation, explanation, hypothesis, next experiment.</p>`},
+
+  // architecture
+  expcli:{e:"Entry point", t:"15 experiments", p:"experiments/exp01…exp15", b:`<p>Each experiment is a module exposing <code>cells(seeds)</code> (environment configurations), <code>scenario(cell, ctx)</code> (a world plus drift, notice and probe hooks), <code>REFERENCE_AGENTS</code>, and <code>analyze(run_dir)</code>. The Experiments tab lists all fifteen with their registry entries.</p>`},
+  common:{e:"Orchestration", t:"run_experiment()", p:"experiments/common.py", b:`<p>Parses the shared CLI (<code>--world</code>, <code>--agent</code>, <code>--quick</code>, <code>--analyze</code>, <code>--agent-spec</code>, <code>--budget-usd</code>, <code>--live</code>), resolves agent specs, crosses cells × agents, runs the grid, then prints the experiment's <code>analyze()</code> followed by the standardized profile. The registry entry, version included, goes into every manifest.</p>`},
+  runner:{e:"Orchestration", t:"Grid runner", p:"driftlab/runner.py", b:`<p><code>expand()</code> crosses environment cells with agent specs; <code>run_cells()</code> drives each cell through <code>core.run()</code> under a concurrency limit, tracks cost around each run, and <code>write_run()</code> emits one JSONL trajectory plus a manifest entry.</p>`},
+  corerun:{e:"Episode engine", t:"The episode loop", p:"driftlab/core.py", b:`<p><code>run(scenario, agent)</code>: drift hooks fire, the world observes, the agent acts, the world reacts, the agent observes the outcome. The loop attaches the world's hidden truth to every logged step and never to the agent.</p>`},
+  agents:{e:"Plugins", t:"Agents", p:"driftlab/agents/", b:`<p>Implementations of the two-method protocol:</p><ul><li>reference LLM agent with memory substrates (none, transcript, notes, skills)</li><li>tabular memorization baseline</li><li><code>harness_cli</code>: a harness CLI (claude, codex, agy, gemini) driven one call per step (path B)</li><li><code>custom:pkg.mod:factory</code> for yours</li></ul><p><code>brain.py</code> prices, budgets and caches every LLM call.</p>`},
+  worlds:{e:"Environments", t:"Worlds", p:"driftlab/worlds/", b:`<p>Four seeded jobs behind one protocol; capabilities declared per world and required per experiment. Worlds own their hidden state, scenarios own the timing of changes. Detail on the Worlds tab.</p>`},
+  channel:{e:"Bridge", t:"ChannelAgent", p:"driftlab/harness/channel.py", b:`<p>Implements the Agent protocol over a pair of async queues so the episode loop can block on a reply arriving from an external process via MCP. The loop cannot tell the difference.</p>`},
+  mcp:{e:"Entry point", t:"MCP server", p:"driftlab/harness/mcp_server.py", b:`<p>Lets an external harness play a whole experiment: <code>run_experiment("4", world="inventory")</code> once, then <code>act(text)</code> until finished. <code>write_notebook</code>/<code>read_notebook</code> are its optional, versioned memory. The final result carries the metrics and profile.</p><p>Identity: a launcher-enforced profile arrives via <code>DRIFTLAB_AGENT_PROFILE</code> and wins (marked <code>profile_enforced</code>); a harness may also self-declare one via <code>agent_profile</code>.</p>`},
+  harness:{e:"Entry point", t:"External harness", p:"claude mcp add driftlab -- python3 …/mcp_server.py", b:`<p>Claude Code, Codex, Antigravity, or any script speaking MCP. This is path A: the harness paces its own act() calls, manages its own context across episodes, and decides when to use the notebook. That autonomy is part of what is measured.</p>`},
+  launch:{e:"Entry point", t:"Path A launcher", p:"driftlab/harness/launch.py", b:`<p>Spawns a harness headless with the model and MCP wiring fixed, and injects the profile through the server's environment, so identity is pinned by the launching process instead of self-reported. Supports claude, codex, antigravity (writes the workspace's <code>.agents/mcp_config.json</code>) and gemini. <code>--dry-run</code> prints everything it would do.</p>`},
+  registry:{e:"Research layer", t:"Experiment registry", p:"experiments/registry.py", b:`<p>The machine-readable definition of each experiment: hypothesis, independent and dependent variables, drift types, version, and which research hypotheses it bears on. Stamped into every manifest so a log directory carries its own interpretation. Bump the version instead of mutating an experiment after results exist.</p>`},
+  benchmark:{e:"Research layer", t:"Reference suite", p:"experiments/benchmark.py", b:`<p>Five canonical experiments (exp02, 04, 05, 06, 15) run against any agent spec. Aggregates each directory's profiles into the agent × experiment matrix; <code>--analyze</code> rebuilds it from existing logs, harness runs included.</p>`},
+  benchjson:{e:"Artifact", t:"Benchmark matrix", p:"runs/benchmark/<world>.json", b:`<p>Per agent and experiment: score, dimensions, metrics, run counts, plus the registry versions the suite ran under. A summary; every cell expands into its directory's profile.json.</p>`},
+  logs:{e:"Data", t:"Run logs", p:"runs/<exp>/<world>/", b:`<p>One JSONL per run: a header (the cell with the full agent spec, cost, wall time, parse failures, world summary, notebook versions), then one record per step with the hidden truth. <code>manifest.json</code> carries cost blocks and the registry stamp; <code>profile.json</code> is the directory's standardized result.</p>`},
+  events:{e:"Data", t:"events.jsonl", p:"runs/events.jsonl", b:`<p>Structured live events appended by every run: steps, world changes, notices, memory rewrites, final analysis. The dashboard tails it live; finished runs replay from the trajectory logs.</p>`},
+  analyze:{e:"Analysis", t:"analyze(run_dir)", p:"experiments/expNN….analyze", b:`<p>Each experiment's own lens: lag tables, over-reaction indices, attribution accuracy, calibration curves. These complement the standardized profile.</p>`},
+  metrics:{e:"Analysis", t:"Metric helpers", p:"driftlab/metrics.py", b:`<p>Shared post-hoc primitives: <code>change_events</code>, encounter-based detection/recovery/stable lags, dips, time-based recovery for worlds without task keys. Both <code>analyze()</code> and <code>profile.py</code> build on these, so lag definitions match everywhere.</p>`},
+  profile:{e:"Analysis", t:"Standardized result", p:"driftlab/profile.py", b:`<p><code>run_profile()</code> reduces any trajectory to 11 raw metrics; <code>dimension_scores()</code> normalizes them into the four-dimension drift profile; <code>driftlab_score()</code> is the secondary aggregate; <code>paired_effects()</code> derives deltas with bootstrap CIs from the shared seeded cells. <code>report()</code> prints everything and writes profile.json. The full data-flow is on the State &amp; scoring tab.</p>`},
+  viz:{e:"Observability", t:"Dashboard", p:"python -m driftlab.viz.server --open", b:`<p>Live and replay views, three tabs per selected run: <strong>Activity</strong> (the exchange, agent memory versions, the world changing), <strong>Performance</strong> (tiles, reward chart with change markers, experiment metrics), <strong>Configuration</strong> (the agent's recorded profile, the world in plain language, the registry entry).</p>`},
+  research:{e:"Research layer", t:"Research log", p:"research/hypotheses/H001…H005", b:`<p>One claim per file: status, prediction, an evidence table naming experiments and run directories, current interpretation, next test. One hypothesis spans many experiments, and contradictions are kept. All five are on the Experiments tab.</p>`},
+
+  // lifecycle
+  "lf-drift":{e:"Lifecycle · drift", t:"Drift hooks", p:"scenario.before_step(t, world)", b:`<p>The experiment, not the world, decides when drift happens: <code>scheduled(latent=…, surface=…, novelty=…)</code> fires the world's change capabilities at chosen steps. Endogenous change is the exception; the world triggers it in response to the agent's own behavior. Every change is logged with kind, description, affected task keys and old/new values.</p>`},
+  "lf-notice":{e:"Lifecycle", t:"Notice", p:"scenario.notice_fn(t, world)", b:`<p>An optional office memo prepended to the observation, which is how experiments study warnings (exp11) and teaching (exp10). Always in role, never "the experiment has changed".</p>`},
+  "lf-observe":{e:"Lifecycle", t:"Observation", p:"world.observe(t)", b:`<p>The task as the agent sees it: a request to route, a record to enter, a stock report, a ticket. Surface drift changes this text without changing what is correct, which is the trap exp04 measures.</p>`},
+  "lf-act":{e:"Lifecycle", t:"Agent acts", p:"agent.act(prompt) → str", b:`<p>The only inbound channel. Whatever the agent is, it answers text with text.</p>`},
+  "lf-parse":{e:"Lifecycle", t:"Parse", p:"world.parse(text) · world.default_action(rng)", b:`<p>The world turns the reply into an action. An unparseable reply falls back to a seeded default and increments <code>parse_failures</code>, which feeds the efficiency dimension.</p>`},
+  "lf-worldact":{e:"Lifecycle", t:"World reacts", p:"world.act(t, action) → (reward, feedback)", b:`<p>Reward and in-role feedback ("Accepted", "Rejected: wrong desk", "Day cost 12.40"). Feedback richness is a world parameter (exp08). InventoryWorld's reward is a negative cost, which is why the profile keeps NaN semantics for accuracy-style metrics there.</p>`},
+  "lf-delay":{e:"Lifecycle", t:"Feedback delay", p:"scenario.feedback_delay", b:`<p>Outcomes can be queued N steps before the agent hears them (exp09): learning with stale credit assignment. The log records the true step, so metrics stay exact.</p>`},
+  "lf-obsagent":{e:"Lifecycle", t:"Agent observes", p:"agent.observe(feedback, reward)", b:`<p>The only outbound channel, and the only moment memory can legitimately update. What the agent does with it is exactly the variable driftlab compares.</p>`},
+  "lf-record":{e:"Lifecycle", t:"Record + hidden truth", p:"world.privileged(t)", b:`<p>Each step is logged with the truth beside it: <code>changes</code> applied this step, <code>task_key</code>, the <code>correct</code> answer, stated <code>confidence</code>, <code>affected_now</code>. The agent never sees any of it; the profile is computed entirely from this column.</p>`},
+  "lf-after":{e:"Lifecycle", t:"Probes", p:"scenario.after_step(t, rec, agent)", b:`<p>Off-the-record supervisor questions after a step: attribution probes (exp03: "did the rule change, or did you never know?"), evaluation probes with no feedback. They enrich the log without touching the world.</p>`},
+  "lf-start":{e:"Run level", t:"Episode start", p:"agent.start(system_prompt)", b:`<p>The job description, in role. Episode transitions read as reassignment to a different site, so knowledge carried across episodes is a measurable choice.</p>`},
+  "lf-write":{e:"Run level", t:"write_run()", p:"driftlab/runner.py", b:`<p>Header + records become one JSONL; the run entry and cost block go into <code>manifest.json</code>. Append-only and replayable.</p>`},
+  "lf-nextcell":{e:"Run level", t:"The grid", p:"regimes × seeds × agents", b:`<p>Every experiment is a grid of environment cells crossed with agent specs. The same seeds across agents are what make paired effects possible.</p>`},
+  "lf-report":{e:"Run level", t:"analyze() + profile.report()", p:"experiments/common.py → driftlab/profile.py", b:`<p>When the grid finishes (or on <code>--analyze</code>), the experiment's own tables print first, then the Adaptation Profile, Drift Profile and paired effects, the same shape for every experiment, and <code>profile.json</code> lands beside the logs.</p>`},
+
+  // state & scoring
+  "st-world":{e:"State", t:"World hidden state", p:"driftlab/worlds/*.py", b:`<p>Rules, schemas, demand rates, conventions, plus the cosmetic surface layer and any endogenous strain the agent has caused. Seeded, fully known to the logger, invisible to the agent.</p>`},
+  "st-agent":{e:"State", t:"Agent memory", p:"driftlab/agents/substrates.py · notebook · CLI session", b:`<p>Deliberately outside driftlab's model: the framework never reads it. Reference substrates make it a controlled variable; MCP notebooks are versioned into the log so the dashboard can show memory evolving; a path B CLI session is opaque by design.</p>`},
+  "st-loop":{e:"State", t:"The stateless mediator", p:"driftlab/core.py", b:`<p><code>run()</code> holds only a feedback-delay queue. Everything durable lives in the world, the agent, or the log, which is what keeps the agent contract two methods long.</p>`},
+  "st-log":{e:"State", t:"Trajectory log", p:"runs/<exp>/<world>/<run>.jsonl", b:`<p>The single source of truth for all measurement. Header plus step records, each carrying observation, reply, action, reward, feedback, and the hidden-truth column. Nothing downstream needs the live objects.</p>`},
+  "st-derived":{e:"State", t:"Derived results", p:"manifest.json · events.jsonl · profile.json · benchmark/", b:`<p>Recomputable from the trajectories at any time: invent a metric later and every old run gets it. <code>profile.json</code> is the per-directory standardized result; <code>runs/benchmark/&lt;world&gt;.json</code> is the cross-experiment matrix.</p>`},
+  "sc-logs":{e:"Scoring input", t:"Any run directory", p:"python -m driftlab.profile runs/exp02/rule_world", b:`<p>The profiler takes a directory, not an experiment. It reads every trajectory regardless of who played and skips non-trajectory files.</p>`},
+  "sc-runprofile":{e:"Scoring", t:"run_profile(): 11 raw metrics", p:"driftlab/profile.py", b:`<p>Per run, from the log alone:</p><ul><li><strong>detection / recovery lag</strong>: encounters on affected tasks until the old action stops / the right one appears (time-based where tasks don't repeat)</li><li><strong>final accuracy</strong>: success over the last 20% of steps</li><li><strong>retention</strong>: accuracy on changed tasks 8 to 38 encounters later, cut at the next change to those tasks</li><li><strong>stale-memory rate</strong>: share of encounters still choosing the obsolete action after the first post-change success</li><li><strong>interference</strong>: accuracy delta on untouched tasks around a change</li><li><strong>calibration error</strong>: Brier of stated confidence vs outcome</li><li>parse-failure rate, cost per success, overconfidence, final mean reward</li></ul><p>Anything a world can't measure stays NaN and prints as "—".</p>`},
+  "sc-agg":{e:"Scoring", t:"Mean per agent", p:"profile_dir()", b:`<p>Raw metrics are averaged across a directory's runs per agent, NaN-aware. Per-run rows stay in <code>profile.json</code>, and paired effects are computed from them.</p>`},
+  "sc-adapt":{e:"Dimension", t:"adaptation", p:"detection_lag, recovery_lag → 1/(1+lag/5)", b:`<p>How fast the agent notices and recovers. A lag of 0 scores 1.0; 5 encounters scores 0.5. One deliberate asymmetry: when changes happened but a lag is NaN, the agent never adapted, and that scores 0 rather than "unmeasured".</p>`},
+  "sc-know":{e:"Dimension", t:"knowledge", p:"final_accuracy · retention · interference", b:`<p>Does it know the current rules, still know them later, and did learning the new rule damage the untouched ones? Interference is clipped so only losses count: a 10-point accuracy drop on unaffected tasks costs 0.2.</p>`},
+  "sc-epist":{e:"Dimension", t:"epistemics", p:"1 − Brier · 1 − stale_rate", b:`<p>Is confidence honest, and does the agent stop trusting obsolete knowledge? An agent that confidently reasserts the old rule scores worse than one that hesitates. Remembering can be harmful.</p>`},
+  "sc-eff":{e:"Dimension", t:"efficiency", p:"1 − parse_failure_rate · 1/(1 + cost_per_success/$0.01)", b:`<p>Following instructions cheaply. Cost comes from the ledger (reference agents) or the CLI's own usage reports (path B). MCP harness runs are untracked, so their cost term is skipped rather than treated as free.</p>`},
+  "sc-score":{e:"Secondary aggregate", t:"driftlab_score", p:"mean of measured dimensions", b:`<p>One number for ranking, deliberately secondary. Compare it only between agents whose profiles measure the same dimensions; the vector is the result. The normalization constants set the scale of scores, never the ordering of agents on a metric.</p>`},
+};
+
+// ---- tabs -----------------------------------------------------------------
+const tabs = document.querySelectorAll('.tabs button');
+const VIEWS = {over:"view-over", arch:"view-arch", life:"view-life", data:"view-data", worlds:"view-worlds", exps:"view-exps", usage:"view-usage"};
+const DIAGRAM_TABS = new Set(["arch","life","data"]);
+const DEFAULTS = {
+  arch:['Component','Architecture','', '<p>Entry points on the left, the episode engine in the middle, logs then everything derived from them on the right, with the research layer along the bottom. Click any box.</p>'],
+  life:['Phase','Lifecycle','', '<p>Top: one step of the episode loop, repeated T times. Bottom: what happens around the loop. Click any box.</p>'],
+  data:['Store / stage','State & scoring','', '<p>Top figure: who owns what state. Bottom figure: how logs become profiles, dimensions and a score. Click any box.</p>'],
+};
+let selected = null;
+function setPanel(eyebrow, title, path, bodyHtml){
+  document.getElementById('p-eyebrow').textContent = eyebrow;
+  document.getElementById('p-title').textContent = title;
+  document.getElementById('p-path').textContent = path;
+  document.getElementById('p-body').innerHTML = bodyHtml;
+}
+function selectNode(el){
+  if (selected) selected.classList.remove('sel');
+  selected = el; el.classList.add('sel');
+  const d = INFO[el.dataset.id];
+  if (d) setPanel(d.e, d.t, d.p, d.b);
+  const stage = document.getElementById('stage');
+  if (stage.classList.contains('full') && d) stage.classList.remove('full');  // overview clicks open the panel
+}
+document.querySelectorAll('.node').forEach(n=>{
+  n.addEventListener('click', ()=>selectNode(n));
+  n.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault(); selectNode(n);} });
+});
+function setView(v){
+  tabs.forEach(x=>x.setAttribute('aria-selected', x.dataset.view===v ? 'true':'false'));
+  for (const [k,id] of Object.entries(VIEWS)) document.getElementById(id).hidden = (k!==v);
+  const stage = document.getElementById('stage');
+  stage.classList.toggle('full', !DIAGRAM_TABS.has(v));
+  if (selected) selected.classList.remove('sel');
+  selected = null;
+  if (DIAGRAM_TABS.has(v)) setPanel(...DEFAULTS[v]);
+}
+tabs.forEach(b=>b.addEventListener('click', ()=>setView(b.dataset.view)));
+document.querySelectorAll('.jump').forEach(b=>b.addEventListener('click', ()=>setView(b.dataset.goto)));
+
+// ---- worlds tab -------------------------------------------------------------
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+document.getElementById('worldCards').innerHTML = WORLDS.map(w=>`
+  <div class="card"><h3>${w.name}</h3><p class="role">${w.job} · ${w.id}</p>
+    <p>${esc(w.desc)}</p>
+    <div class="kv">
+      <span class="k">substantive</span><span>${esc(w.latent)}</span>
+      <span class="k">cosmetic</span><span>${esc(w.surface)}</span>
+      <span class="k">self-caused</span><span>${esc(w.endo)}</span>
+      <span class="k">reward</span><span>${esc(w.reward)}</span>
+    </div>
+    <p style="margin-top:10px;color:var(--muted);font-size:12.5px">${esc(w.extra)}</p>
+  </div>`).join('');
+document.getElementById('capsTable').innerHTML =
+  `<tr><th>capability</th>${WORLDS.map(w=>`<th>${w.name.replace("World","")}</th>`).join('')}</tr>` +
+  CAPS.map(c=>`<tr><td>${c.replace(/_/g," ")}</td>${WORLDS.map(w=>`<td>${WORLD_CAPS[w.id].includes(c)?'<span class="tick">✓</span>':''}</td>`).join('')}</tr>`).join('');
+
+// ---- experiments tab ----------------------------------------------------------
+const WORLD_IDS = ["rule_world","form_filler","inventory","codebase"];
+function worldChips(list){
+  const all = list.some(w=>String(w).startsWith("any"));
+  const note = all && String(list[0]).includes("(") ? String(list[0]).replace(/^any\s*/,"") : "";
+  const ws = all ? WORLD_IDS : list;
+  return ws.map(w=>`<span class="chip">${String(w).replace(/_/g," ")}</span>`).join('') + (note?`<span class="chip drift">${esc(note)}</span>`:"");
+}
+const expTable = document.getElementById('expTable');
+expTable.innerHTML = `<tr><th>#</th><th>experiment</th><th>hypothesis</th><th>drift</th><th>bears on</th></tr>` +
+  Object.entries(DATA.registry).map(([id,e])=>`
+  <tr class="exp" data-exp="${id}" tabindex="0">
+    <td class="mono">${id.replace("exp","")}</td>
+    <td><strong>${esc(e.title)}</strong><br><span style="color:var(--muted);font-size:11.5px" class="mono">${id} · v${e.version}</span></td>
+    <td style="max-width:420px">${esc(e.hypothesis)}</td>
+    <td>${e.drift.map(d=>`<span class="chip drift">${esc(d)}</span>`).join('')}</td>
+    <td>${e.hypotheses.map(h=>`<span class="chip acc">${h}</span>`).join('')}</td>
+  </tr>`).join('');
+function showExp(id){
+  const e = DATA.registry[id];
+  document.querySelectorAll('tr.exp').forEach(r=>r.classList.toggle('sel', r.dataset.exp===id));
+  document.getElementById('expDetail').innerHTML = `
+    <h3>${esc(e.title)}</h3>
+    <p class="role" style="color:var(--accent-ink);font:500 12px/1.4 'IBM Plex Mono',monospace">${id} · version ${e.version} · experiments/${id}_*.py</p>
+    <p>${esc(e.hypothesis)}</p>
+    <div class="kv">
+      <span class="k">varies</span><span>${e.independent.map(esc).join('<br>')}</span>
+      <span class="k">measures</span><span>${e.dependent.map(x=>esc(x).replace(/_/g," ")).join('<br>')}</span>
+      <span class="k">drift</span><span>${e.drift.map(esc).join('; ')}</span>
+      <span class="k">worlds</span><span>${worldChips(e.worlds)}</span>
+      <span class="k">bears on</span><span>${e.hypotheses.map(h=>`${h}: ${esc(DATA.hypotheses[h]?.title||"")} <span class="chip">${esc(DATA.hypotheses[h]?.status||"")}</span>`).join('<br>')}</span>
+    </div>
+    <pre class="cmd" style="margin-top:12px">python -m experiments.${id}_… [--world …] [--quick]
+python -m experiments.registry ${id}</pre>`;
+}
+document.querySelectorAll('tr.exp').forEach(r=>{
+  r.addEventListener('click', ()=>showExp(r.dataset.exp));
+  r.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault(); showExp(r.dataset.exp);} });
+});
+showExp("exp02");
+document.getElementById('hypCards').innerHTML = Object.entries(DATA.hypotheses).map(([id,h])=>{
+  const exps = Object.entries(DATA.registry).filter(([,e])=>e.hypotheses.includes(id)).map(([eid])=>eid);
+  return `<div class="card"><h3>${id}: ${esc(h.title)}</h3>
+    <p class="role">research/hypotheses/${esc(h.file)}</p>
+    <p><span class="chip">${esc(h.status)}</span></p>
+    <p style="color:var(--muted);font-size:12.5px">evidence from: ${exps.map(e=>`<span class="chip acc">${e}</span>`).join(' ')}</p></div>`;
+}).join('');
+
+// ---- usage tab ---------------------------------------------------------------
+document.getElementById('useCards').innerHTML = USES.map((u,i)=>`
+  <div class="card"><h3>${i+1} · ${esc(u.t)}</h3>
+    <p style="color:var(--muted)">${esc(u.w)}</p>
+    <pre class="cmd">${esc(u.c)}</pre>
+    <p style="font-size:12.5px"><strong>Produces:</strong> ${esc(u.p)}</p>
+  </div>`).join('');
+
+setView('over');
+</script>
+
+</body>
+</html>

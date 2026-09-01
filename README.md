@@ -1,5 +1,10 @@
 # driftlab
 
+**Start with [DESIGN.html](DESIGN.html)** (open it in a browser): the system
+map. It covers the architecture, the episode loop, where state lives, how
+scoring works, the four worlds, all fifteen experiments, and a command
+reference, as explorable diagrams. This README is the terse version.
+
 A testbed for studying how agents learn from experience when the world keeps
 changing. driftlab configures **environments**, **experiments** and
 **metrics**. It makes no assumptions about how an agent remembers, reflects or
