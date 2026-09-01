@@ -61,7 +61,7 @@ vm.createContext(sandbox);
 // functions onto a global we can call afterward. Easiest: eval with a trailing debugger
 // hook isn't available, so instead we rewrite the closing `})();` to expose what we need.
 const exposed = js.replace(/\}\)\(\);\s*$/, `
-  globalThis.__test = { applyTutorial, render, ingest, setTab, setTop, analysisHTML };
+  globalThis.__test = { applyTutorial, render, ingest, setTab, setTop, analysisHTML, mdHTML };
 })();`);
 
 try {
@@ -133,9 +133,11 @@ try {
              text: "Lags after a change (lower is better)\nagent              n  detection_lag  recovery_lag\n--------------------------------------------------\nagy                8          0.857         2.833\n" });
   const html = T.analysisHTML("head a  head b\n----------\nrow1a  1.00\n");
   if (!html.includes("<table")) throw new Error("analysis not table-formatted: " + html.slice(0, 120));
-  T.setTop("bench");
   T.setTop("research");
   T.setTop("home");
   T.setTop("runs");
+  const md = T.mdHTML("# H003 — Title\n\nStatus: UNTESTED\n\nA **bold** claim with `code`.\n\n## Evidence\n\n| a | b |\n|---|---|\n| 1 | 2 |\n\n- item one\n- item two");
+  for (const frag of ["<h3>", "<strong>bold</strong>", "<code>code</code>", "<table", "<li>item one</li>"])
+    if (!md.includes(frag)) throw new Error("mdHTML missing " + frag + ": " + md.slice(0, 200));
   console.log("ANALYSIS + TOP-LEVEL VIEW CHECKS PASSED");
 } catch (e) { console.error("ANALYSIS/TOPNAV FAIL:", e.message); process.exit(1); }

@@ -30,7 +30,10 @@ REGISTRY = {
         "hypothesis": "Detecting a change and adapting to it are different skills; they come apart depending on how the agent remembers.",
         "independent": ["agent memory architecture"],
         "dependent": ["detection_lag", "recovery_lag", "stable_lag", "detection-recovery gap"],
-        "drift": ["abrupt latent"], "worlds": ["any"], "hypotheses": ["H001"]},
+        "drift": ["abrupt latent"], "worlds": ["any"], "hypotheses": ["H001"],
+        "predictions": [
+            {"kind": "effect", "field": "recovery_lag", "vary": "agent", "direction": "differs",
+             "claim": "recovery lag differs between memory architectures on the same seeds"}]},
     "exp03": {
         "version": 1, "title": "Attribution",
         "hypothesis": "Agents over-attribute failures to 'unknown rule' (blame themselves) rather than 'rule changed', and the next action after a misattribution is worse.",
@@ -42,13 +45,21 @@ REGISTRY = {
         "hypothesis": "Agents over-react to appearance and under-react to substance; over-reaction index = dip(surface)/dip(latent) > 1.",
         "independent": ["drift type (none | surface | latent | both)"],
         "dependent": ["accuracy dip per change", "steps to competence", "final accuracy"],
-        "drift": ["surface", "latent"], "worlds": ["any"], "hypotheses": ["H002"]},
+        "drift": ["surface", "latent"], "worlds": ["any"], "hypotheses": ["H002"],
+        "predictions": [
+            {"kind": "effect", "field": "final_accuracy", "vary": "regime", "a": "none", "b": "surface",
+             "direction": "<", "within": "agent",
+             "claim": "accuracy is lower under cosmetic-only change than under no change (over-reaction)"}]},
     "exp05": {
         "version": 1, "title": "Forgetting window",
         "hypothesis": "The best retention setting moves with drift rate: at high drift a short memory wins because old evidence has expired; at zero drift the longest wins.",
         "independent": ["drift rate (0 | 4 | 12 changes)", "retention setting (transcript window, notes budget)"],
         "dependent": ["post-warmup accuracy per (setting, drift rate)"],
-        "drift": ["none", "abrupt latent x4", "abrupt latent x12"], "worlds": ["any"], "hypotheses": ["H001"]},
+        "drift": ["none", "abrupt latent x4", "abrupt latent x12"], "worlds": ["any"], "hypotheses": ["H001"],
+        "predictions": [
+            {"kind": "reversal", "field": "final_accuracy", "vary": "agent",
+             "a_regime": "drift_none", "b_regime": "drift_high",
+             "claim": "the retention-setting ranking reverses between zero drift and high drift"}]},
     "exp06": {
         "version": 1, "title": "Calibration under drift",
         "hypothesis": "Stated confidence is a continual-learning signal: it should fall on affected tasks after a change, and its lag can be compared with behavioral recovery.",
@@ -72,7 +83,11 @@ REGISTRY = {
         "hypothesis": "Learning speed degrades quickly with feedback delay; how quickly depends on whether the agent can re-associate a late outcome with the task that caused it.",
         "independent": ["feedback delay k (0 | 1 | 3 | 6)", "stable vs changing world"],
         "dependent": ["accuracy and recovery per delay"],
-        "drift": ["none", "abrupt latent"], "worlds": ["any"], "hypotheses": ["H004", "H001"]},
+        "drift": ["none", "abrupt latent"], "worlds": ["any"], "hypotheses": ["H004", "H001"],
+        "predictions": [
+            {"kind": "effect", "field": "final_accuracy", "vary": "regime", "a": "changing_delay0", "b": "changing_delay6",
+             "direction": "<", "within": "agent",
+             "claim": "accuracy is lower with feedback delayed 6 steps than with immediate feedback, in a changing world"}]},
     "exp10": {
         "version": 1, "title": "Teaching by contrast",
         "hypothesis": "Minimal contrast pairs reach a given held-out accuracy in fewer steps than random or frontier ordering, with the largest gain on deep exceptions.",
@@ -96,7 +111,11 @@ REGISTRY = {
         "hypothesis": "Adaptive pacing (change only once the learner has recovered) yields a better final learner than fixed pacing with the same number of changes.",
         "independent": ["pacing (fixed | adaptive | adversarial)"],
         "dependent": ["final accuracy", "dip and recovery per change"],
-        "drift": ["abrupt latent; learner-coupled timing"], "worlds": ["any"], "hypotheses": ["H004"]},
+        "drift": ["abrupt latent; learner-coupled timing"], "worlds": ["any"], "hypotheses": ["H004"],
+        "predictions": [
+            {"kind": "effect", "field": "final_accuracy", "vary": "regime", "a": "fixed", "b": "adaptive",
+             "direction": ">", "within": "agent",
+             "claim": "adaptive pacing ends with higher accuracy than fixed pacing, same number of changes"}]},
     "exp14": {
         "version": 1, "title": "Eval shift",
         "hypothesis": "Day-one accuracy collapses on new rules and new task types, but the 20-step re-adaptation is faster than a fresh agent's (the learner acquired something transferable).",
@@ -108,7 +127,11 @@ REGISTRY = {
         "hypothesis": "(1) Agents recover more slowly from self-caused changes than from scheduled ones, because nothing external marks the moment of change. (2) An agent that notices the feedback loop stops triggering it.",
         "independent": ["change source (stable | scheduled | endogenous)"],
         "dependent": ["recovery lag by source", "count of endogenous changes over the run"],
-        "drift": ["endogenous", "abrupt latent (control)"], "worlds": ["any"], "hypotheses": ["H003"]},
+        "drift": ["endogenous", "abrupt latent (control)"], "worlds": ["any"], "hypotheses": ["H003"],
+        "predictions": [
+            {"kind": "effect", "field": "recovery_lag", "vary": "regime", "a": "scheduled", "b": "endogenous",
+             "direction": ">", "within": "agent",
+             "claim": "recovery is slower from self-caused changes than from scheduled ones"}]},
 }
 
 

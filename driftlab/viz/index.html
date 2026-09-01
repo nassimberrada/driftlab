@@ -58,9 +58,25 @@
   table.lefty td { text-align: left; }
   .chip { display: inline-block; font-size: 10.5px; letter-spacing: .04em; border: 1px solid var(--border);
     border-radius: 999px; padding: 2px 8px 1px; color: var(--text-secondary); }
+  .chip.good { border-color: var(--good); color: var(--good); }
+  .chip.bad { border-color: var(--critical); color: var(--critical); }
+  .chip.mixed { border-color: var(--warning); color: var(--warning); }
+  ul.fx li .v-supported { color: var(--good); } ul.fx li .v-contradicted { color: var(--critical); }
   details.hyp { border-bottom: 1px solid var(--grid); padding: 6px 0; }
   details.hyp summary { cursor: pointer; font-size: 13px; }
-  details.hyp pre.hypbody { margin-top: 8px; max-height: 320px; }
+  details.hyp > :not(summary) { margin-left: 24px; }
+  details.hyp ul.fx { max-width: 900px; }
+  .evhead { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--text-secondary); margin: 12px 0 4px; }
+  .subtile { background: var(--surface-0); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; margin: 8px 0 10px; }
+  .subtile > .evhead:first-child { margin-top: 0; }
+  .subtile .kv { display: grid; grid-template-columns: max-content 1fr; gap: 3px 14px; font-size: 12.5px; margin-top: 6px; }
+  .subtile .kv .k { color: var(--text-secondary); }
+  .mdbody { font-size: 13px; max-width: 90ch; padding: 2px 0 6px; }
+  .mdbody h3 { font-size: 13.5px; margin: 10px 0 4px; }
+  .mdbody h4 { font-size: 12px; margin: 10px 0 4px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: .4px; }
+  .mdbody p { margin: 6px 0; }
+  .mdbody ul { margin: 4px 0; padding-left: 18px; }
+  .mdbody li { margin: 3px 0; }
   .analysisFmt { overflow: auto; min-height: 0; }
   .analysisFmt .aline { margin: 6px 0 2px; font-size: 12px; color: var(--text-secondary); }
   .analysisFmt table.cohort { margin-bottom: 6px; }
@@ -74,8 +90,9 @@
   .benchhint { color: var(--text-muted); font-size: 11px; line-height: 1.35; margin: -2px 0 6px; }
   /* home */
   .hometext { font-size: 13.5px; max-width: 84ch; margin: 4px 0 10px; }
-  .hometabs { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
-  .hometabs h3 { font-size: 13px; color: var(--text-primary); margin: 4px 0; }
+  .hometabs { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+  .hometabs > div { background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px 6px; }
+  .hometabs h3 { font-size: 13px; color: var(--text-primary); margin: 2px 0 6px; }
   .linkbtn { font: inherit; font-size: 11px; padding: 2px 9px; margin-left: 6px; cursor: pointer;
     border: 1px solid var(--border); background: var(--surface-2); color: var(--text-primary); border-radius: 999px; }
   .linkbtn:hover { border-color: var(--series-1); }
@@ -209,7 +226,6 @@
 <nav class="topnav">
   <button id="topHome" class="on">Home</button>
   <button id="topResearch">Research</button>
-  <button id="topBench">Benchmarks</button>
   <button id="topRuns">Runs</button>
 </nav>
 
@@ -258,18 +274,25 @@
   </div>
   <div class="panel"><h2>The tabs</h2>
     <div class="hometabs">
-      <div><h3>Research <button class="linkbtn" data-top="research">open</button></h3>
-        <p class="hometext">What the lab is asking: every experiment's registry entry (hypothesis, variables, drift types, version)
-        and the hypothesis log with statuses and evidence. Start here to understand what a result would mean.</p></div>
-      <div><h3>Benchmarks <button class="linkbtn" data-top="bench">open</button></h3>
+      <div><h3>Research · Hypotheses <button class="linkbtn" data-top="research" data-rtab="hyp">open</button></h3>
+        <p class="hometext">The lab's claims (H001–H005), each with its human status, the machine-proposed verdict from CI-based
+        validation, and the evidence rows behind it — claim, basis and confidence interval per agent and world.</p></div>
+      <div><h3>Research · Experiments <button class="linkbtn" data-top="research" data-rtab="exp">open</button></h3>
+        <p class="hometext">The registry: what each of the fifteen experiments tests — its hypothesis, drift types, version, and the
+        machine-checkable prediction it registers for validation.</p></div>
+      <div><h3>Research · Benchmarks <button class="linkbtn" data-top="research" data-rtab="bench">open</button></h3>
         <p class="hometext">How agents compare: the agent × experiment score matrix (click a cell to jump to those runs), mean score
-        dimensions per agent, and per-experiment panels with the full adaptation profile, paired effects and metrics tables.
-        Recomputed by <code>--analyze</code>; the stamp shows when.</p></div>
-      <div><h3>Runs <button class="linkbtn" data-top="runs">open</button></h3>
-        <p class="hometext">One run at a time, in three sub-tabs: <strong>Activity</strong> (what the agent sees, replies and is told;
-        its memory; the world changing), <strong>Performance</strong> (headline tiles and the reward chart with change markers,
-        recovery shading and stated confidence), <strong>Configuration</strong> (the agent's recorded profile, the world, the
-        experiment definition).</p></div>
+        dimensions per agent, and per-experiment panels with the adaptation profile, paired effects and metrics tables.
+        Recomputed whenever an analysis runs; the stamp shows when.</p></div>
+      <div><h3>Runs · Activity <button class="linkbtn" data-top="runs">open</button></h3>
+        <p class="hometext">The selected run as it happens: what the agent sees, replies and is told; its memory, versioned when it
+        writes any; and the world changing — the per-task grid, hidden state and the timeline of changes and memos.</p></div>
+      <div><h3>Runs · Performance <button class="linkbtn" data-top="runs">open</button></h3>
+        <p class="hometext">Headline tiles (rolling accuracy, cumulative reward, parse failures, world changes, spend, step time)
+        and the reward chart with change markers, recovery shading and stated confidence.</p></div>
+      <div><h3>Runs · Configuration <button class="linkbtn" data-top="runs">open</button></h3>
+        <p class="hometext">Who played and under what conditions: the agent's recorded profile (pinned, when enforced), the world in
+        plain language, and the experiment's registry definition with the verbatim task text.</p></div>
     </div>
   </div>
 </main>
@@ -366,26 +389,33 @@
   </div>
 </main>
 
-<!-- BENCHMARKS: cohort- and cross-experiment-level results, recomputed by --analyze -->
-<main id="viewBench" class="page" hidden>
-  <div class="benchhead">
-    <h2>Benchmarks</h2>
-    <label class="muted">world <select id="benchWorld"></select></label>
-    <button id="benchRefresh" title="re-fetch matrices and profiles">refresh</button>
-    <span class="muted" id="benchStamp"></span>
-  </div>
-  <div class="panel"><h2 id="hMatrix">Driftlab score per agent and experiment</h2>
-    <div class="tablewrap" id="benchMatrix"><p class="muted">no matrix yet</p></div></div>
-  <div class="panel"><h2 id="hDims">Mean score dimensions per agent</h2>
-    <div class="tablewrap" id="benchDims"></div></div>
-  <div id="benchExps"></div>
-</main>
-
-<!-- RESEARCH: the experiment registry and the hypothesis log -->
+<!-- RESEARCH: hypotheses (with CI-based validation), the registry, and benchmarks -->
 <main id="viewResearch" class="page" hidden>
-  <div class="panel"><h2 id="hRegistry">Experiment registry</h2>
-    <div class="tablewrap" id="regTable"></div></div>
-  <div class="panel"><h2 id="hHyp">Hypotheses</h2><div id="hypList"><p class="muted">loading…</p></div></div>
+  <nav class="tabbar" style="margin:0 0 10px">
+    <button id="rtabHyp" class="on">Hypotheses</button>
+    <button id="rtabExp">Experiments</button>
+    <button id="rtabBench">Benchmarks</button>
+  </nav>
+  <section id="rsecHyp">
+    <div class="panel"><h2 id="hHyp">Hypotheses</h2>
+      <div class="benchhint" id="valStamp"></div>
+      <div id="hypList"><p class="muted">loading…</p></div></div>
+  </section>
+  <section id="rsecExp" hidden>
+    <div class="panel"><h2 id="hRegistry">Experiment registry</h2>
+      <div id="expList"><p class="muted">loading…</p></div></div>
+  </section>
+  <section id="rsecBench" hidden>
+    <div class="benchhead">
+      <label class="muted">world <select id="benchWorld"></select></label>
+      <span class="muted" id="benchStamp"></span>
+    </div>
+    <div class="panel"><h2 id="hMatrix">Driftlab score per agent and experiment</h2>
+      <div class="tablewrap" id="benchMatrix"><p class="muted">no matrix yet</p></div></div>
+    <div class="panel"><h2 id="hDims">Mean score dimensions per agent</h2>
+      <div class="tablewrap" id="benchDims"></div></div>
+    <div id="benchExps"></div>
+  </section>
 </main>
 <div class="tooltip" id="tip"></div>
 <script>
@@ -457,8 +487,8 @@
     hAgentCfg: "The agent's recorded identity: everything the run header knows about who played. For an enforced profile (path A launcher, path B specs) this is pinned configuration, not self-description.",
     hMatrix: "The reference-suite summary: each cell is one agent's driftlab score on one experiment (darker = higher). Click a cell to jump to those runs. The score is a convenience; the profiles below are the result.",
     hDims: "Each agent's four score dimensions averaged across the suite: adaptation (detection/recovery), knowledge (accuracy/retention/interference), epistemics (calibration/stale memory), efficiency (parsing/cost). — means no experiment in the suite measured it.",
-    hRegistry: "What each experiment tests: hypothesis, drift types, and which research hypotheses it bears on, from experiments/registry.py. The same definition is stamped into every run's manifest.",
-    hHyp: "The research log: one claim per file in research/hypotheses/, each with a status and an evidence table that accumulates across experiments. Update the file when results land.",
+    hRegistry: "What each experiment tests: its hypothesis, the machine-checkable prediction it registers for validation, and which research hypotheses it bears on. The same definition is stamped into every run's record.",
+    hHyp: "The research log: one claim per file, each with a human status and, when validation has run, a machine-proposed verdict. A prediction is supported when its paired effect's 95% CI excludes zero in the predicted direction with enough matched cells — scoped to the agents and worlds actually tested, never a global truth-stamp.",
     hWorldCfg: "The job the agent was doing, and what kinds of change this world can undergo.",
   };
   function applyTutorial() {  // explanations are always shown, under the values
@@ -553,7 +583,7 @@
           return `<li><span>${escapeHtml(human(e.b))} − ${escapeHtml(human(e.a))}${e.agent ? ` <span style="color:var(--text-muted)">(${escapeHtml(human(e.agent))})</span>` : ""}</span>` +
                  `<span class="d">${e.delta >= 0 ? "+" : ""}${e.delta.toFixed(3)}${ci} · ${e.n} pairs</span></li>`;
         }).join("") +
-        (fx.length > 10 ? `<li><span class="d">… ${fx.length - 10} more in ${escapeHtml(dir)}/profile.json</span></li>` : "") + `</ul>`;
+        (fx.length > 10 ? `<li><span class="d">… ${fx.length - 10} more paired effects</span></li>` : "") + `</ul>`;
     }
     return html;
   }
@@ -567,7 +597,7 @@
     const agent = (s.cell || {}).agent || {};
     const rows = [];
     for (const [k, v] of Object.entries(agent)) {
-      if (v === null || v === undefined) continue;
+      if (v === null || v === undefined || k === "bin") continue;  // executable paths are noise here
       if (typeof v === "object") { for (const [k2, v2] of Object.entries(v)) rows.push([`${human(k)} ${human(k2)}`, String(v2)]); }
       else rows.push([human(k), human(k === "type" ? v : String(v))]);
     }
@@ -591,7 +621,7 @@
       e.push(["varies", (reg.independent || []).map(human).join("; ")]);
       e.push(["measures", (reg.dependent || []).map(human).join("; ")]);
       e.push(["kinds of change", (reg.drift || []).join("; ")]);
-      e.push(["bears on", (reg.hypotheses || []).join(", ") + " (see research/hypotheses/)"]);
+      e.push(["bears on", (reg.hypotheses || []).join(", ") + " (see Research)"]);
     } else if (s.experiment) e.push(["experiment", human(s.experiment)]);
     kvRows($("expProf"), e);
     $("instr").textContent = s.instructions || "—";
@@ -776,8 +806,7 @@
 
   // ---- top-level views: Runs / Benchmarks / Research ------------------------------
   let topView = "home", benchData = null, hypData = null;
-  const TOP = { home: ["topHome", "viewHome"], research: ["topResearch", "viewResearch"],
-                bench: ["topBench", "viewBench"], runs: ["topRuns", "viewRuns"] };
+  const TOP = { home: ["topHome", "viewHome"], research: ["topResearch", "viewResearch"], runs: ["topRuns", "viewRuns"] };
   function setTop(v) {
     topView = v;
     for (const [k, [btn, view]] of Object.entries(TOP)) {
@@ -785,13 +814,12 @@
       if (b) b.className = k === v ? "on" : "";
       if (m) m.hidden = k !== v;
     }
-    if (v === "bench") loadBench(false);
     if (v === "research") renderResearch();
     if (v === "runs") render();
     applyTutorial();
   }
   for (const [k, [btn]] of Object.entries(TOP)) { const b = $(btn); if (b) b.onclick = () => setTop(k); }
-  document.querySelectorAll(".linkbtn").forEach(b => b.onclick = () => setTop(b.dataset.top));
+  document.querySelectorAll(".linkbtn").forEach(b => b.onclick = () => { setTop(b.dataset.top); if (b.dataset.rtab) setRTab(b.dataset.rtab); });
 
   async function loadBench(force) {
     if (force || benchData === null) {
@@ -809,8 +837,8 @@
     }
     const world = sel.value || worlds[0] || "rule_world";
     const m = (benchData || {})[world];
-    $("benchStamp").textContent = m ? `recomputed ${new Date(m.generated * 1000).toLocaleString()} · refresh with: python -m experiments.benchmark --analyze`
-                                    : "no matrix yet: run python -m experiments.benchmark --analyze";
+    $("benchStamp").textContent = m ? `recomputed ${new Date(m.generated * 1000).toLocaleString()} · reopen this tab after an analysis to pick up new results`
+                                    : "no benchmark matrix has been computed yet — run the reference suite, or analyze existing runs, and reopen this tab";
     const f = v => (v == null || Number.isNaN(+v)) ? "—" : (+v).toFixed(2);
     if (m) {
       const exps = m.suite;
@@ -836,21 +864,20 @@
       if (!(dir in profCache)) {
         profCache[dir] = "pending";
         fetch("/profile?dir=" + encodeURIComponent(dir)).then(r => r.json())
-          .then(p => { profCache[dir] = p; if (topView === "bench") renderBench(); }).catch(() => { profCache[dir] = null; });
+          .then(p => { profCache[dir] = p; if (!$("rsecBench").hidden) renderBench(); }).catch(() => { profCache[dir] = null; });
       }
       const p = profCache[dir], reg = REGISTRY[exp] || {};
       const div = document.createElement("div"); div.className = "panel";
       let inner = `<h2>${exp}${reg.title ? " · " + escapeHtml(reg.title) : ""}</h2>`;
       if (reg.hypothesis) inner += `<p class="aline">${escapeHtml(reg.hypothesis)}</p>`;
       inner += (p && p !== "pending" && p.agents) ? cohortHTML(p, dir)
-             : `<p class="muted">no profile yet for ${escapeHtml(dir)}: run the experiment or its --analyze</p>`;
+             : `<p class="muted">no profile computed for this experiment and world yet</p>`;
       const at = analysisByExp[exp];
       if (at) inner += `<h3>Experiment metrics</h3>` +
         `<div class="benchhint">This experiment's own analysis tables, recomputed over every run in the directory by its analyze(). Lags count encounters on the affected tasks (steps where tasks don't repeat); lower is better.</div>` + analysisHTML(at);
       div.innerHTML = inner; cont.appendChild(div);
     });
   }
-  $("benchRefresh").onclick = () => loadBench(true);
   $("benchWorld").onchange = () => renderBench();
   function drillTo(agent, exp) {
     filter.agent = agent; filter.exp = exp; filter.regime = ""; filter.model = ""; filter.q = "";
@@ -861,17 +888,134 @@
     $("fExp").value = exp; $("fAgent").value = agent;
   }
 
+  let valData;
+  const VCHIP = { "SUPPORTED": "good", "NOT SUPPORTED": "bad", "PARTIALLY SUPPORTED": "mixed", "INCONCLUSIVE": "" };
+  const VMEAN = {
+    "SUPPORTED": "every conclusive prediction agrees with the hypothesis",
+    "NOT SUPPORTED": "every conclusive prediction points the other way",
+    "PARTIALLY SUPPORTED": "conclusive predictions disagree with each other — look at which agents or worlds split",
+    "INCONCLUSIVE": "no prediction reached a verdict yet: not enough full-length, seed-matched runs, or the confidence intervals include zero",
+  };
+  function predDesc(p) {
+    if (p.kind === "reversal") return `test: the sign of the agent-pair effect on ${p.field} flips between '${p.a_regime}' and '${p.b_regime}', with both 95% CIs excluding zero`;
+    if (p.direction === "differs") return `test: some agent pair's paired delta on ${p.field} has a 95% CI excluding zero`;
+    return `test: ${p.field}(${p.b}) − ${p.field}(${p.a}) ${p.direction} 0, per agent, paired by seed; the 95% bootstrap CI must exclude zero`;
+  }
+  // the numeric evidence view: per prediction, one row per verdict with delta, CI and an interval plot
+  const VCOLOR = { supported: "var(--good)", contradicted: "var(--critical)", inconclusive: "var(--text-muted)" };
+  function ciBar(delta, ci, span, color) {
+    const W = 150, C = W / 2, K = (W / 2 - 8) / span, x = v => (C + v * K).toFixed(1);
+    let g = `<line x1="${C}" y1="1" x2="${C}" y2="13" stroke="var(--grid)"/>`;
+    if (ci) g += `<line x1="${x(ci[0])}" y1="7" x2="${x(ci[1])}" y2="7" stroke="${color}" stroke-width="2"/>` +
+                 `<line x1="${x(ci[0])}" y1="3" x2="${x(ci[0])}" y2="11" stroke="${color}"/>` +
+                 `<line x1="${x(ci[1])}" y1="3" x2="${x(ci[1])}" y2="11" stroke="${color}"/>`;
+    if (delta != null) g += `<circle cx="${x(delta)}" cy="7" r="3" fill="${color}"/>`;
+    return `<svg width="${W}" height="14" viewBox="0 0 ${W} 14" style="vertical-align:middle" role="img" aria-label="interval vs zero">${g}</svg>`;
+  }
+  function evidenceTables(allRows) {
+    const byClaim = new Map(), seen = new Set();
+    allRows.forEach(r => {
+      const key = [r.exp, r.world, r.agent, r.claim].join("|");
+      if (seen.has(key)) return;
+      seen.add(key);
+      if (!byClaim.has(r.claim)) byClaim.set(r.claim, []);
+      byClaim.get(r.claim).push(r);
+    });
+    let html = "";
+    for (const [claim, rs] of byClaim) {
+      const span = Math.max(0.05, ...rs.flatMap(r => [Math.abs(r.delta ?? 0), ...(r.ci ? r.ci.map(Math.abs) : [])])) * 1.15;
+      html += `<div class="benchhint" style="margin:8px 0 2px">${escapeHtml(claim)}</div>` +
+        `<div class="tablewrap"><table class="cohort ev"><tr><th style="text-align:left">verdict</th><th style="text-align:left">experiment</th><th style="text-align:left">world</th><th style="text-align:left">agent</th><th>Δ</th><th>95% CI</th><th>pairs</th><th style="text-align:left">interval vs 0</th></tr>` +
+        rs.map(r => {
+          const color = VCOLOR[r.verdict] || "var(--text-muted)";
+          const num = v => v == null ? "—" : `${v >= 0 ? "+" : ""}${v.toFixed(3)}`;
+          const civ = r.ci ? `[${num(r.ci[0])}, ${num(r.ci[1])}]` : "—";
+          return `<tr title="${escapeHtml(r.reason || "")}"><td style="text-align:left"><span class="v-${r.verdict}">${r.verdict}</span></td>` +
+                 `<td style="text-align:left">${r.exp} v${r.version}</td><td style="text-align:left">${escapeHtml(human(r.world))}</td>` +
+                 `<td style="text-align:left">${escapeHtml(human(r.agent))}</td><td>${num(r.delta)}</td><td>${civ}</td><td>${r.n}</td>` +
+                 `<td style="text-align:left">${r.ci || r.delta != null ? ciBar(r.delta, r.ci, span, color) : `<span class="muted" style="font-size:11px">${escapeHtml((r.reason || "no data").split("(")[0].trim())}</span>`}</td></tr>`;
+        }).join("") + `</table></div>`;
+    }
+    return html + `<div class="benchhint" style="margin:2px 0 6px">Hover a row for the verdict's basis. The plot shows the paired delta (dot) and its 95% bootstrap interval against zero (center line): an interval clear of the line is a conclusive verdict.</div>`;
+  }
+
+  function mdHTML(md) {  // minimal renderer for the hypothesis files: headings, tables, lists, bold, code
+    const lines = md.split("\n");
+    let html = "", i = 0, para = [];
+    const inline = s => s.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/`([^`]+)`/g, "<code>$1</code>")
+                        .replace(/\[\[(.+?)\]\]/g, '<span class="mono">$1</span>');
+    const flush = () => { if (para.length) { html += `<p>${para.join(" ")}</p>`; para = []; } };
+    while (i < lines.length) {
+      const raw = lines[i], l = inline(escapeHtml(raw));
+      if (/^#{1,3}\s/.test(raw)) { flush(); const lvl = raw.match(/^#+/)[0].length + 2;
+        html += `<h${lvl}>${inline(escapeHtml(raw.replace(/^#+\s*/, "")))}</h${lvl}>`; i++; }
+      else if (/^\|/.test(raw)) { flush();
+        const rows = []; while (i < lines.length && /^\|/.test(lines[i])) { rows.push(lines[i]); i++; }
+        const cells = r => r.split("|").slice(1, -1).map(c => inline(escapeHtml(c.trim())));
+        const body = rows.filter(r => !/^\|[\s\-|]+\|$/.test(r));
+        html += `<div class="tablewrap"><table class="cohort lefty"><tr>${cells(body[0]).map(c => `<th style="text-align:left">${c}</th>`).join("")}</tr>` +
+                body.slice(1).map(r => `<tr>${cells(r).map(c => `<td>${c}</td>`).join("")}</tr>`).join("") + `</table></div>`; }
+      else if (/^-\s/.test(raw)) { flush();
+        const items = []; while (i < lines.length && /^-\s/.test(lines[i])) { items.push(inline(escapeHtml(lines[i].replace(/^-\s*/, "")))); i++; }
+        html += `<ul>${items.map(x => `<li>${x}</li>`).join("")}</ul>`; }
+      else if (!raw.trim()) { flush(); i++; }
+      else if (/^status:/i.test(raw)) { i++; }  // already shown as a chip
+      else { para.push(l); i++; }
+    }
+    flush();
+    return `<div class="mdbody">${html}</div>`;
+  }
+  function setRTab(which) {
+    for (const [k, btn, sec] of [["hyp", "rtabHyp", "rsecHyp"], ["exp", "rtabExp", "rsecExp"], ["bench", "rtabBench", "rsecBench"]]) {
+      $(btn).className = k === which ? "on" : ""; $(sec).hidden = k !== which;
+    }
+    if (which === "bench") loadBench(true);  // always re-fetch on entry
+    applyTutorial();
+  }
+  $("rtabHyp").onclick = () => setRTab("hyp"); $("rtabExp").onclick = () => setRTab("exp"); $("rtabBench").onclick = () => setRTab("bench");
+  function aggStatus(rows) {
+    const s = rows.filter(r => r.verdict === "supported").length, c = rows.filter(r => r.verdict === "contradicted").length;
+    return s && !c ? "SUPPORTED" : c && !s ? "NOT SUPPORTED" : s && c ? "PARTIALLY SUPPORTED" : "INCONCLUSIVE";
+  }
   async function renderResearch() {
-    $("regTable").innerHTML = `<table class="cohort lefty"><tr><th style="text-align:left">#</th><th style="text-align:left">experiment</th><th style="text-align:left">hypothesis</th><th style="text-align:left">drift</th><th style="text-align:left">bears on</th></tr>` +
-      Object.entries(REGISTRY).map(([id, e]) =>
-        `<tr><td>${id.replace("exp", "")}</td><td><strong>${escapeHtml(e.title)}</strong><br><span class="muted">${id} · v${e.version}</span></td>` +
-        `<td style="max-width:480px">${escapeHtml(e.hypothesis)}</td><td>${(e.drift || []).map(escapeHtml).join("; ")}</td>` +
-        `<td>${(e.hypotheses || []).join(", ")}</td></tr>`).join("") + `</table>`;
-    if (hypData === null) { try { hypData = await (await fetch("/hypotheses")).json(); } catch (e) { hypData = []; } }
-    $("hypList").innerHTML = (hypData || []).map(h =>
-      `<details class="hyp"><summary><strong>${escapeHtml(h.id)}</strong> ${escapeHtml(h.title)} <span class="chip">${escapeHtml(h.status)}</span> <span class="muted">research/hypotheses/${escapeHtml(h.file)}</span></summary>` +
-      `<pre class="hypbody">${escapeHtml(h.body)}</pre></details>`).join("") ||
-      '<p class="muted">no research/hypotheses directory found</p>';
+    try { hypData = await (await fetch("/hypotheses")).json(); } catch (e) { hypData = hypData || []; }
+    try { valData = await (await fetch("/validation")).json(); } catch (e) { valData = valData || null; }
+    $("expList").innerHTML = Object.entries(REGISTRY).map(([id, e]) => {
+      const ev = valData && valData.experiments ? valData.experiments[id] : null;
+      const rows = ev && ev.rows ? ev.rows : [];
+      const hasPred = (e.predictions || []).length > 0;
+      const st = rows.length ? aggStatus(rows) : (hasPred ? "INCONCLUSIVE" : null);
+      const chip = !valData ? `<span class="chip">NOT VALIDATED</span>`
+        : st ? `<span class="chip ${VCHIP[st] || ""}" title="${escapeHtml(VMEAN[st] || "")}">${st}</span>`
+             : `<span class="chip">NO PREDICTION</span>`;
+      const preds = hasPred
+        ? (e.predictions || []).map(p => `<p style="margin:2px 0"><strong>${escapeHtml(p.claim)}</strong><br><span class="muted" style="font-size:11.5px">${escapeHtml(predDesc(p))}</span></p>`).join("")
+        : `<p class="muted" style="margin:2px 0">none yet — this experiment's dependent variables are not in the standardized profile, so no validation logic is defined for it</p>`;
+      const evBody = rows.length ? evidenceTables(rows)
+        : `<p class="muted" style="margin:2px 0">${hasPred ? "no full-length runs to evaluate yet" : "define a prediction in code to enable validation"}</p>`;
+      return `<details class="hyp"><summary><strong>${id.replace("exp", "")}</strong> ${escapeHtml(e.title)} <span class="muted">v${e.version}</span> ${chip}` +
+        `<div class="benchhint" style="margin:4px 0 0 18px">${escapeHtml(e.hypothesis)}</div></summary>` +
+        `<div class="subtile"><h4 class="evhead">Machine-checkable prediction</h4>${preds}</div>` +
+        `<div class="subtile"><h4 class="evhead">Machine evidence</h4>${evBody}</div>` +
+        `<div class="subtile"><h4 class="evhead">Design</h4><div class="kv">` +
+        `<span class="k">varies</span><span>${(e.independent || []).map(x => escapeHtml(human(x))).join("<br>")}</span>` +
+        `<span class="k">measures</span><span>${(e.dependent || []).map(x => escapeHtml(human(x))).join("<br>")}</span>` +
+        `<span class="k">worlds</span><span>${escapeHtml((e.worlds || []).join(", "))}</span>` +
+        `<span class="k">bears on</span><span>${(e.hypotheses || []).join(", ")}</span></div></div></details>`;
+    }).join("");
+    $("valStamp").textContent = valData
+      ? `CI-based validation last computed ${new Date(valData.generated * 1000).toLocaleString()}. How to read the machine verdicts: a prediction is SUPPORTED when the 95% bootstrap confidence interval of its paired delta lies entirely on the predicted side of zero, across at least ${valData.min_pairs} seed-matched run pairs; CONTRADICTED when the interval lies entirely on the other side; INCONCLUSIVE when the interval includes zero or there isn't enough full-length paired data (quick runs never count). Verdicts are statistical, scoped to the agents and worlds tested, and recomputed whenever validation runs; the validation logic itself is defined in code, per experiment.`
+      : "No validation has been computed yet. Each experiment registers machine-checkable predictions; validation evaluates them as paired effects with bootstrap confidence intervals and reports scope-qualified verdicts here.";
+    $("hypList").innerHTML = (hypData || []).map(h => {
+      const v = valData && valData.hypotheses ? valData.hypotheses[h.id] : null;
+      const chip = v ? `<span class="chip ${VCHIP[v.proposed_status] || ""}" title="${escapeHtml(VMEAN[v.proposed_status] || "")}">${escapeHtml(v.proposed_status)}</span>` : `<span class="chip">NOT VALIDATED</span>`;
+      const meaning = v ? `<div class="benchhint" style="margin:4px 0 0 18px">${escapeHtml(VMEAN[v.proposed_status] || "")} — ${escapeHtml(v.scope)}</div>` : "";
+      const evBody = v && v.rows && v.rows.length ? evidenceTables(v.rows)
+        : (v ? `<p class="muted" style="margin:2px 0">${v.predicted_by && v.predicted_by.length ? `predictions are registered (${v.predicted_by.join(", ")}) but none of those experiments has full-length runs yet` : "none of this hypothesis's experiments has a machine-checkable prediction yet"}</p>` : `<p class="muted" style="margin:2px 0">validation has not been computed</p>`);
+      return `<details class="hyp"><summary><strong>${escapeHtml(h.id)}</strong> ${escapeHtml(h.title)} ${chip}${meaning}</summary>` +
+        `<div class="subtile"><h4 class="evhead">Machine evidence</h4>${evBody}</div>` +
+        `<div class="subtile"><h4 class="evhead">Details</h4>${mdHTML(h.body)}</div></details>`;
+    }).join("") || '<p class="muted">no hypotheses defined yet</p>';
   }
 
   // ---- tabs -------------------------------------------------------------------

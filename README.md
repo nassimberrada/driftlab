@@ -260,6 +260,16 @@ multiple experiments, with status and an evidence table pointing back at run
 directories). Experiments produce numbers; the research log is where they
 accumulate into knowledge — including the contradictions.
 
+Experiments can also register machine-checkable `predictions` (directional
+claims over paired effects). `python -m experiments.validate` evaluates them
+against the logs — a prediction is supported when its paired delta's 95%
+bootstrap CI excludes zero in the predicted direction with enough matched
+cells, quick runs excluded — and proposes scope-qualified verdicts per
+hypothesis (per agent and world, never a global truth-stamp). The proposal
+lands in `runs/validation.json` for the dashboard's Research tab; `--apply`
+writes statuses and evidence rows into the hypothesis files. Interpretation
+stays yours.
+
 ## Framing
 
 Every world is presented to the agent as a plain job at a fictional company (an intake desk, a buyer, a

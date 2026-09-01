@@ -70,6 +70,9 @@ class Handler(BaseHTTPRequestHandler):
             out = {p.stem: json.loads(_clean_json(p)) for p in sorted((ROOT / "runs" / "benchmark").glob("*.json"))} \
                 if (ROOT / "runs" / "benchmark").is_dir() else {}
             return self._send(200, json.dumps(out))
+        if u.path == "/validation":
+            p = ROOT / "runs" / "validation.json"
+            return self._send(200, _clean_json(p) if p.exists() else "null")
         if u.path == "/hypotheses":
             items = []
             for p in sorted((ROOT / "research" / "hypotheses").glob("H*.md")):
