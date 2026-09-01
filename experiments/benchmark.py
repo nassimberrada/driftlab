@@ -23,6 +23,7 @@ agent, and runs/benchmark/<world>.json with the full profile per cell.
 import argparse
 import asyncio
 import json
+import os
 import sys
 import time
 from pathlib import Path
@@ -69,7 +70,7 @@ def run_suite(args):
         name = exp.split("_")[0]
         m = importlib.import_module(f"experiments.{exp}")
         out = ROOT / "runs" / name / args.world
-        print(f"\n== {name} ({REGISTRY[name]['title']}) -> {out}")
+        print(f"\n== {name} ({REGISTRY[name]['title']}) -> {os.path.relpath(out)}")
         env = [{"world": args.world, **c} for c in m.cells(args.seeds or (1 if QUICK else DEFAULT_SEEDS))]
         asyncio.run(run_cells(expand(env, specs), m.scenario, factory, str(out), args.concurrency,
                               config={"suite": True, "quick": QUICK, "world": args.world, "registry": REGISTRY[name]}))
@@ -111,7 +112,7 @@ def matrix(world: str) -> dict:
     out = ROOT / "runs" / "benchmark"
     out.mkdir(parents=True, exist_ok=True)
     (out / f"{world}.json").write_text(json.dumps(result, indent=2))
-    print(f"matrix written to {out / f'{world}.json'}")
+    print(f"matrix written to {os.path.relpath(out / f'{world}.json')}")
     return result
 
 

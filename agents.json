@@ -1,0 +1,2 @@
+[{"name": "agy_g36flash", "type": "harness_cli", "harness": "antigravity",
+  "model": "gemini-3.6-flash-medium", "timeout_s": 240}]

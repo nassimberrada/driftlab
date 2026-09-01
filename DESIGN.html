@@ -382,8 +382,8 @@ footer.gen{color:var(--muted); font-size:12.5px; border-top:1px solid var(--line
     <rect class="box" x="928" y="428" width="172" height="90"/>
     <text class="t" x="942" y="452">Dashboard</text>
     <text class="m" x="942" y="471">driftlab/viz/</text>
-    <text class="mi" x="942" y="492">activity, performance,</text>
-    <text class="mi" x="942" y="508">configuration</text>
+    <text class="mi" x="942" y="492">home · research ·</text>
+    <text class="mi" x="942" y="508">benchmarks · runs</text>
   </g>
   <g class="node acc" data-id="research" tabindex="0" role="button" aria-label="research log">
     <rect class="box" x="928" y="560" width="172" height="90"/>
@@ -832,7 +832,7 @@ const USES = [
     p:"Grid runs with paired seeds and the CLI's own cost reports in the ledger, directly comparable with reference substrates. Calls run in an empty temp directory with a reply-only directive, so the harness can't read the answer key." },
   { t:"Watch it work", w:"Live while running, or replayed from any finished log.",
     c:"python -m driftlab.viz.server --open        # http://localhost:8765\npython -m experiments.exp04_surface_vs_latent --live   # terminal stream, forces concurrency 1",
-    p:"The tabbed dashboard: Activity (the exchange, agent memory, the world changing), Performance (tiles, reward chart, metrics), Configuration (agent profile, world, registry entry)." },
+    p:"The dashboard: Home (getting started), Research (registry + hypotheses), Benchmarks (the score matrix with drill-down into runs, profiles, effects), and Runs (live follow and replay of one run across Activity, Performance and Configuration sub-tabs)." },
   { t:"Analyze and compare", w:"Post-hoc, any time, over anyone's runs. Old logs get new metrics free.",
     c:"python -m experiments.exp04_surface_vs_latent --analyze   # tables + profile over every log in the dir\npython -m driftlab.profile runs                            # adaptation + drift profiles for every run dir\npython -m driftlab.costs runs                              # spend by model and experiment",
     p:"The experiment's tables, the standardized profile, paired effects with bootstrap CIs, and profile.json per directory." },
@@ -869,7 +869,7 @@ const INFO = {
   analyze:{e:"Analysis", t:"analyze(run_dir)", p:"experiments/expNN….analyze", b:`<p>Each experiment's own lens: lag tables, over-reaction indices, attribution accuracy, calibration curves. These complement the standardized profile.</p>`},
   metrics:{e:"Analysis", t:"Metric helpers", p:"driftlab/metrics.py", b:`<p>Shared post-hoc primitives: <code>change_events</code>, encounter-based detection/recovery/stable lags, dips, time-based recovery for worlds without task keys. Both <code>analyze()</code> and <code>profile.py</code> build on these, so lag definitions match everywhere.</p>`},
   profile:{e:"Analysis", t:"Standardized result", p:"driftlab/profile.py", b:`<p><code>run_profile()</code> reduces any trajectory to 11 raw metrics; <code>dimension_scores()</code> normalizes them into the four-dimension drift profile; <code>driftlab_score()</code> is the secondary aggregate; <code>paired_effects()</code> derives deltas with bootstrap CIs from the shared seeded cells. <code>report()</code> prints everything and writes profile.json. The full data-flow is on the State &amp; scoring tab.</p>`},
-  viz:{e:"Observability", t:"Dashboard", p:"python -m driftlab.viz.server --open", b:`<p>Live and replay views, three tabs per selected run: <strong>Activity</strong> (the exchange, agent memory versions, the world changing), <strong>Performance</strong> (tiles, reward chart with change markers, experiment metrics), <strong>Configuration</strong> (the agent's recorded profile, the world in plain language, the registry entry).</p>`},
+  viz:{e:"Observability", t:"Dashboard", p:"python -m driftlab.viz.server --open", b:`<p>Four top-level views. <strong>Home</strong>: getting started. <strong>Research</strong>: the registry and hypothesis log. <strong>Benchmarks</strong>: the agent × experiment score matrix (cells drill into the matching runs), mean dimensions, and per-experiment profiles, effects and metrics tables, recomputed by <code>--analyze</code>. <strong>Runs</strong>: one run at a time in three sub-tabs — Activity (the exchange, agent memory, the world changing), Performance (tiles and the reward chart with change markers, recovery shading, stated confidence), Configuration (the recorded agent profile, world and experiment definition) — with live follow, replay, search and filters.</p>`},
   research:{e:"Research layer", t:"Research log", p:"research/hypotheses/H001…H005", b:`<p>One claim per file: status, prediction, an evidence table naming experiments and run directories, current interpretation, next test. One hypothesis spans many experiments, and contradictions are kept. All five are on the Experiments tab.</p>`},
 
   // lifecycle

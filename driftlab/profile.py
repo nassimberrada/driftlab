@@ -29,6 +29,7 @@ machine-readable result ({schema, world, agents: {metrics, dimensions, score}, r
 
 import json
 import math
+import os
 import time
 from pathlib import Path
 
@@ -278,7 +279,7 @@ def report(run_dir: str, save: bool = True) -> dict:
     print_profile(prof)
     if save and prof["agents"]:
         (Path(run_dir) / "profile.json").write_text(json.dumps(prof, indent=2))
-        print(f"\nprofile.json written to {run_dir}")
+        print(f"\nprofile.json written to {os.path.relpath(run_dir)}")
     return prof
 
 

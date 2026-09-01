@@ -1,0 +1,24 @@
+{
+  "runs": [
+    {
+      "run": "agy_g36flash__drift_none__seed1000",
+      "path": "/home/nb/Code/driftlab/runs/exp05/rule_world/agy_g36flash__drift_none__seed1000.jsonl",
+      "cost": {},
+      "wall_s": 53.934255838394165
+    },
+    {
+      "run": "agy_g36flash__drift_low__seed2000",
+      "path": "/home/nb/Code/driftlab/runs/exp05/rule_world/agy_g36flash__drift_low__seed2000.jsonl",
+      "cost": {},
+      "wall_s": 41.24566292762756
+    },
+    {
+      "run": "agy_g36flash__drift_high__seed3000",
+      "path": "/home/nb/Code/driftlab/runs/exp05/rule_world/agy_g36flash__drift_high__seed3000.jsonl",
+      "cost": {},
+      "wall_s": 48.75419902801514
+    }
+  ],
+  "grid_costs": [],
+  "unpriced_models": []
+}

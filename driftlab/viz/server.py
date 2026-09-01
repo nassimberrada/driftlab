@@ -29,6 +29,11 @@ HERE = Path(__file__).resolve().parent
 EVENTS = Path(os.environ.get("DRIFTLAB_EVENTS", ROOT / "runs" / "events.jsonl"))
 
 
+def _clean_json(path: Path) -> str:
+    """Python's json writes bare NaN, which browsers' JSON.parse rejects; serve null instead."""
+    return json.dumps(json.loads(path.read_text(), parse_constant=lambda c: None))
+
+
 class Handler(BaseHTTPRequestHandler):
     def log_message(self, *a):  # quiet
         pass
@@ -55,6 +60,25 @@ class Handler(BaseHTTPRequestHandler):
                 return self._send(200, json.dumps(REGISTRY))
             except Exception:  # noqa: BLE001  (the page renders fine without it)
                 return self._send(200, "{}")
+        if u.path == "/profile":
+            rel = parse_qs(u.query).get("dir", [""])[0]
+            path = (ROOT / rel / "profile.json").resolve()
+            if not str(path).startswith(str(ROOT / "runs")) or not path.exists():
+                return self._send(200, "null")
+            return self._send(200, _clean_json(path))
+        if u.path == "/benchmarks":
+            out = {p.stem: json.loads(_clean_json(p)) for p in sorted((ROOT / "runs" / "benchmark").glob("*.json"))} \
+                if (ROOT / "runs" / "benchmark").is_dir() else {}
+            return self._send(200, json.dumps(out))
+        if u.path == "/hypotheses":
+            items = []
+            for p in sorted((ROOT / "research" / "hypotheses").glob("H*.md")):
+                lines = p.read_text().splitlines()
+                title = lines[0].lstrip("# ").split("—", 1)[-1].strip() if lines else p.stem
+                status = next((ln.split(":", 1)[1].strip() for ln in lines if ln.lower().startswith("status:")), "")
+                items.append({"id": p.name.split("-")[0], "file": p.name, "title": title,
+                              "status": status, "body": p.read_text()})
+            return self._send(200, json.dumps(items))
         if u.path == "/runs":
             logs = sorted(ROOT.joinpath("runs").rglob("*.jsonl"))
             return self._send(200, json.dumps([str(p.relative_to(ROOT)) for p in logs if p.name != "events.jsonl"]))

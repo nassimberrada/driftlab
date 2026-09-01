@@ -2,7 +2,7 @@
 // misses undefined-reference bugs entirely (e.g. a silently no-op string replace that drops a
 // const declaration but leaves its usages) -- exactly the bug this file exists to catch. This
 // loads the real script into a stubbed DOM and actually CALLS the functions a user interaction
-// would trigger (including firing the real #tutorial checkbox's onchange handler), rather than
+// would trigger (including firing the real tab buttons' onclick handlers), rather than
 // just checking that the file parses.
 //
 //   node driftlab/viz/dashboard_check.js driftlab/viz/index.html
@@ -61,7 +61,7 @@ vm.createContext(sandbox);
 // functions onto a global we can call afterward. Easiest: eval with a trailing debugger
 // hook isn't available, so instead we rewrite the closing `})();` to expose what we need.
 const exposed = js.replace(/\}\)\(\);\s*$/, `
-  globalThis.__test = { applyTutorial, render, ingest, setTab, setTutorial: (v) => { tutorial = v; }, tutorial: () => tutorial };
+  globalThis.__test = { applyTutorial, render, ingest, setTab, setTop, analysisHTML };
 })();`);
 
 try {
@@ -73,7 +73,7 @@ try {
 
 try {
   sandbox.__test.applyTutorial();
-  console.log('applyTutorial() with tutorial=false: OK');
+  console.log('applyTutorial(): OK');
 } catch (e) {
   console.error('FAIL: applyTutorial() threw:', e.message);
   process.exit(1);
@@ -90,30 +90,15 @@ try {
 }
 
 
-// positive assertion: turning tutorial on should replace tile content with explanatory text,
-// and the panel h2's should gain a non-empty hint line
-sandbox.__test.setTutorial(true);
-sandbox.__test.applyTutorial();
-const rollEl = elements['roll'];
-const rollSub = rollEl.parentElement.querySelector ? null : null; // parentElement is a stub without tracking; check via document instead
-// applyTutorial does: sub = valueEl.parentElement.querySelector(".s") || create+insert. Our stub's
-// parentElement.querySelector always returns null, so it always takes the "create" branch and calls
-// valueEl.after(sub) -- capture that via a spy.
-console.log('tutorial flag after set:', sandbox.__test.tutorial());
-if (sandbox.__test.tutorial() !== true) { console.error('FAIL: tutorial flag did not flip'); process.exit(1); }
-
-// the most direct test: fire the actual checkbox onchange handler, exactly as a real click would
-elements['tutorial'] = elements['tutorial'] || fakeEl('tutorial');
+// fire the actual tab button handlers, exactly as a real click would
 try {
-  if (typeof elements['tutorial'].onchange !== 'function') throw new Error("no onchange handler was ever attached to #tutorial");
-  elements['tutorial'].onchange({ target: { checked: true } });
-  console.log('#tutorial onchange(checked=true) fired without throwing');
-  elements['tutorial'].onchange({ target: { checked: false } });
-  console.log('#tutorial onchange(checked=false) fired without throwing');
-  const rollTile = elements['roll'];
-  console.log('roll tile parentElement received insert calls:', rollTile ? 'yes (getElementById was called for it)' : 'NEVER LOOKED UP');
+  if (typeof elements['tabPerformance'].onclick !== 'function') throw new Error('no onclick handler was attached to the tab buttons');
+  elements['tabPerformance'].onclick();
+  elements['tabConfig'].onclick();
+  elements['tabActivity'].onclick();
+  console.log('tab switching fired without throwing');
 } catch (e) {
-  console.error('FAIL: firing #tutorial onchange threw:', e.message);
+  console.error('FAIL: tab switch threw:', e.message);
   process.exit(1);
 }
 console.log('ALL RUNTIME CHECKS PASSED');
@@ -135,7 +120,22 @@ try {
   for (const tabName of ["Performance", "Config", "Activity"]) T.setTab(tabName);
   const prof = elements["agentProf"].innerHTML;
   if (!prof.includes("antigravity") || !prof.includes("model")) throw new Error("agent profile rows missing: " + prof);
-  if (!elements["runTitle"].textContent.includes("agy · changing · seed 0")) throw new Error("run title not humanized: " + elements["runTitle"].textContent);
+  if (!elements["progWrap"].title.includes("agy · changing · seed 0")) throw new Error("progress title not humanized: " + elements["progWrap"].title);
   if (elements["instr"].textContent !== "You work on the intake desk.") throw new Error("instructions missing");
   console.log("DEEP CHECKS PASSED: ingest/render/tabs/config with a realistic run");
 } catch (e) { console.error("DEEP FAIL:", e.message); process.exit(1); }
+
+// analysis formatting: analyze() text should become HTML tables, and the analysis
+// should be stored per experiment; top-level view switching must not throw
+try {
+  const T = sandbox.__test;
+  T.ingest({ run: "agy__changing__seed0", kind: "analysis", experiment: "exp02",
+             text: "Lags after a change (lower is better)\nagent              n  detection_lag  recovery_lag\n--------------------------------------------------\nagy                8          0.857         2.833\n" });
+  const html = T.analysisHTML("head a  head b\n----------\nrow1a  1.00\n");
+  if (!html.includes("<table")) throw new Error("analysis not table-formatted: " + html.slice(0, 120));
+  T.setTop("bench");
+  T.setTop("research");
+  T.setTop("home");
+  T.setTop("runs");
+  console.log("ANALYSIS + TOP-LEVEL VIEW CHECKS PASSED");
+} catch (e) { console.error("ANALYSIS/TOPNAV FAIL:", e.message); process.exit(1); }

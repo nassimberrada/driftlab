@@ -144,6 +144,8 @@ class HarnessCLIAgent:
                 data = json.loads(out)
             except ValueError:
                 return out.strip()
+            if data.get("is_error"):
+                raise SystemExit(f"harness_cli (claude): {data.get('result') or data.get('subtype')}")
             self.session = data.get("session_id", self.session)
             usage = data.get("usage") or {}
             LEDGER.record_costed(self.spec.get("model", "claude-cli"), float(data.get("total_cost_usd") or 0.0),
@@ -155,6 +157,8 @@ class HarnessCLIAgent:
             except ValueError:
                 self.session = self.session or "started"
                 return out.strip()
+            if data.get("status") == "ERROR" or data.get("error"):  # config errors fail every step; die loudly
+                raise SystemExit(f"harness_cli ({self.harness}): {data.get('error') or data}")
             self.session = data.get("conversation_id") or data.get("session_id") or self.session or "started"
             usage = data.get("usage") or {}
             if usage.get("input_tokens") or usage.get("output_tokens"):

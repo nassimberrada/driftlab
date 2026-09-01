@@ -33,6 +33,7 @@ bills; it is not metered here.
 
 import argparse
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -140,6 +141,10 @@ if __name__ == "__main__":
     for path, content in plan["files"].items():
         Path(path).parent.mkdir(parents=True, exist_ok=True)
         Path(path).write_text(content)
+    # The profile also rides on the harness process itself, so the MCP server child
+    # inherits it even when the harness connects through its own (global) driftlab
+    # registration instead of the config this launcher wires up.
+    env = {**os.environ, "DRIFTLAB_AGENT_PROFILE": json.dumps(plan["profile"])}
     for pre in plan["pre"]:
-        subprocess.run(pre, cwd=ROOT, check=True)
-    sys.exit(subprocess.run(plan["cmd"], cwd=ROOT).returncode)
+        subprocess.run(pre, cwd=ROOT, check=True, env=env)
+    sys.exit(subprocess.run(plan["cmd"], cwd=ROOT, env=env).returncode)

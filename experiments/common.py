@@ -99,7 +99,7 @@ def cli(name: str, description: str, extra=None) -> argparse.Namespace:
     if extra:
         extra(ap)
     args = ap.parse_args()
-    args.out = args.out or str(ROOT / "runs" / name / args.world)
+    args.out = args.out or _os.path.relpath(ROOT / "runs" / name / args.world)  # relative: keeps printed paths portable
     if args.budget_usd is not None:
         from driftlab.agents.brain import LEDGER
         LEDGER.budget_usd = args.budget_usd
@@ -146,9 +146,16 @@ def run_experiment(name, doc, cells, scenario, reference_agents, analyze, config
 
     args = cli(name, doc, extra_args)
     if args.analyze:
-        analyze(args.out)
-        print()
-        report(args.out)
+        import contextlib
+        import io
+        from driftlab.live import LIVE
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            analyze(args.out)
+            print()
+            report(args.out)
+        LIVE.analysis(name, buf.getvalue())  # so the dashboard picks up refreshed tables too
+        print(buf.getvalue())
         return
     env = [{"world": args.world, **c} for c in cells(args.seeds or (1 if QUICK else DEFAULT_SEEDS))]  # a cell may pin its own world
     grid = expand(env, resolve_agents(args, reference_agents))

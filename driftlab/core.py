@@ -18,6 +18,7 @@ so an in-process reference agent and an external harness behind an MCP
 server are interchangeable.
 """
 
+import time
 from collections import deque
 from dataclasses import dataclass, field
 from typing import Any, Awaitable, Callable, Protocol, runtime_checkable
@@ -79,7 +80,9 @@ async def run(scenario: Scenario, agent: Any) -> tuple[dict, list[dict]]:
         observation = world.observe(t)
         prompt = f"{notice}\n\n{observation}" if notice else observation
 
+        t_act = time.time()
         text = await agent.act(prompt)
+        act_s = round(time.time() - t_act, 3)
         action = world.parse(text)
         parse_failed = action is None
         if parse_failed:
@@ -97,7 +100,7 @@ async def run(scenario: Scenario, agent: Any) -> tuple[dict, list[dict]]:
 
         rec = {"t": t, "observation": observation, "notice": notice, "reply": text[-400:],
                "action": world.describe_action(action), "reward": float(reward), "feedback": feedback,
-               "parse_failed": parse_failed, **world.privileged(t)}
+               "parse_failed": parse_failed, "act_s": act_s, **world.privileged(t)}
         LIVE.step(t, T, rec)
         if scenario.after_step:
             rec.update(await scenario.after_step(t, rec, agent) or {})

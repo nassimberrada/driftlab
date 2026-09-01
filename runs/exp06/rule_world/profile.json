@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "run_dir": "runs/exp06/rule_world",
+  "generated": 1788275434.5984836,
+  "world": "rule_world",
+  "agents": {
+    "agy_g36flash": {
+      "n_runs": 1,
+      "metrics": {
+        "detection_lag": 0.25,
+        "recovery_lag": NaN,
+        "final_accuracy": 0.2,
+        "retention": NaN,
+        "stale_rate": NaN,
+        "interference": -0.5630952380952381,
+        "calibration_error": 0.37125,
+        "overconfidence": 0.3583333333333334,
+        "parse_failure_rate": 0.0,
+        "cost_per_success": NaN,
+        "final_reward": 0.2,
+        "n_changes": 5.0,
+        "cost_usd": 0
+      },
+      "dimensions": {
+        "adaptation": 0.47619047619047616,
+        "knowledge": 0.1,
+        "epistemics": 0.6287499999999999,
+        "efficiency": 1.0
+      },
+      "driftlab_score": 0.551235119047619
+    }
+  },
+  "effects": {
+    "field": "final_accuracy",
+    "agent": [],
+    "regime": []
+  },
+  "runs": [
+    {
+      "agent": "agy_g36flash",
+      "regime": "changing",
+      "seed": 1000,
+      "world": "rule_world",
+      "n_steps": 12,
+      "n_changes": 5,
+      "detection_lag": 0.25,
+      "recovery_lag": NaN,
+      "final_accuracy": 0.2,
+      "final_reward": 0.2,
+      "retention": NaN,
+      "stale_rate": NaN,
+      "interference": -0.5630952380952381,
+      "calibration_error": 0.37125,
+      "overconfidence": 0.3583333333333334,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0,
+      "cost_per_success": NaN
+    }
+  ]
+}

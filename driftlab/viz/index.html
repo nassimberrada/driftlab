@@ -35,33 +35,62 @@
   html, body { height: 100%; }
   body { margin: 0; background: var(--surface-0); color: var(--text-primary); overflow: hidden;
          font: 13px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; display: flex; flex-direction: column; }
-  header { display: flex; align-items: center; gap: 16px; padding: 10px 16px; background: var(--surface-1);
-           border-bottom: 1px solid var(--border); flex-wrap: wrap; }
-  header h1 { font-size: clamp(14px, 1.4vw, 18px); margin: 0; font-weight: 600; letter-spacing: .2px; }
-  header .status { color: var(--text-secondary); font-size: 13px; }
-  header .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--critical); margin-right: 6px; }
-  header .dot.on { background: var(--good); }
-  header select, header button { font: inherit; padding: 4px 8px; border: 1px solid var(--border); background: var(--surface-2);
-           color: var(--text-primary); border-radius: 6px; }
-  header label { color: var(--text-secondary); font-size: 13px; display: flex; gap: 6px; align-items: center; }
-  header .ctl { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-left: auto; }
+  .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--critical); margin-left: 6px; vertical-align: 1px; }
+  .dot.on { background: var(--good); }
 
-  main { flex: 1; min-height: 0; display: grid; gap: 8px; padding: 8px 10px;
+  .topnav { display: flex; gap: 4px; padding: 8px 12px 0; background: var(--surface-1); border-bottom: 1px solid var(--border); }
+  .topnav button { font: 600 14px system-ui, sans-serif; letter-spacing: .2px; padding: 8px 18px 9px; cursor: pointer;
+    background: none; border: 1px solid transparent; border-bottom: none; color: var(--text-secondary);
+    border-radius: 8px 8px 0 0; margin-bottom: -1px; }
+  .topnav button:hover { color: var(--text-primary); }
+  .topnav button.on { background: var(--surface-0); border-color: var(--border); border-bottom: 1px solid var(--surface-0); color: var(--text-primary); }
+  main[hidden] { display: none !important; }
+  #viewRuns { flex: 1; min-height: 0; display: grid; gap: 8px; padding: 8px 10px;
          grid-template-columns: minmax(190px, 1fr) minmax(0, 4fr); }
+  main.page { flex: 1; min-height: 0; overflow: auto; padding: 10px 14px; }
+  main.page .panel { margin-bottom: 10px; }
+  .benchhead { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin: 2px 0 10px; }
+  .benchhead h2 { font-size: 15px; margin: 0; font-weight: 600; }
+  .benchhead select, .benchhead button { font: inherit; font-size: 12px; padding: 4px 8px; border: 1px solid var(--border);
+    background: var(--surface-2); color: var(--text-primary); border-radius: 6px; }
+  .benchhead button { cursor: pointer; }
+  td.cell-drill { cursor: pointer; } td.cell-drill:hover { outline: 1px solid var(--series-1); }
+  table.lefty td { text-align: left; }
+  .chip { display: inline-block; font-size: 10.5px; letter-spacing: .04em; border: 1px solid var(--border);
+    border-radius: 999px; padding: 2px 8px 1px; color: var(--text-secondary); }
+  details.hyp { border-bottom: 1px solid var(--grid); padding: 6px 0; }
+  details.hyp summary { cursor: pointer; font-size: 13px; }
+  details.hyp pre.hypbody { margin-top: 8px; max-height: 320px; }
+  .analysisFmt { overflow: auto; min-height: 0; }
+  .analysisFmt .aline { margin: 6px 0 2px; font-size: 12px; color: var(--text-secondary); }
+  .analysisFmt table.cohort { margin-bottom: 6px; }
+  /* benchmarks: room between the sections of each experiment panel */
+  #benchExps .panel { padding: 12px 14px 16px; }
+  #benchExps .panel h2 { margin-bottom: 10px; }
+  #benchExps h3 { margin: 20px 0 8px; }
+  #benchExps .tablewrap { margin: 6px 0 10px; }
+  #benchExps ul.fx { margin-bottom: 14px; }
+  #benchExps .aline { margin-bottom: 12px; }
+  .benchhint { color: var(--text-muted); font-size: 11px; line-height: 1.35; margin: -2px 0 6px; }
+  /* home */
+  .hometext { font-size: 13.5px; max-width: 84ch; margin: 4px 0 10px; }
+  .hometabs { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+  .hometabs h3 { font-size: 13px; color: var(--text-primary); margin: 4px 0; }
+  .linkbtn { font: inherit; font-size: 11px; padding: 2px 9px; margin-left: 6px; cursor: pointer;
+    border: 1px solid var(--border); background: var(--surface-2); color: var(--text-primary); border-radius: 999px; }
+  .linkbtn:hover { border-color: var(--series-1); }
   .side { min-height: 0; display: flex; flex-direction: column; }
   .side .panel { flex: 1; min-height: 0; display: flex; flex-direction: column; }
   .content { min-height: 0; display: flex; flex-direction: column; gap: 8px; }
-  @media (max-width: 1000px) { body { overflow: auto; } main { grid-template-columns: 1fr; }
+  @media (max-width: 1000px) { body { overflow: auto; } #viewRuns { grid-template-columns: 1fr; }
     .side { max-height: 200px; } }
 
   .panel { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; }
   .panel h2 { font-size: 11px; text-transform: uppercase; letter-spacing: .6px; color: var(--text-secondary); margin: 0 0 6px; font-weight: 600; }
   .panel h3 { font-size: 11px; color: var(--text-muted); margin: 8px 0 4px; font-weight: 500; }
 
-  /* status bar above the tabs */
-  .statusbar { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
-  .statusbar .who { min-width: 260px; flex: 1; }
-  .statusbar .who .progress { margin: 6px 0 0; }
+  /* tab bar with the selected run's progress under it */
+  .statusbar { display: flex; flex-direction: column; gap: 8px; align-items: stretch; }
   .progress { height: 5px; background: var(--surface-2); border-radius: 3px; overflow: hidden; }
   .progress > div { height: 100%; background: var(--series-1); width: 0; transition: width .2s; }
 
@@ -75,20 +104,29 @@
   section.tab { flex: 1; min-height: 0; display: grid; gap: 8px; }
 
   /* activity tab */
-  #secActivity { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
-                 grid-template-areas: "work world" "memory world"; }
+  #secActivity { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: minmax(0, 3fr) minmax(0, 2fr);
+                 grid-template-areas: "work world" "memory memory"; }
   #secActivity .work { grid-area: work; } #secActivity .memory { grid-area: memory; } #secActivity .worldp { grid-area: world; }
   #secActivity .panel { min-height: 0; overflow: auto; display: flex; flex-direction: column; }
 
-  /* performance tab */
-  #secPerformance { grid-template-rows: auto minmax(0, 2fr) minmax(0, 1fr); grid-template-columns: minmax(0, 1fr); }
+  /* performance tab: tiles on top, the chart filling the rest */
+  #secPerformance { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
   #secPerformance .panel { min-height: 0; overflow: auto; display: flex; flex-direction: column; }
+  table.cohort { border-collapse: collapse; font-size: 12.5px; width: 100%; }
+  table.cohort th { font: 600 10.5px "IBM Plex Mono", monospace; letter-spacing: .04em; color: var(--text-secondary);
+    text-align: right; padding: 4px 8px; border-bottom: 1px solid var(--border); }
+  table.cohort th:first-child { text-align: left; }
+  table.cohort td { padding: 4px 8px; text-align: right; font-variant-numeric: tabular-nums; border-bottom: 1px solid var(--grid); }
+  table.cohort td:first-child { text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 140px; }
+  table.cohort td.score { font-weight: 600; }
+  ul.fx { list-style: none; margin: 4px 0 0; padding: 0; font-size: 12px; }
+  ul.fx li { padding: 3px 0; border-bottom: 1px solid var(--grid); display: flex; justify-content: space-between; gap: 10px; }
+  ul.fx li .d { font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--text-secondary); }
   .tiles { display: flex; gap: 8px; flex-wrap: wrap; }
   .tile { background: var(--surface-2); border-radius: 8px; padding: 6px 10px; min-width: 120px; flex: 1; }
   .tile .k { font-size: 10px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: .5px; }
   .tile .v { font-size: clamp(15px, 1.6vw, 22px); font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1.15; }
-  .tile .s { display: none; font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-  .tile.tutorial .v { display: none; } .tile.tutorial .s { display: block; max-width: none; }
+  .tile .s { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
   .chartwrap { flex: 1; min-height: 90px; display: flex; }
 
   /* configuration tab */
@@ -120,11 +158,26 @@
   .badge.warn::before { background: var(--warning); }
   .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 6px 0; }
   .muted { color: var(--text-muted); font-size: 12px; }
+  .runctl { display: flex; gap: 6px; margin: 0 0 6px; }
+  .runctl input, .runctl button, #filterPanel select { font: inherit; font-size: 12px; padding: 4px 8px;
+    border: 1px solid var(--border); background: var(--surface-2); color: var(--text-primary); border-radius: 6px; }
+  .runctl input { flex: 1; min-width: 0; }
+  .runctl button { cursor: pointer; } .runctl button.on { border-color: var(--series-1); }
+  #filterPanel { display: flex; flex-direction: column; gap: 4px; margin: 0 0 6px; }
+  #filterPanel[hidden] { display: none; }
+  #filterPanel label { display: flex; justify-content: space-between; gap: 8px; align-items: center;
+    font-size: 12px; color: var(--text-secondary); }
+  #filterPanel select { max-width: 62%; }
   .runs { list-style: none; margin: 0; padding: 0; overflow: auto; flex: 1; }
-  .runs li { padding: 6px 8px; border-radius: 6px; cursor: pointer; display: flex; justify-content: space-between; gap: 8px; font-size: 13px; }
+  .runs li { padding: 6px 8px; border-radius: 6px; cursor: pointer; display: block; font-size: 13px; }
+  .runs li .rmain { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+  .runs li .rsub { color: var(--text-muted); font-size: 11.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 2px; }
   .runs li:hover { background: var(--surface-2); } .runs li.active { background: var(--surface-2); outline: 1px solid var(--series-1); }
   .runs li .n { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .runs li .m { color: var(--text-secondary); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .runs li button.play { font: inherit; font-size: 11px; line-height: 1; padding: 3px 8px; border-radius: 5px;
+    border: 1px solid var(--border); background: var(--surface-1); color: var(--text-primary); cursor: pointer; flex: none; }
+  .runs li button.play:hover { border-color: var(--series-1); }
   .log { list-style: none; margin: 0; padding: 0; overflow: auto; font-size: 11.5px; }
   .log li { padding: 4px 0; border-bottom: 1px solid var(--grid); display: grid; grid-template-columns: 34px 1fr; gap: 8px; }
   .log li .t { color: var(--text-muted); font-variant-numeric: tabular-nums; }
@@ -153,39 +206,100 @@
 </style>
 </head>
 <body>
-<header>
-  <h1>driftlab</h1>
-  <span class="status"><span id="dot" class="dot"></span><span id="conn">connecting…</span></span>
-  <div class="ctl">
-    <label><input type="checkbox" id="follow" checked> follow newest run</label>
-    <label>replay <select id="replaySel"><option value="">choose a finished log…</option></select>
-      <select id="speed"><option value="150">6×</option><option value="60" selected>16×</option><option value="15">60×</option><option value="0">instant</option></select>
-      <button id="replayBtn">play</button></label>
-    <label title="Swap the numbers for a plain-language explanation of what each one measures"><input type="checkbox" id="tutorial"> tutorial mode</label>
+<nav class="topnav">
+  <button id="topHome" class="on">Home</button>
+  <button id="topResearch">Research</button>
+  <button id="topBench">Benchmarks</button>
+  <button id="topRuns">Runs</button>
+</nav>
+
+<!-- HOME: getting started -->
+<main id="viewHome" class="page">
+  <div class="panel">
+    <h2>Welcome to the driftlab dashboard</h2>
+    <p class="hometext">driftlab runs agents through jobs whose rules keep changing, and measures how they cope against the world's
+    hidden ground truth. Everything here is read from the run logs: watch agents work live, replay finished runs, compare
+    agents across experiments, and browse the research program. Every panel carries its own explanation under its heading.</p>
   </div>
-  <span class="muted" id="evfile"></span>
-</header>
-<main>
+  <div class="panel"><h2>Core concepts</h2>
+    <div class="hometabs">
+      <div><h3>World</h3>
+        <p class="hometext">A job at a fictional company — an intake desk, order-form data entry, an inventory buyer, a developer —
+        with seeded hidden rules that decide what is correct. The agent is never told it is in an experiment; it just works the job.</p></div>
+      <div><h3>Agent</h3>
+        <p class="hometext">Anything that answers text with text: it gets an observation, replies with an action, and hears the outcome.
+        An LLM with a memory strategy, a lookup-table baseline, or an external harness such as Claude Code or Antigravity — all play
+        under the same contract and the same metrics.</p></div>
+      <div><h3>Drift</h3>
+        <p class="hometext">How the world changes. Substantive: the correct behavior changes (a rule flips, demand jumps). Cosmetic:
+        only the wording changes, so reacting is a mistake. Self-caused: the agent's own behavior triggers the change, and nothing
+        external marks the moment.</p></div>
+      <div><h3>Experiment</h3>
+        <p class="hometext">A protocol laid over a world: when drift happens, what memos and probes appear, and what gets measured.
+        There are fifteen, each registered with its hypothesis, variables and a version (see Research). The same experiment can run
+        on any world that supports what it needs.</p></div>
+      <div><h3>Regime</h3>
+        <p class="hometext">One condition within an experiment — for example surface vs latent change, or a drift rate of 0, 4 or 12.
+        Regimes crossed with seeds (the world's random draw) make the grid of cells an experiment runs; the same seeds across agents
+        are what make comparisons paired.</p></div>
+      <div><h3>Run</h3>
+        <p class="hometext">One agent playing one cell for a fixed number of steps: one episode, one entry in the Runs list, one
+        trajectory log. The log records every step next to the hidden ground truth the agent never saw, and it is the source
+        everything else on this dashboard is computed from.</p></div>
+      <div><h3>Profile &amp; score</h3>
+        <p class="hometext">Post-hoc measurements over a run directory: detection and recovery lags, retention, stale-memory rate,
+        calibration, cost — normalized into four 0–1 dimensions whose mean is the driftlab score. The vector is the result; the
+        score is a convenience for ranking.</p></div>
+      <div><h3>Hypothesis</h3>
+        <p class="hometext">A scientific claim that spans experiments (H001–H005), kept in the research log with a status and an
+        evidence table that accumulates across runs — contradictions included. Experiments produce numbers; hypotheses are where
+        they become knowledge.</p></div>
+    </div>
+  </div>
+  <div class="panel"><h2>The tabs</h2>
+    <div class="hometabs">
+      <div><h3>Research <button class="linkbtn" data-top="research">open</button></h3>
+        <p class="hometext">What the lab is asking: every experiment's registry entry (hypothesis, variables, drift types, version)
+        and the hypothesis log with statuses and evidence. Start here to understand what a result would mean.</p></div>
+      <div><h3>Benchmarks <button class="linkbtn" data-top="bench">open</button></h3>
+        <p class="hometext">How agents compare: the agent × experiment score matrix (click a cell to jump to those runs), mean score
+        dimensions per agent, and per-experiment panels with the full adaptation profile, paired effects and metrics tables.
+        Recomputed by <code>--analyze</code>; the stamp shows when.</p></div>
+      <div><h3>Runs <button class="linkbtn" data-top="runs">open</button></h3>
+        <p class="hometext">One run at a time, in three sub-tabs: <strong>Activity</strong> (what the agent sees, replies and is told;
+        its memory; the world changing), <strong>Performance</strong> (headline tiles and the reward chart with change markers,
+        recovery shading and stated confidence), <strong>Configuration</strong> (the agent's recorded profile, the world, the
+        experiment definition).</p></div>
+    </div>
+  </div>
+</main>
+<main id="viewRuns" hidden>
   <!-- SIDEBAR: every run seen, live or replayed; click to inspect -->
   <div class="side">
-    <div class="panel"><h2 id="hRuns">Runs</h2><ul class="runs" id="runs"></ul></div>
+    <div class="panel"><h2 id="hRuns">Runs <span id="dot" class="dot" title="connecting…"></span></h2>
+      <div class="runctl">
+        <input id="runSearch" type="search" placeholder="search runs…">
+        <button id="filterBtn" title="filter by experiment, regime, agent or model">Filter</button>
+        <button id="clearFilters" title="clear the search and every filter">clear</button>
+      </div>
+      <div id="filterPanel" hidden>
+        <label>experiment <select id="fExp"><option value="">all</option></select></label>
+        <label>regime <select id="fRegime"><option value="">all</option></select></label>
+        <label>agent <select id="fAgent"><option value="">all</option></select></label>
+        <label>model <select id="fModel"><option value="">all</option></select></label>
+      </div>
+      <ul class="runs" id="runs"></ul></div>
   </div>
 
   <div class="content">
-    <!-- STATUS: who is playing what, how far along -->
+    <!-- tabs + progress of the selected run -->
     <div class="panel statusbar">
-      <div class="who">
-        <div class="row" style="justify-content:space-between;margin:0">
-          <div><strong id="runTitle">—</strong> <span class="muted" id="runMeta"></span></div>
-          <div class="muted" id="stepCount"></div>
-        </div>
-        <div class="progress"><div id="prog"></div></div>
-      </div>
       <nav class="tabbar">
         <button id="tabActivity" class="on">Activity</button>
         <button id="tabPerformance">Performance</button>
         <button id="tabConfig">Configuration</button>
       </nav>
+      <div class="progress" id="progWrap"><div id="prog"></div></div>
     </div>
 
     <!-- ACTIVITY: the agent working, its memory, and the world changing -->
@@ -220,14 +334,15 @@
         <div class="tile" title="mean reward over the whole run so far"><div class="k">cumulative reward</div><div class="v" id="cum">—</div></div>
         <div class="tile" title="replies the world could not turn into a valid action"><div class="k">parse failures</div><div class="v" id="pf">—</div></div>
         <div class="tile" title="rule flips, relabels, notices, new versions"><div class="k">world changes</div><div class="v" id="nch">—</div></div>
+        <div class="tile" title="LLM spend attributed to this run"><div class="k">spend</div><div class="v" id="spend">—</div></div>
+        <div class="tile" title="mean wall-clock seconds per agent reply"><div class="k">step time</div><div class="v" id="steptime">—</div></div>
       </div>
-      <div class="panel">
+      <div class="panel chartp">
         <h2 id="hPerf">Reward over time</h2>
         <div class="chartwrap"><svg class="chart" id="chart"></svg></div>
-        <div class="legend"><span><i style="background:var(--series-1)"></i>rolling accuracy (last 10)</span><span><i style="background:var(--series-2)"></i>cumulative</span><span><i style="background:var(--mark-event);height:1px;border-top:1px dashed var(--mark-event)"></i>world change / notice</span></div>
+        <div class="legend"><span><i style="background:var(--series-1)"></i>rolling accuracy (last 10)</span><span><i style="background:var(--series-2)"></i>cumulative</span><span><i style="background:var(--mark-event);height:1px;border-top:1px dashed var(--mark-event)"></i>world change / notice</span><span id="legConf" hidden><i style="background:var(--series-3)"></i>stated confidence</span><span id="legRecov" hidden><i style="background:var(--series-2);opacity:.25;height:8px"></i>recovery window</span></div>
         <div class="strip" id="strip" style="margin-top:8px"></div>
       </div>
-      <div class="panel" id="analysisPanel" style="display:none"><h2>Experiment metrics</h2><pre id="analysis" class="tall" style="max-height:none"></pre></div>
     </section>
 
     <!-- CONFIGURATION: the agent's profile, the world, and the experiment -->
@@ -250,12 +365,35 @@
     </section>
   </div>
 </main>
+
+<!-- BENCHMARKS: cohort- and cross-experiment-level results, recomputed by --analyze -->
+<main id="viewBench" class="page" hidden>
+  <div class="benchhead">
+    <h2>Benchmarks</h2>
+    <label class="muted">world <select id="benchWorld"></select></label>
+    <button id="benchRefresh" title="re-fetch matrices and profiles">refresh</button>
+    <span class="muted" id="benchStamp"></span>
+  </div>
+  <div class="panel"><h2 id="hMatrix">Driftlab score per agent and experiment</h2>
+    <div class="tablewrap" id="benchMatrix"><p class="muted">no matrix yet</p></div></div>
+  <div class="panel"><h2 id="hDims">Mean score dimensions per agent</h2>
+    <div class="tablewrap" id="benchDims"></div></div>
+  <div id="benchExps"></div>
+</main>
+
+<!-- RESEARCH: the experiment registry and the hypothesis log -->
+<main id="viewResearch" class="page" hidden>
+  <div class="panel"><h2 id="hRegistry">Experiment registry</h2>
+    <div class="tablewrap" id="regTable"></div></div>
+  <div class="panel"><h2 id="hHyp">Hypotheses</h2><div id="hypList"><p class="muted">loading…</p></div></div>
+</main>
 <div class="tooltip" id="tip"></div>
 <script>
 (() => {
   const $ = id => document.getElementById(id);
   const runs = new Map();          // label -> state
-  let active = null, replaying = false, tab = "Activity";
+  let active = null, pinned = false, replaying = false, tab = "Activity";
+  const analysisByExp = {};   // latest analysis text per experiment, so replays get it too
   let REGISTRY = {};               // experiment definitions, served by /registry
 
   // ---- humanizing ---------------------------------------------------------------
@@ -283,9 +421,9 @@
 
   function ingest(ev) {
     const s = state(ev.run || "run");
-    if (ev.kind === "run_start") { Object.assign(s, { steps: [], events: [], metrics: null, analysis: null, done: null, keys: new Map(), changedKeys: new Set(), extra: {}, memories: [], memView: null });
-      s.cell = ev.cell; s.T = ev.T; s.instructions = ev.instructions || ""; s.world = ev.world; s.experiment = ev.experiment;
-      if ($("follow").checked && !replaying) active = s.label; }
+    if (ev.kind === "run_start") { Object.assign(s, { steps: [], events: [], metrics: null, analysis: null, done: null, keys: new Map(), changedKeys: new Set(), extra: {}, memories: [], memView: null, cost: null });
+      s.cell = ev.cell; s.T = ev.T; s.instructions = ev.instructions || ""; s.world = ev.world; s.experiment = ev.experiment; s.cost = ev.cost || null;
+      if (!pinned && !replaying) active = s.label; }
     else if (ev.kind === "step") { s.steps.push(ev); s.T = ev.T || s.T;
       if (ev.key) { const k = ev.key.join("|"); s.keys.set(k, { reward: ev.reward, t: ev.t, correct: ev.correct }); }
       (ev.changes || ev.mutations || []).forEach(m => (m.affected || []).forEach(a => s.changedKeys.add(a.join("|"))));
@@ -294,7 +432,8 @@
       if (ev.memory !== undefined && ev.memory !== null) { s.memory = ev.memory; s.memories.push({ t: s.steps.length, text: ev.memory, kind: ev.memory_kind || "notes" }); s.memView = null; } }
     else if (ev.kind === "metrics") s.metrics = ev;
     else if (ev.kind === "run_end") { s.done = ev; refreshRuns(); }
-    else if (ev.kind === "analysis") { for (const r of runs.values()) if (r.experiment === ev.experiment || !r.experiment) r.analysis = ev.text; s.analysis = ev.text; }
+    else if (ev.kind === "analysis") { for (const r of runs.values()) if (r.experiment === ev.experiment || !r.experiment) r.analysis = ev.text; s.analysis = ev.text;
+      const e = (String(ev.experiment || "").match(/exp\d+/) || [])[0]; if (e) analysisByExp[e] = ev.text; }
     if (!active) active = s.label;
   }
 
@@ -305,21 +444,24 @@
     cum: "Mean reward over ALL steps so far. Moves slowly; an early mistake or an early change drags it down for a long time.",
     pf: "Replies the world couldn't turn into a valid action. Should sit near zero — a rising count points at a reply-format problem, not a learning one.",
     nch: "Rule flips, relabels, notices and similar events logged so far. Compare against the timeline and the chart to see whether reward dipped around them.",
+    spend: "LLM spend attributed to this run: reference agents from the price table, path B CLIs from their own usage reports. MCP harness runs are not metered, so this stays blank for them.",
+    steptime: "Mean wall-clock seconds per agent reply. Only runs recorded after step timing was added carry it.",
   };
   const TUTORIAL_PANELS = {
     hPerf: "Reward over time. Orange (cumulative) moves slowly and shows overall competence; blue (rolling 10) reacts fast and shows current performance. Dashed lines mark a world change or notice — look for a dip just after one, and how long it takes to recover.",
     hWorld: "What changed, and the hidden state the agent doesn't see. The grid (RuleWorld only) shows the last outcome for every request key; an orange dot means that key's rule changed. The timeline lists every change, notice and memory update as it happened.",
     hAgent: "What the agent is looking at right now, what it answered, and what it was told in return. This is the raw exchange — everything else on the page is computed from a sequence of these.",
     hMemory: "Whatever the agent chose to write down for itself. Reference agents rewrite notes periodically; an MCP harness gets notebook tools it can call. A CLI-driven agent (path B) holds its memory in its own session, which driftlab deliberately cannot read. Empty here means the agent isn't using a visible store, not that nothing is being logged.",
-    hRuns: "Every run this dashboard has seen, live or finished. Click one to inspect it instead of following the newest.",
+    hRuns: "Every run this dashboard has seen, live or finished. The newest run is followed until you click one to pin it; ▶ replays a finished log.",
     hExp: "What this experiment tests — its hypothesis and variables from the registry — and the exact job description the agent was given at the start of the run.",
     hAgentCfg: "The agent's recorded identity: everything the run header knows about who played. For an enforced profile (path A launcher, path B specs) this is pinned configuration, not self-description.",
+    hMatrix: "The reference-suite summary: each cell is one agent's driftlab score on one experiment (darker = higher). Click a cell to jump to those runs. The score is a convenience; the profiles below are the result.",
+    hDims: "Each agent's four score dimensions averaged across the suite: adaptation (detection/recovery), knowledge (accuracy/retention/interference), epistemics (calibration/stale memory), efficiency (parsing/cost). — means no experiment in the suite measured it.",
+    hRegistry: "What each experiment tests: hypothesis, drift types, and which research hypotheses it bears on, from experiments/registry.py. The same definition is stamped into every run's manifest.",
+    hHyp: "The research log: one claim per file in research/hypotheses/, each with a status and an evidence table that accumulates across experiments. Update the file when results land.",
     hWorldCfg: "The job the agent was doing, and what kinds of change this world can undergo.",
   };
-  let tutorial = false;
-
-  function applyTutorial() {
-    document.querySelectorAll(".tile").forEach(t => t.classList.toggle("tutorial", tutorial));
+  function applyTutorial() {  // explanations are always shown, under the values
     for (const [id, text] of Object.entries(TUTORIAL_TILES)) {
       const valueEl = document.getElementById(id); if (!valueEl) continue;
       let sub = valueEl.parentElement.querySelector(".s");
@@ -331,7 +473,7 @@
       let hint = document.getElementById(`hint-${id}`);
       if (!hint) { hint = document.createElement("div"); hint.id = `hint-${id}`; hint.className = "muted";
         hint.style.cssText = "margin:-2px 0 6px;font-size:11px;line-height:1.35"; h2.after(hint); }
-      hint.textContent = tutorial ? text : ""; hint.style.display = tutorial ? "block" : "none";
+      hint.textContent = text;
     }
   }
 
@@ -348,15 +490,16 @@
     const roll = n ? r.slice(-10).reduce((a, b) => a + b, 0) / Math.min(10, n) : null;
     const cum = n ? r.reduce((a, b) => a + b, 0) / n : null;
     const reg = REGISTRY[expId(s)] || null;
-    $("runTitle").textContent = humanRun(s.label);
-    $("runMeta").textContent = s.cell ? [reg ? `${reg.title} (${expId(s)})` : (s.experiment ? human(s.experiment) : ""),
-      s.cell.regime != null ? `regime ${human(s.cell.regime)}` : "", s.cell.seed != null ? `seed ${s.cell.seed}` : "",
-      `agent ${human((s.cell.agent || {}).name || "—")}`, s.done ? "finished" : ""].filter(Boolean).join("  ·  ") : "";
-    $("stepCount").textContent = s.T ? `step ${n} / ${s.T}` : `step ${n}`;
     $("prog").style.width = s.T ? `${100 * n / s.T}%` : "0";
+    $("progWrap").title = `${humanRun(s.label)} · step ${n}${s.T ? ` / ${s.T}` : ""}`;
     $("roll").textContent = fmt(roll); $("cum").textContent = fmt(cum);
     $("pf").textContent = s.steps.filter(x => x.parse_failed).length;
     $("nch").textContent = s.events.filter(e => e.kind === "world_change" || e.kind === "notice").length;
+    const spend = s.done?.cost_usd ?? (s.cost ? Object.values(s.cost).reduce((a, c) => a + (c.cost_usd || 0), 0)
+                                             : (s.metrics && s.metrics.spent_usd > 0 ? s.metrics.spent_usd : null));
+    $("spend").textContent = spend != null ? `$${(+spend).toFixed(4)}` : "—";
+    const times = s.steps.map(x => x.act_s).filter(v => v != null);
+    $("steptime").textContent = times.length ? `${(times.reduce((a, b) => a + b, 0) / times.length).toFixed(1)}s` : "—";
     const last = s.steps[n - 1];
     if (last) {
       const good = last.reward > 0, badge = $("outcome");
@@ -368,7 +511,51 @@
     renderMemory(s);
     renderLog(s); drawChart(s, roll, cum); drawStrip(s); drawGrid(s); drawExtra(s);
     renderConfig(s, reg);
-    $("analysisPanel").style.display = s.analysis ? "" : "none"; $("analysis").textContent = s.analysis || "";
+  }
+
+  // ---- experiment metrics: format analyze() text as tables (used on the Benchmarks view)
+  function analysisHTML(text) {
+    if (!text) return "";
+    const lines = text.split("\n");
+    let html = "", i = 0;
+    while (i < lines.length) {
+      const line = lines[i];
+      if (line.trim() && i + 1 < lines.length && /^-{4,}\s*$/.test(lines[i + 1].trim())) {
+        const cols = line.trim().split(/\s{2,}/);
+        const rows = []; i += 2;
+        while (i < lines.length && lines[i].trim() && !/^-{4,}/.test(lines[i].trim())) { rows.push(lines[i].trim().split(/\s{2,}/)); i++; }
+        html += `<div class="tablewrap"><table class="cohort"><tr>${cols.map(c => `<th>${escapeHtml(c)}</th>`).join("")}</tr>` +
+                rows.map(r => `<tr>${r.map((c, j) => `<td${j === 0 ? ' style="text-align:left"' : ""}>${escapeHtml(human(c))}</td>`).join("")}</tr>`).join("") +
+                `</table></div>`;
+      } else { if (line.trim()) html += `<p class="aline">${escapeHtml(line)}</p>`; i++; }
+    }
+    return `<div class="analysisFmt">${html}</div>`;
+  }
+
+  // ---- cohort profile HTML from a directory's profile.json -----------------------
+  const profCache = {};  // dir -> profile.json | null | "pending"
+  function cohortHTML(p, dir) {
+    const dims = ["adaptation", "knowledge", "epistemics", "efficiency"];
+    const f = v => (v == null || Number.isNaN(+v)) ? "—" : (+v).toFixed(2);
+    let html = `<div class="benchhint">Adaptation profile: each agent's four score dimensions (0–1) over this experiment's runs — adaptation (detection/recovery speed), knowledge (accuracy/retention/interference), epistemics (calibration/stale memory), efficiency (parsing/cost) — and their mean as the driftlab score. "—" means this experiment's runs don't measure it.</div>` +
+      `<div class="tablewrap"><table class="cohort">` +
+      `<tr><th>agent</th>${dims.map(d => `<th>${d.slice(0, 5)}</th>`).join("")}<th>score</th></tr>` +
+      Object.entries(p.agents).map(([name, a]) =>
+        `<tr><td style="text-align:left" title="${escapeHtml(name)}">${escapeHtml(human(name))}</td>` +
+        dims.map(d => `<td>${f(a.dimensions[d])}</td>`).join("") +
+        `<td class="score">${f(a.driftlab_score)}</td></tr>`).join("") + `</table></div>`;
+    const fx = (p.effects?.agent || []).concat(p.effects?.regime || []);
+    if (fx.length) {
+      html += `<h3>Paired effects on ${escapeHtml(human(p.effects.field))}</h3>` +
+        `<div class="benchhint">Each row compares two conditions on the same seeded cells: the mean of (b − a), its 95% bootstrap confidence interval, and how many matched pairs it rests on. An interval that excludes 0 is a difference the seeds can't explain away.</div><ul class="fx">` +
+        fx.slice(0, 10).map(e => {
+          const ci = e.ci ? ` [${e.ci[0] >= 0 ? "+" : ""}${e.ci[0].toFixed(2)}, ${e.ci[1] >= 0 ? "+" : ""}${e.ci[1].toFixed(2)}]` : "";
+          return `<li><span>${escapeHtml(human(e.b))} − ${escapeHtml(human(e.a))}${e.agent ? ` <span style="color:var(--text-muted)">(${escapeHtml(human(e.agent))})</span>` : ""}</span>` +
+                 `<span class="d">${e.delta >= 0 ? "+" : ""}${e.delta.toFixed(3)}${ci} · ${e.n} pairs</span></li>`;
+        }).join("") +
+        (fx.length > 10 ? `<li><span class="d">… ${fx.length - 10} more in ${escapeHtml(dir)}/profile.json</span></li>` : "") + `</ul>`;
+    }
+    return html;
   }
 
   function kvRows(el, entries) {
@@ -420,16 +607,79 @@
     $("memory").textContent = m.text || "(the agent cleared its notebook; nothing saved at this version)"; $("memory").className = "tall";
   }
 
+  let diskLogs = [];
+  const filter = { q: "", exp: "", regime: "", agent: "", model: "" };
+  function playButton(path) {
+    const b = document.createElement("button"); b.className = "play"; b.textContent = "▶"; b.title = "replay this log";
+    b.onclick = e => { e.stopPropagation(); replayLog(path, 150); };
+    return b;
+  }
+  function stemParts(stem) {
+    const m = stem.match(/^(.*?)__(.*?)__seed(\d+)$/);
+    return m ? { agent: m[1], regime: m[2], seed: m[3] } : { agent: stem, regime: "", seed: "" };
+  }
+  function entryFor(s, path) {
+    if (s) {
+      const c = s.cell || {}, a = c.agent || {}, st = stemParts(s.label);
+      return { label: s.label, s, path, agent: a.name || st.agent, model: a.model || "",
+               regime: String(c.regime ?? st.regime ?? ""), seed: String(c.seed ?? st.seed ?? ""), exp: expId(s) || "" };
+    }
+    const stem = path.split("/").pop().replace(".jsonl", ""), st = stemParts(stem);
+    return { label: stem, path, agent: st.agent, model: "", regime: st.regime, seed: st.seed,
+             exp: (path.match(/exp\d+/) || [""])[0] };
+  }
+  function passes(e) {
+    const title = (REGISTRY[e.exp] || {}).title || "";
+    const hay = `${e.agent} ${e.model} ${e.exp} ${title} ${e.regime} ${e.label}`.toLowerCase();
+    return (!filter.q || hay.includes(filter.q)) && (!filter.exp || e.exp === filter.exp) &&
+           (!filter.regime || e.regime === filter.regime) && (!filter.agent || e.agent === filter.agent) &&
+           (!filter.model || e.model === filter.model);
+  }
+  function refreshFilterOptions(entries) {
+    const opts = { fExp: new Set(), fRegime: new Set(), fAgent: new Set(), fModel: new Set() };
+    entries.forEach(e => { if (e.exp) opts.fExp.add(e.exp); if (e.regime) opts.fRegime.add(e.regime);
+                           if (e.agent) opts.fAgent.add(e.agent); if (e.model) opts.fModel.add(e.model); });
+    for (const [id, vals] of Object.entries(opts)) {
+      const sel = $(id); if (!sel || document.activeElement === sel) continue;
+      const keep = sel.value;
+      sel.innerHTML = '<option value="">all</option>' + [...vals].sort().map(v =>
+        `<option value="${escapeHtml(v)}">${escapeHtml(id === "fExp" ? `${v} ${(REGISTRY[v] || {}).title || ""}`.trim() : human(v))}</option>`).join("");
+      sel.value = [...vals].includes(keep) ? keep : "";
+    }
+  }
   function renderRuns() {
     const ul = $("runs"); ul.innerHTML = "";
-    [...runs.values()].reverse().forEach(s => {
-      const li = document.createElement("li"); li.className = s.label === active ? "active" : "";
-      const n = s.steps.length, mean = n ? s.steps.reduce((a, b) => a + b.reward, 0) / n : null;
-      li.innerHTML = `<span class="n" title="${escapeHtml(s.label)}">${escapeHtml(humanRun(s.label))}</span><span class="m">${s.done ? "✓" : (n ? "▶" : "…")} ${fmt(mean)}</span>`;
-      li.onclick = () => { active = s.label; $("follow").checked = false; render(); };
+    const logByStem = new Map(diskLogs.map(p => [p.split("/").pop().replace(".jsonl", ""), p]));
+    const ingested = [...runs.values()].reverse().map(s => entryFor(s, logByStem.get(s.label)));
+    const seen = new Set(ingested.map(e => e.label));
+    const diskOnly = diskLogs.filter(p => !seen.has(p.split("/").pop().replace(".jsonl", ""))).map(p => entryFor(null, p));
+    const entries = ingested.concat(diskOnly);
+    refreshFilterOptions(entries);
+    entries.filter(passes).forEach(e => {
+      const li = document.createElement("li"); li.className = e.s && e.s.label === active ? "active" : "";
+      const title = (REGISTRY[e.exp] || {}).title || human(e.exp);
+      const sub = [title, e.regime ? human(e.regime) : "", e.seed !== "" ? `seed ${e.seed}` : ""].filter(Boolean).join(" · ");
+      const main = document.createElement("div"); main.className = "rmain";
+      const status = e.s ? `${e.s.done ? "✓" : (e.s.steps.length ? "▶" : "…")} ${fmt(e.s.steps.length ? e.s.steps.reduce((a, b) => a + b.reward, 0) / e.s.steps.length : null)}` : "log";
+      main.innerHTML = `<span class="n" title="${escapeHtml(e.label)}${e.model ? " · " + escapeHtml(e.model) : ""}">${escapeHtml(human(e.agent))}</span><span class="m">${status}</span>`;
+      if (e.path && (!e.s || e.s.done)) main.appendChild(playButton(e.path));
+      li.appendChild(main);
+      const subEl = document.createElement("div"); subEl.className = "rsub"; subEl.textContent = sub; li.appendChild(subEl);
+      li.onclick = e.s ? (() => { active = e.s.label; pinned = true; render(); })
+                       : (() => replayLog(e.path, 0));  // never seen: load it instantly
       ul.appendChild(li);
     });
   }
+  $("runSearch").oninput = ev => { filter.q = (ev.target.value || "").toLowerCase(); renderRuns(); };
+  $("filterBtn").onclick = () => { const p = $("filterPanel"); p.hidden = !p.hidden; $("filterBtn").className = p.hidden ? "" : "on"; };
+  for (const [id, key] of [["fExp", "exp"], ["fRegime", "regime"], ["fAgent", "agent"], ["fModel", "model"]])
+    $(id).onchange = ev => { filter[key] = ev.target.value; renderRuns(); };
+  $("clearFilters").onclick = () => {
+    filter.q = filter.exp = filter.regime = filter.agent = filter.model = "";
+    $("runSearch").value = "";
+    ["fExp", "fRegime", "fAgent", "fModel"].forEach(id => { $(id).value = ""; });
+    renderRuns();
+  };
 
   function renderLog(s) {
     const ul = $("log"); ul.innerHTML = "";
@@ -453,10 +703,28 @@
     for (const v of [lo, (lo + hi) / 2, hi]) g += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}" stroke="var(--grid)"/><text x="${m.l - 6}" y="${y(v) + 4}" text-anchor="end">${fmt(v)}</text>`;
     for (const t of [0, Math.round(T / 2), T - 1]) g += `<text x="${x(t)}" y="${H - 6}" text-anchor="middle">${t + 1}</text>`;
     g += `</g>`;
+    // recovery windows: from each substantive change until rolling reward regains its pre-change level
+    const changeTs = s.events.filter(e => e.kind === "world_change").map(e => e.t);
+    for (const tc of changeTs) {
+      if (tc < 1 || tc >= roll.length) continue;
+      const pre = roll[tc - 1];
+      let end = null;
+      for (let i = tc; i < roll.length; i++) if (roll[i] >= pre) { end = i; break; }
+      const x2 = end === null ? x(Math.max(r.length - 1, tc)) : x(end);
+      if (x2 > x(tc)) g += `<rect x="${x(tc).toFixed(1)}" y="${m.t}" width="${(x2 - x(tc)).toFixed(1)}" height="${H - m.t - m.b}" fill="var(--series-2)" opacity="0.08"/>`;
+    }
     s.events.filter(e => e.kind === "world_change" || e.kind === "notice").forEach(e => {
       g += `<line x1="${x(e.t)}" x2="${x(e.t)}" y1="${m.t}" y2="${H - m.b}" stroke="var(--mark-event)" stroke-dasharray="3 3" stroke-width="1"/>`; });
+    const conf = s.steps.map(st => (st.confidence == null ? null : +st.confidence));
+    const hasConf = conf.some(v => v != null);
     if (r.length) { g += `<path d="${path(cum)}" fill="none" stroke="var(--series-2)" stroke-width="2"/>`;
                     g += `<path d="${path(roll)}" fill="none" stroke="var(--series-1)" stroke-width="2"/>`; }
+    if (hasConf) {  // stated confidence (0-1), dotted; segments break where none was stated
+      let d = "", pen = false;
+      conf.forEach((v, i) => { if (v == null) { pen = false; return; } d += `${pen ? "L" : "M"}${x(i).toFixed(1)},${y(v).toFixed(1)}`; pen = true; });
+      g += `<path d="${d}" fill="none" stroke="var(--series-3)" stroke-width="1.5" stroke-dasharray="2 3"/>`;
+    }
+    $("legConf").hidden = !hasConf; $("legRecov").hidden = !changeTs.length;
     g += `<rect id="hit" x="${m.l}" y="${m.t}" width="${W - m.l - m.r}" height="${H - m.t - m.b}" fill="transparent"/><g id="cross"></g>`;
     svg.setAttribute("viewBox", `0 0 ${W} ${H}`); svg.innerHTML = g;
     const hit = svg.querySelector("#hit"), cross = svg.querySelector("#cross"), tip = $("tip");
@@ -506,6 +774,106 @@
 
   function escapeHtml(s) { return String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
 
+  // ---- top-level views: Runs / Benchmarks / Research ------------------------------
+  let topView = "home", benchData = null, hypData = null;
+  const TOP = { home: ["topHome", "viewHome"], research: ["topResearch", "viewResearch"],
+                bench: ["topBench", "viewBench"], runs: ["topRuns", "viewRuns"] };
+  function setTop(v) {
+    topView = v;
+    for (const [k, [btn, view]] of Object.entries(TOP)) {
+      const b = $(btn), m = $(view);
+      if (b) b.className = k === v ? "on" : "";
+      if (m) m.hidden = k !== v;
+    }
+    if (v === "bench") loadBench(false);
+    if (v === "research") renderResearch();
+    if (v === "runs") render();
+    applyTutorial();
+  }
+  for (const [k, [btn]] of Object.entries(TOP)) { const b = $(btn); if (b) b.onclick = () => setTop(k); }
+  document.querySelectorAll(".linkbtn").forEach(b => b.onclick = () => setTop(b.dataset.top));
+
+  async function loadBench(force) {
+    if (force || benchData === null) {
+      if (force) for (const k of Object.keys(profCache)) delete profCache[k];
+      try { benchData = await (await fetch("/benchmarks")).json(); } catch (e) { benchData = {}; }
+    }
+    renderBench();
+  }
+  function renderBench() {
+    const sel = $("benchWorld"), worlds = Object.keys(benchData || {});
+    if (document.activeElement !== sel) {
+      const keep = sel.value;
+      sel.innerHTML = worlds.map(w => `<option>${escapeHtml(w)}</option>`).join("") || '<option value="">none</option>';
+      if (worlds.includes(keep)) sel.value = keep;
+    }
+    const world = sel.value || worlds[0] || "rule_world";
+    const m = (benchData || {})[world];
+    $("benchStamp").textContent = m ? `recomputed ${new Date(m.generated * 1000).toLocaleString()} · refresh with: python -m experiments.benchmark --analyze`
+                                    : "no matrix yet: run python -m experiments.benchmark --analyze";
+    const f = v => (v == null || Number.isNaN(+v)) ? "—" : (+v).toFixed(2);
+    if (m) {
+      const exps = m.suite;
+      $("benchMatrix").innerHTML = `<table class="cohort"><tr><th>agent</th>${exps.map(e => `<th title="${escapeHtml((REGISTRY[e] || {}).title || "")}">${e}</th>`).join("")}<th>mean</th></tr>` +
+        Object.entries(m.agents).map(([a, row]) =>
+          `<tr><td style="text-align:left">${escapeHtml(human(a))}</td>` + exps.map(e => {
+            const sc = row.experiments[e] ? row.experiments[e].driftlab_score : null;
+            const tint = sc != null && !Number.isNaN(+sc) ? ` style="background:color-mix(in srgb, var(--series-3) ${Math.round(sc * 35)}%, transparent)"` : "";
+            return `<td class="cell-drill" data-exp="${e}" data-agent="${escapeHtml(a)}"${tint} title="open these runs">${f(sc)}</td>`;
+          }).join("") + `<td class="score">${f(row.mean_score)}</td></tr>`).join("") + `</table>`;
+      document.querySelectorAll("#benchMatrix td.cell-drill").forEach(td => td.onclick = () => drillTo(td.dataset.agent, td.dataset.exp));
+      const dims = ["adaptation", "knowledge", "epistemics", "efficiency"];
+      $("benchDims").innerHTML = `<table class="cohort"><tr><th>agent</th>${dims.map(d => `<th>${d}</th>`).join("")}</tr>` +
+        Object.entries(m.agents).map(([a, row]) => `<tr><td style="text-align:left">${escapeHtml(human(a))}</td>` +
+          dims.map(d => `<td>${f(row.mean_dimensions[d])}</td>`).join("") + `</tr>`).join("") + `</table>`;
+    } else { $("benchMatrix").innerHTML = '<p class="muted">no matrix yet</p>'; $("benchDims").innerHTML = ""; }
+    // one panel per experiment directory: the cohort profile, effects, and the analyze() tables
+    const expSet = new Set(m ? m.suite : []);
+    diskLogs.forEach(p => { const e = (p.match(/exp\d+/) || [])[0]; if (e && p.includes(`/${world}/`)) expSet.add(e); });
+    const cont = $("benchExps"); cont.innerHTML = "";
+    [...expSet].sort().forEach(exp => {
+      const dir = `runs/${exp}/${world}`;
+      if (!(dir in profCache)) {
+        profCache[dir] = "pending";
+        fetch("/profile?dir=" + encodeURIComponent(dir)).then(r => r.json())
+          .then(p => { profCache[dir] = p; if (topView === "bench") renderBench(); }).catch(() => { profCache[dir] = null; });
+      }
+      const p = profCache[dir], reg = REGISTRY[exp] || {};
+      const div = document.createElement("div"); div.className = "panel";
+      let inner = `<h2>${exp}${reg.title ? " · " + escapeHtml(reg.title) : ""}</h2>`;
+      if (reg.hypothesis) inner += `<p class="aline">${escapeHtml(reg.hypothesis)}</p>`;
+      inner += (p && p !== "pending" && p.agents) ? cohortHTML(p, dir)
+             : `<p class="muted">no profile yet for ${escapeHtml(dir)}: run the experiment or its --analyze</p>`;
+      const at = analysisByExp[exp];
+      if (at) inner += `<h3>Experiment metrics</h3>` +
+        `<div class="benchhint">This experiment's own analysis tables, recomputed over every run in the directory by its analyze(). Lags count encounters on the affected tasks (steps where tasks don't repeat); lower is better.</div>` + analysisHTML(at);
+      div.innerHTML = inner; cont.appendChild(div);
+    });
+  }
+  $("benchRefresh").onclick = () => loadBench(true);
+  $("benchWorld").onchange = () => renderBench();
+  function drillTo(agent, exp) {
+    filter.agent = agent; filter.exp = exp; filter.regime = ""; filter.model = ""; filter.q = "";
+    $("runSearch").value = "";
+    setTop("runs");
+    $("filterPanel").hidden = false; $("filterBtn").className = "on";
+    renderRuns();
+    $("fExp").value = exp; $("fAgent").value = agent;
+  }
+
+  async function renderResearch() {
+    $("regTable").innerHTML = `<table class="cohort lefty"><tr><th style="text-align:left">#</th><th style="text-align:left">experiment</th><th style="text-align:left">hypothesis</th><th style="text-align:left">drift</th><th style="text-align:left">bears on</th></tr>` +
+      Object.entries(REGISTRY).map(([id, e]) =>
+        `<tr><td>${id.replace("exp", "")}</td><td><strong>${escapeHtml(e.title)}</strong><br><span class="muted">${id} · v${e.version}</span></td>` +
+        `<td style="max-width:480px">${escapeHtml(e.hypothesis)}</td><td>${(e.drift || []).map(escapeHtml).join("; ")}</td>` +
+        `<td>${(e.hypotheses || []).join(", ")}</td></tr>`).join("") + `</table>`;
+    if (hypData === null) { try { hypData = await (await fetch("/hypotheses")).json(); } catch (e) { hypData = []; } }
+    $("hypList").innerHTML = (hypData || []).map(h =>
+      `<details class="hyp"><summary><strong>${escapeHtml(h.id)}</strong> ${escapeHtml(h.title)} <span class="chip">${escapeHtml(h.status)}</span> <span class="muted">research/hypotheses/${escapeHtml(h.file)}</span></summary>` +
+      `<pre class="hypbody">${escapeHtml(h.body)}</pre></details>`).join("") ||
+      '<p class="muted">no research/hypotheses directory found</p>';
+  }
+
   // ---- tabs -------------------------------------------------------------------
   function setTab(name) {
     tab = name;
@@ -522,31 +890,24 @@
   let pending = false;
   function scheduleRender() { if (pending) return; pending = true; requestAnimationFrame(() => { pending = false; render(); }); }
   const es = new EventSource("/events");
-  es.onopen = () => { $("dot").className = "dot on"; $("conn").textContent = "live"; };
-  es.onerror = () => { $("dot").className = "dot"; $("conn").textContent = "reconnecting…"; };
+  es.onopen = () => { const d = $("dot"); d.className = "dot on"; d.title = "live"; };
+  es.onerror = () => { const d = $("dot"); d.className = "dot"; d.title = "reconnecting…"; };
   es.onmessage = e => { if (replaying) return; try { ingest(JSON.parse(e.data)); scheduleRender(); } catch (err) { console.warn(err); } };
   fetch("/registry").then(r => r.json()).then(d => { if (d && !Array.isArray(d)) { REGISTRY = d; scheduleRender(); } }).catch(() => {});
 
   // ---- replay from a finished log -------------------------------------------------
   async function refreshRuns() {
-    const sel = $("replaySel");
-    if (document.activeElement === sel) return;  // don't yank the list out from under an open dropdown
-    const list = await (await fetch("/runs")).json();
-    const keep = sel.value;
-    sel.innerHTML = '<option value="">choose a finished log…</option>';
-    list.forEach(p => { const o = document.createElement("option"); o.value = p; o.textContent = p; sel.appendChild(o); });
-    if (list.includes(keep)) sel.value = keep;
+    try { diskLogs = await (await fetch("/runs")).json(); } catch (e) { return; }
+    scheduleRender();
   }
   refreshRuns();
   setInterval(refreshRuns, 4000);
-  $("replayBtn").onclick = async () => {
-    const path = $("replaySel").value; if (!path) return;
+  async function replayLog(path, delay) {
     const data = await (await fetch("/log?path=" + encodeURIComponent(path))).json();
-    const label = "replay:" + path.split("/").pop().replace(".jsonl", ""); const h = data.header;
-    replaying = true; active = label; $("follow").checked = false;
-    runs.delete(label);
-    ingest({ run: label, kind: "run_start", cell: h.cell, T: data.steps.length, instructions: "(instructions are not stored in logs; see the experiment's world)", experiment: path.split("/")[1], world: (h.cell || {}).world });
-    const delay = +$("speed").value;
+    // replay into the run's own entry: run_start resets its state in place, so the list order holds
+    const label = path.split("/").pop().replace(".jsonl", ""); const h = data.header;
+    replaying = true; active = label; pinned = true;
+    ingest({ run: label, kind: "run_start", cell: h.cell, T: data.steps.length, instructions: "(instructions are not stored in logs; see the experiment's world)", experiment: path.split("/")[1], world: (h.cell || {}).world, cost: h.cost });
     const memVersions = (h.memory_versions || []).slice(); // harness notebook edits, stored in the header
     for (const st of data.steps) {
       (st.changes || st.mutations || []).forEach(mu => ingest({ run: label, kind: "event", event_kind: "world_change", msg: mu.desc || `rule flip ${JSON.stringify(mu.key)} ${mu.old} → ${mu.new} (affects ${(mu.affected || []).length} keys)` }));
@@ -559,14 +920,13 @@
     memVersions.forEach(v => ingest({ run: label, kind: "event", event_kind: "memory", msg: `notebook updated (${v.chars} chars)`, memory: v.text, memory_kind: "notebook" }));
     ingest({ run: label, kind: "run_end", steps: data.steps.length });
     replaying = false; render();
-  };
-  $("tutorial").onchange = e => { tutorial = e.target.checked; applyTutorial(); render(); };
+  }
   window.addEventListener("resize", scheduleRender);
   if (window.ResizeObserver) {
     const ro = new ResizeObserver(() => scheduleRender());
     ["chart", "extraChart"].forEach(id => { const el = $(id); if (el) ro.observe(el.parentElement || el); });
   }
-  $("evfile").textContent = "";
+  applyTutorial();
 })();
 </script>
 </body>

@@ -69,7 +69,7 @@ class LiveReporter:
         st["rewards"].append(rec["reward"])
         st["parse_fail"] += int(rec.get("parse_failed", False))
         payload = {k: rec.get(k) for k in ("observation", "action", "reward", "feedback", "parse_failed", "notice",
-                                           "key", "correct", "depth", "confidence", "changes", "mutations", "reply")}
+                                           "key", "correct", "depth", "confidence", "act_s", "changes", "mutations", "reply")}
         # world-specific change markers the dashboard can use
         for k in ("version", "season", "session", "true_rate", "stock_end", "lost", "task"):
             if k in rec:

@@ -47,12 +47,13 @@ def summarize_by(rows: list[dict], keys: tuple, fields: tuple) -> dict:
 
 
 def print_table(summary: dict, keys: tuple, fields: tuple, width: int = 16):
-    head = "".join(f"{k:<{width}}" for k in keys) + f"{'n':>4}" + "".join(f"{f:>12}" for f in fields)
+    w = {f: max(12, len(f) + 2) for f in fields}  # a name longer than the column must widen it
+    head = "".join(f"{k:<{width}}" for k in keys) + f"{'n':>4}" + "".join(f"{f:>{w[f]}}" for f in fields)
     print(head)
     print("-" * len(head))
     for g, s in summary.items():
         row = "".join(f"{str(v):<{width}}" for v in g) + f"{s['n']:>4}"
-        print(row + "".join(f"{s[f]:>12.3f}" for f in fields))
+        print(row + "".join(f"{s[f]:>{w[f]}.3f}" for f in fields))
 
 
 # ---- RuleWorld change metrics ------------------------------------------------------
