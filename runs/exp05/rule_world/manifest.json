@@ -17,8 +17,231 @@
       "path": "/home/nb/Code/driftlab/runs/exp05/rule_world/agy_g36flash__drift_high__seed3000.jsonl",
       "cost": {},
       "wall_s": 48.75419902801514
+    },
+    {
+      "run": "tabular__drift_none__seed0",
+      "path": "runs/exp05/rule_world/tabular__drift_none__seed0.jsonl",
+      "cost": {},
+      "wall_s": 0.04134202003479004
+    },
+    {
+      "run": "tabular__drift_none__seed1",
+      "path": "runs/exp05/rule_world/tabular__drift_none__seed1.jsonl",
+      "cost": {},
+      "wall_s": 0.0446629524230957
+    },
+    {
+      "run": "tabular__drift_none__seed2",
+      "path": "runs/exp05/rule_world/tabular__drift_none__seed2.jsonl",
+      "cost": {},
+      "wall_s": 0.040738582611083984
+    },
+    {
+      "run": "tabular__drift_none__seed3",
+      "path": "runs/exp05/rule_world/tabular__drift_none__seed3.jsonl",
+      "cost": {},
+      "wall_s": 0.0385286808013916
+    },
+    {
+      "run": "tabular__drift_none__seed4",
+      "path": "runs/exp05/rule_world/tabular__drift_none__seed4.jsonl",
+      "cost": {},
+      "wall_s": 0.03421902656555176
+    },
+    {
+      "run": "tabular__drift_none__seed5",
+      "path": "runs/exp05/rule_world/tabular__drift_none__seed5.jsonl",
+      "cost": {},
+      "wall_s": 0.03352928161621094
+    },
+    {
+      "run": "tabular__drift_none__seed6",
+      "path": "runs/exp05/rule_world/tabular__drift_none__seed6.jsonl",
+      "cost": {},
+      "wall_s": 0.03376030921936035
+    },
+    {
+      "run": "tabular__drift_none__seed7",
+      "path": "runs/exp05/rule_world/tabular__drift_none__seed7.jsonl",
+      "cost": {},
+      "wall_s": 0.03103351593017578
+    },
+    {
+      "run": "tabular__drift_none__seed8",
+      "path": "runs/exp05/rule_world/tabular__drift_none__seed8.jsonl",
+      "cost": {},
+      "wall_s": 0.03612089157104492
+    },
+    {
+      "run": "tabular__drift_none__seed9",
+      "path": "runs/exp05/rule_world/tabular__drift_none__seed9.jsonl",
+      "cost": {},
+      "wall_s": 0.037354469299316406
+    },
+    {
+      "run": "tabular__drift_low__seed0",
+      "path": "runs/exp05/rule_world/tabular__drift_low__seed0.jsonl",
+      "cost": {},
+      "wall_s": 0.03139328956604004
+    },
+    {
+      "run": "tabular__drift_low__seed1",
+      "path": "runs/exp05/rule_world/tabular__drift_low__seed1.jsonl",
+      "cost": {},
+      "wall_s": 0.031761884689331055
+    },
+    {
+      "run": "tabular__drift_low__seed2",
+      "path": "runs/exp05/rule_world/tabular__drift_low__seed2.jsonl",
+      "cost": {},
+      "wall_s": 0.03659510612487793
+    },
+    {
+      "run": "tabular__drift_low__seed3",
+      "path": "runs/exp05/rule_world/tabular__drift_low__seed3.jsonl",
+      "cost": {},
+      "wall_s": 0.03184366226196289
+    },
+    {
+      "run": "tabular__drift_low__seed4",
+      "path": "runs/exp05/rule_world/tabular__drift_low__seed4.jsonl",
+      "cost": {},
+      "wall_s": 0.03537440299987793
+    },
+    {
+      "run": "tabular__drift_low__seed5",
+      "path": "runs/exp05/rule_world/tabular__drift_low__seed5.jsonl",
+      "cost": {},
+      "wall_s": 0.03669595718383789
+    },
+    {
+      "run": "tabular__drift_low__seed6",
+      "path": "runs/exp05/rule_world/tabular__drift_low__seed6.jsonl",
+      "cost": {},
+      "wall_s": 0.04244422912597656
+    },
+    {
+      "run": "tabular__drift_low__seed7",
+      "path": "runs/exp05/rule_world/tabular__drift_low__seed7.jsonl",
+      "cost": {},
+      "wall_s": 0.037873029708862305
+    },
+    {
+      "run": "tabular__drift_low__seed8",
+      "path": "runs/exp05/rule_world/tabular__drift_low__seed8.jsonl",
+      "cost": {},
+      "wall_s": 0.0307772159576416
+    },
+    {
+      "run": "tabular__drift_low__seed9",
+      "path": "runs/exp05/rule_world/tabular__drift_low__seed9.jsonl",
+      "cost": {},
+      "wall_s": 0.037233591079711914
+    },
+    {
+      "run": "tabular__drift_high__seed0",
+      "path": "runs/exp05/rule_world/tabular__drift_high__seed0.jsonl",
+      "cost": {},
+      "wall_s": 0.035788774490356445
+    },
+    {
+      "run": "tabular__drift_high__seed1",
+      "path": "runs/exp05/rule_world/tabular__drift_high__seed1.jsonl",
+      "cost": {},
+      "wall_s": 0.031737565994262695
+    },
+    {
+      "run": "tabular__drift_high__seed2",
+      "path": "runs/exp05/rule_world/tabular__drift_high__seed2.jsonl",
+      "cost": {},
+      "wall_s": 0.034245967864990234
+    },
+    {
+      "run": "tabular__drift_high__seed3",
+      "path": "runs/exp05/rule_world/tabular__drift_high__seed3.jsonl",
+      "cost": {},
+      "wall_s": 0.03354454040527344
+    },
+    {
+      "run": "tabular__drift_high__seed4",
+      "path": "runs/exp05/rule_world/tabular__drift_high__seed4.jsonl",
+      "cost": {},
+      "wall_s": 0.03343844413757324
+    },
+    {
+      "run": "tabular__drift_high__seed5",
+      "path": "runs/exp05/rule_world/tabular__drift_high__seed5.jsonl",
+      "cost": {},
+      "wall_s": 0.031105518341064453
+    },
+    {
+      "run": "tabular__drift_high__seed6",
+      "path": "runs/exp05/rule_world/tabular__drift_high__seed6.jsonl",
+      "cost": {},
+      "wall_s": 0.02970290184020996
+    },
+    {
+      "run": "tabular__drift_high__seed7",
+      "path": "runs/exp05/rule_world/tabular__drift_high__seed7.jsonl",
+      "cost": {},
+      "wall_s": 0.04039955139160156
+    },
+    {
+      "run": "tabular__drift_high__seed8",
+      "path": "runs/exp05/rule_world/tabular__drift_high__seed8.jsonl",
+      "cost": {},
+      "wall_s": 0.03711342811584473
+    },
+    {
+      "run": "tabular__drift_high__seed9",
+      "path": "runs/exp05/rule_world/tabular__drift_high__seed9.jsonl",
+      "cost": {},
+      "wall_s": 0.0382685661315918
     }
   ],
   "grid_costs": [],
-  "unpriced_models": []
+  "unpriced_models": [],
+  "config": {
+    "T": 120,
+    "drift": {
+      "drift_none": 0,
+      "drift_low": 4,
+      "drift_high": 12
+    },
+    "quick": false,
+    "world": "rule_world",
+    "registry": {
+      "version": 1,
+      "title": "Forgetting window",
+      "hypothesis": "The best retention setting moves with drift rate: at high drift a short memory wins because old evidence has expired; at zero drift the longest wins.",
+      "independent": [
+        "drift rate (0 | 4 | 12 changes)",
+        "retention setting (transcript window, notes budget)"
+      ],
+      "dependent": [
+        "post-warmup accuracy per (setting, drift rate)"
+      ],
+      "drift": [
+        "none",
+        "abrupt latent x4",
+        "abrupt latent x12"
+      ],
+      "worlds": [
+        "any"
+      ],
+      "hypotheses": [
+        "H001"
+      ],
+      "predictions": [
+        {
+          "kind": "reversal",
+          "field": "final_accuracy",
+          "vary": "agent",
+          "a_regime": "drift_none",
+          "b_regime": "drift_high",
+          "claim": "the retention-setting ranking reverses between zero drift and high drift"
+        }
+      ]
+    }
+  }
 }

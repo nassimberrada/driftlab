@@ -39,6 +39,16 @@ reference LLM agents (`--mock`, `--agent tabular` and harness runs don't need
 it); `mcp` only for the MCP server. Harness CLIs (`claude`, `codex`, `agy`,
 `gemini`) are installed separately and found on PATH.
 
+Reference agents work with any OpenAI-compatible provider, not just OpenAI:
+put the provider's key in `OPENAI_API_KEY` and its endpoint in
+`OPENAI_BASE_URL` (both readable from `.env`), or set `base_url` per agent
+spec. Non-OpenAI endpoints (OpenRouter and friends) are spoken to via Chat
+Completions automatically; use the provider's model slugs (e.g.
+`"model": "anthropic/claude-sonnet-4-5"`). Unknown models are costed at 0 and
+flagged in the manifest — add them to `PRICES` in `agents/brain.py` to meter
+spend. Always pin the model for harness CLIs (`cli:codex:<model>`); unpinned
+runs play the account default and the headers cannot record which model it was.
+
 ## Layout
 
 ```

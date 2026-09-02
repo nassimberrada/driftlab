@@ -1,8 +1,43 @@
 {
-  "generated": 1788277932.7555315,
+  "generated": 1788371841.4905467,
   "min_pairs": 5,
   "min_steps": 30,
   "hypotheses": {
+    "H001": {
+      "rows": [
+        {
+          "exp": "exp02",
+          "version": 1,
+          "world": "rule_world",
+          "claim": "recovery lag differs between memory architectures on the same seeds",
+          "agent": "all pairs",
+          "delta": null,
+          "ci": null,
+          "n": 5,
+          "verdict": "contradicted",
+          "reason": "every agent pair's 95% CI on recovery_lag includes zero: no architecture separates from another on these seeds"
+        },
+        {
+          "exp": "exp05",
+          "version": 1,
+          "world": "rule_world",
+          "claim": "the retention-setting ranking reverses between zero drift and high drift",
+          "agent": "all pairs",
+          "delta": null,
+          "ci": null,
+          "n": 0,
+          "verdict": "inconclusive",
+          "reason": "no agent pair has 5+ matched runs in both 'drift_none' and 'drift_high'"
+        }
+      ],
+      "predicted_by": [
+        "exp02",
+        "exp05",
+        "exp09"
+      ],
+      "proposed_status": "NOT SUPPORTED",
+      "scope": "0 supported, 1 contradicted, 1 inconclusive \u00b7 agents: all pairs \u00b7 worlds: rule_world"
+    },
     "H004": {
       "rows": [],
       "predicted_by": [
@@ -11,96 +46,9 @@
       ],
       "proposed_status": "INCONCLUSIVE",
       "scope": "0 supported, 0 contradicted, 0 inconclusive"
-    },
-    "H001": {
-      "rows": [
-        {
-          "exp": "exp02",
-          "version": 1,
-          "world": "rule_world",
-          "claim": "recovery lag differs between memory architectures on the same seeds",
-          "agent": "\u2014",
-          "delta": null,
-          "ci": null,
-          "n": 0,
-          "verdict": "inconclusive",
-          "reason": "no full-length runs in runs/exp02/rule_world (quick-mode runs, under 30 steps, are excluded)"
-        },
-        {
-          "exp": "exp05",
-          "version": 1,
-          "world": "rule_world",
-          "claim": "the retention-setting ranking reverses between zero drift and high drift",
-          "agent": "\u2014",
-          "delta": null,
-          "ci": null,
-          "n": 0,
-          "verdict": "inconclusive",
-          "reason": "no full-length runs in runs/exp05/rule_world (quick-mode runs, under 30 steps, are excluded)"
-        }
-      ],
-      "predicted_by": [
-        "exp02",
-        "exp05",
-        "exp09"
-      ],
-      "proposed_status": "INCONCLUSIVE",
-      "scope": "0 supported, 0 contradicted, 2 inconclusive"
-    },
-    "H003": {
-      "rows": [
-        {
-          "exp": "exp15",
-          "version": 1,
-          "world": "rule_world",
-          "claim": "recovery is slower from self-caused changes than from scheduled ones",
-          "agent": "\u2014",
-          "delta": null,
-          "ci": null,
-          "n": 0,
-          "verdict": "inconclusive",
-          "reason": "no full-length runs in runs/exp15/rule_world (quick-mode runs, under 30 steps, are excluded)"
-        }
-      ],
-      "predicted_by": [
-        "exp15"
-      ],
-      "proposed_status": "INCONCLUSIVE",
-      "scope": "0 supported, 0 contradicted, 1 inconclusive"
-    },
-    "H002": {
-      "rows": [
-        {
-          "exp": "exp04",
-          "version": 1,
-          "world": "rule_world",
-          "claim": "accuracy is lower under cosmetic-only change than under no change (over-reaction)",
-          "agent": "\u2014",
-          "delta": null,
-          "ci": null,
-          "n": 0,
-          "verdict": "inconclusive",
-          "reason": "no full-length runs in runs/exp04/rule_world (quick-mode runs, under 30 steps, are excluded)"
-        }
-      ],
-      "predicted_by": [
-        "exp04"
-      ],
-      "proposed_status": "INCONCLUSIVE",
-      "scope": "0 supported, 0 contradicted, 1 inconclusive"
-    },
-    "H005": {
-      "rows": [],
-      "predicted_by": [],
-      "proposed_status": "INCONCLUSIVE",
-      "scope": "0 supported, 0 contradicted, 0 inconclusive"
     }
   },
   "experiments": {
-    "exp01": {
-      "predictions": 0,
-      "rows": []
-    },
     "exp02": {
       "predictions": 1,
       "rows": [
@@ -109,33 +57,12 @@
           "version": 1,
           "world": "rule_world",
           "claim": "recovery lag differs between memory architectures on the same seeds",
-          "agent": "\u2014",
+          "agent": "all pairs",
           "delta": null,
           "ci": null,
-          "n": 0,
-          "verdict": "inconclusive",
-          "reason": "no full-length runs in runs/exp02/rule_world (quick-mode runs, under 30 steps, are excluded)"
-        }
-      ]
-    },
-    "exp03": {
-      "predictions": 0,
-      "rows": []
-    },
-    "exp04": {
-      "predictions": 1,
-      "rows": [
-        {
-          "exp": "exp04",
-          "version": 1,
-          "world": "rule_world",
-          "claim": "accuracy is lower under cosmetic-only change than under no change (over-reaction)",
-          "agent": "\u2014",
-          "delta": null,
-          "ci": null,
-          "n": 0,
-          "verdict": "inconclusive",
-          "reason": "no full-length runs in runs/exp04/rule_world (quick-mode runs, under 30 steps, are excluded)"
+          "n": 5,
+          "verdict": "contradicted",
+          "reason": "every agent pair's 95% CI on recovery_lag includes zero: no architecture separates from another on these seeds"
         }
       ]
     },
@@ -147,67 +74,26 @@
           "version": 1,
           "world": "rule_world",
           "claim": "the retention-setting ranking reverses between zero drift and high drift",
-          "agent": "\u2014",
+          "agent": "all pairs",
           "delta": null,
           "ci": null,
           "n": 0,
           "verdict": "inconclusive",
-          "reason": "no full-length runs in runs/exp05/rule_world (quick-mode runs, under 30 steps, are excluded)"
+          "reason": "no agent pair has 5+ matched runs in both 'drift_none' and 'drift_high'"
         }
       ]
     },
-    "exp06": {
-      "predictions": 0,
-      "rows": []
-    },
-    "exp07": {
-      "predictions": 0,
-      "rows": []
-    },
-    "exp08": {
-      "predictions": 0,
-      "rows": []
-    },
     "exp09": {
       "predictions": 1,
-      "rows": []
-    },
-    "exp10": {
-      "predictions": 0,
-      "rows": []
-    },
-    "exp11": {
-      "predictions": 0,
       "rows": []
     },
     "exp12": {
       "predictions": 0,
       "rows": []
     },
-    "exp13": {
-      "predictions": 1,
-      "rows": []
-    },
     "exp14": {
       "predictions": 0,
       "rows": []
-    },
-    "exp15": {
-      "predictions": 1,
-      "rows": [
-        {
-          "exp": "exp15",
-          "version": 1,
-          "world": "rule_world",
-          "claim": "recovery is slower from self-caused changes than from scheduled ones",
-          "agent": "\u2014",
-          "delta": null,
-          "ci": null,
-          "n": 0,
-          "verdict": "inconclusive",
-          "reason": "no full-length runs in runs/exp15/rule_world (quick-mode runs, under 30 steps, are excluded)"
-        }
-      ]
     }
   }
 }

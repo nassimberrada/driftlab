@@ -75,7 +75,8 @@ class HarnessCLIAgent:
         cmd = self._command(text)
         try:
             proc = await asyncio.create_subprocess_exec(
-                *cmd, cwd=self.workdir, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
+                *cmd, cwd=self.workdir, stdin=asyncio.subprocess.DEVNULL,
+                stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
             out, err = await asyncio.wait_for(proc.communicate(), timeout=self.spec.get("timeout_s", 180))
         except (asyncio.TimeoutError, OSError):
             return ""  # unparseable -> the world's default action, counted as a parse failure
@@ -97,9 +98,9 @@ class HarnessCLIAgent:
                 self.session = "stateless"
             return base + [text]
         if self.harness == "codex":
-            cmd = [s.get("bin", "codex"), "exec", "--json"]
+            cmd = [s.get("bin", "codex"), "exec", "--json", "--skip-git-repo-check"]  # the isolated cwd is no repo
             if self.session:
-                cmd = [s.get("bin", "codex"), "exec", "resume", self.session, "--json"]
+                cmd = [s.get("bin", "codex"), "exec", "resume", self.session, "--json", "--skip-git-repo-check"]
             if s.get("model"):
                 cmd += ["-m", s["model"]]
             if self.session is None:
@@ -169,16 +170,20 @@ class HarnessCLIAgent:
             return reply or out.strip()
         if self.harness == "codex":
             reply = ""
-            for line in out.splitlines():  # JSONL events; keep the last agent message, remember the session
+            for line in out.splitlines():  # JSONL events; keep the last agent message, remember the thread
                 try:
                     ev = json.loads(line)
                 except ValueError:
                     continue
-                self.session = ev.get("session_id") or (ev.get("msg") or {}).get("session_id") or self.session
+                if "error" in str(ev.get("type", "")) or ev.get("error"):
+                    raise SystemExit(f"harness_cli (codex): {ev}")
+                self.session = ev.get("thread_id") or ev.get("session_id") or self.session
                 item = ev.get("item") or {}
                 if item.get("type") == "agent_message":
                     reply = item.get("text", reply)
-                elif (ev.get("msg") or {}).get("type") == "agent_message":
-                    reply = ev["msg"].get("message", reply)
-            return reply or out.strip()
+                if ev.get("type") == "turn.completed" and ev.get("usage"):
+                    u = ev["usage"]
+                    LEDGER.record_costed(self.spec.get("model", "codex-cli"), 0.0,
+                                         u.get("input_tokens", 0), u.get("output_tokens", 0))
+            return reply
         return out.strip()

@@ -5,8 +5,190 @@
       "path": "/home/nb/Code/driftlab/runs/exp02/rule_world/agy_g36flash__changing__seed1000.jsonl",
       "cost": {},
       "wall_s": 59.480737924575806
+    },
+    {
+      "run": "tabular__changing__seed0",
+      "path": "runs/exp02/rule_world/tabular__changing__seed0.jsonl",
+      "cost": {},
+      "wall_s": 0.032360076904296875
+    },
+    {
+      "run": "tabular__changing__seed1",
+      "path": "runs/exp02/rule_world/tabular__changing__seed1.jsonl",
+      "cost": {},
+      "wall_s": 0.028165340423583984
+    },
+    {
+      "run": "tabular__changing__seed2",
+      "path": "runs/exp02/rule_world/tabular__changing__seed2.jsonl",
+      "cost": {},
+      "wall_s": 0.027743101119995117
+    },
+    {
+      "run": "tabular__changing__seed3",
+      "path": "runs/exp02/rule_world/tabular__changing__seed3.jsonl",
+      "cost": {},
+      "wall_s": 0.027968406677246094
+    },
+    {
+      "run": "tabular__changing__seed4",
+      "path": "runs/exp02/rule_world/tabular__changing__seed4.jsonl",
+      "cost": {},
+      "wall_s": 0.02839040756225586
+    },
+    {
+      "run": "tabular__changing__seed5",
+      "path": "runs/exp02/rule_world/tabular__changing__seed5.jsonl",
+      "cost": {},
+      "wall_s": 0.030609846115112305
+    },
+    {
+      "run": "tabular__changing__seed6",
+      "path": "runs/exp02/rule_world/tabular__changing__seed6.jsonl",
+      "cost": {},
+      "wall_s": 0.02785205841064453
+    },
+    {
+      "run": "tabular__changing__seed7",
+      "path": "runs/exp02/rule_world/tabular__changing__seed7.jsonl",
+      "cost": {},
+      "wall_s": 0.027979135513305664
+    },
+    {
+      "run": "tabular__changing__seed8",
+      "path": "runs/exp02/rule_world/tabular__changing__seed8.jsonl",
+      "cost": {},
+      "wall_s": 0.02837538719177246
+    },
+    {
+      "run": "tabular__changing__seed9",
+      "path": "runs/exp02/rule_world/tabular__changing__seed9.jsonl",
+      "cost": {},
+      "wall_s": 0.027729272842407227
+    },
+    {
+      "run": "codex_g56luna__changing__seed2",
+      "path": "runs/exp02/rule_world/codex_g56luna__changing__seed2.jsonl",
+      "cost": {
+        "codex-cli": {
+          "calls": 513,
+          "cache_hits": 0,
+          "input_tokens": 12132899,
+          "cached_tokens": 0,
+          "output_tokens": 54151,
+          "reasoning_tokens": 0,
+          "cost_usd": 0.0,
+          "cache_saved_usd": 0
+        }
+      },
+      "wall_s": 4226.086820363998
+    },
+    {
+      "run": "codex_g56luna__changing__seed0",
+      "path": "runs/exp02/rule_world/codex_g56luna__changing__seed0.jsonl",
+      "cost": {
+        "codex-cli": {
+          "calls": 515,
+          "cache_hits": 0,
+          "input_tokens": 12197633,
+          "cached_tokens": 0,
+          "output_tokens": 54258,
+          "reasoning_tokens": 0,
+          "cost_usd": 0.0,
+          "cache_saved_usd": 0
+        }
+      },
+      "wall_s": 4246.784333229065
+    },
+    {
+      "run": "codex_g56luna__changing__seed3",
+      "path": "runs/exp02/rule_world/codex_g56luna__changing__seed3.jsonl",
+      "cost": {
+        "codex-cli": {
+          "calls": 539,
+          "cache_hits": 0,
+          "input_tokens": 12979555,
+          "cached_tokens": 0,
+          "output_tokens": 55405,
+          "reasoning_tokens": 0,
+          "cost_usd": 0.0,
+          "cache_saved_usd": 0
+        }
+      },
+      "wall_s": 4492.882780075073
+    },
+    {
+      "run": "codex_g56luna__changing__seed1",
+      "path": "runs/exp02/rule_world/codex_g56luna__changing__seed1.jsonl",
+      "cost": {
+        "codex-cli": {
+          "calls": 556,
+          "cache_hits": 0,
+          "input_tokens": 13551885,
+          "cached_tokens": 0,
+          "output_tokens": 56263,
+          "reasoning_tokens": 0,
+          "cost_usd": 0.0,
+          "cache_saved_usd": 0
+        }
+      },
+      "wall_s": 4695.030182123184
+    },
+    {
+      "run": "codex_g56luna__changing__seed4",
+      "path": "runs/exp02/rule_world/codex_g56luna__changing__seed4.jsonl",
+      "cost": {
+        "codex-cli": {
+          "calls": 558,
+          "cache_hits": 0,
+          "input_tokens": 13620928,
+          "cached_tokens": 0,
+          "output_tokens": 56373,
+          "reasoning_tokens": 0,
+          "cost_usd": 0.0,
+          "cache_saved_usd": 0
+        }
+      },
+      "wall_s": 4726.410059213638
     }
   ],
   "grid_costs": [],
-  "unpriced_models": []
+  "unpriced_models": [],
+  "config": {
+    "T": 120,
+    "quick": false,
+    "world": "rule_world",
+    "registry": {
+      "version": 1,
+      "title": "Detect vs adapt lag",
+      "hypothesis": "Detecting a change and adapting to it are different skills; they come apart depending on how the agent remembers.",
+      "independent": [
+        "agent memory architecture"
+      ],
+      "dependent": [
+        "detection_lag",
+        "recovery_lag",
+        "stable_lag",
+        "detection-recovery gap"
+      ],
+      "drift": [
+        "abrupt latent"
+      ],
+      "worlds": [
+        "any"
+      ],
+      "hypotheses": [
+        "H001"
+      ],
+      "predictions": [
+        {
+          "kind": "effect",
+          "field": "recovery_lag",
+          "vary": "agent",
+          "direction": "differs",
+          "claim": "recovery lag differs between memory architectures on the same seeds"
+        }
+      ]
+    }
+  }
 }

@@ -180,6 +180,8 @@ def check_benchmark_and_agents():
                     problem(f"agents.json: {s['name']}: unknown type {s.get('type')!r} (known: {sorted(known)})")
                 elif s.get("type") == "custom" and not s.get("factory"):
                     problem(f"agents.json: {s['name']}: custom agents need factory: pkg.module:function")
+                elif s.get("type") == "harness_cli" and not s.get("model"):
+                    warn(f"agents.json: {s['name']}: no model pinned — runs will not record which model played")
                 else:
                     ok(f"agents.json: {s['name']} ({s.get('type', 'reference')})")
         except (ValueError, AssertionError) as e:

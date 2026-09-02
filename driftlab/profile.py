@@ -175,10 +175,19 @@ def driftlab_score(dims: dict) -> float:
     return _nanmean(list(dims.values()))
 
 
+MIN_FULL_STEPS = 30  # runs shorter than this are quick-mode sense checks
+
+
 def profile_dir(run_dir: str) -> dict:
-    """Aggregate run profiles per agent: mean of each metric across runs, then scores."""
-    runs = [run_profile(h, steps) for h, steps in collect_steps(run_dir)
-            if h and steps and "reward" in steps[0]]  # skips non-trajectory logs (e.g. the dashboard's events.jsonl)
+    """Aggregate run profiles per agent: mean of each metric across runs, then scores.
+    When the directory holds any full-length runs, quick-mode runs (under
+    MIN_FULL_STEPS steps) are excluded from the aggregates and effects — their
+    numbers are noise and would sit beside real measurements as if comparable.
+    A directory of only quick runs still profiles (a plumbing check stays useful)."""
+    all_runs = [run_profile(h, steps) for h, steps in collect_steps(run_dir)
+                if h and steps and "reward" in steps[0]]  # skips non-trajectory logs (e.g. the dashboard's events.jsonl)
+    full = [r for r in all_runs if r["n_steps"] >= MIN_FULL_STEPS]
+    runs = full or all_runs
     agents = {}
     for name in sorted({r["agent"] for r in runs}):
         rs = [r for r in runs if r["agent"] == name]
@@ -188,7 +197,8 @@ def profile_dir(run_dir: str) -> dict:
         agents[name] = {"n_runs": len(rs), "metrics": p, "dimensions": dims, "driftlab_score": driftlab_score(dims)}
     return {"schema": SCHEMA_VERSION, "run_dir": str(run_dir), "generated": time.time(),
             "world": runs[0]["world"] if runs else None, "agents": agents,
-            "effects": all_effects(runs) if runs else None, "runs": runs}
+            "excluded_quick": len(all_runs) - len(runs),
+            "effects": all_effects(runs) if runs else None, "runs": all_runs}
 
 
 # ---- paired effects ---------------------------------------------------------
@@ -263,6 +273,8 @@ def print_profile(prof: dict):
         return
     names = list(agents)
     head = f"{'':<24}" + "".join(f"{n[:15]:>16}" for n in names)
+    if prof.get("excluded_quick"):
+        print(f"({prof['excluded_quick']} quick run(s) under {MIN_FULL_STEPS} steps excluded from the aggregates)")
     print("ADAPTATION PROFILE  (mean per agent across runs; — = not measured by this world/experiment)")
     print(head + "\n" + "-" * len(head))
     for f, label, spec in METRICS:

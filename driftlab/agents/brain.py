@@ -12,10 +12,25 @@ Default model: gpt-5-mini, reasoning effort "low".
 
 import hashlib
 import json
+import os
 from copy import deepcopy
 from pathlib import Path
 
 DEFAULT_MODEL = "gpt-5-mini"
+
+
+def _load_dotenv():
+    """Read KEY=VALUE lines from the repo's .env into the environment (existing vars win)."""
+    env = Path(__file__).resolve().parents[2] / ".env"
+    if env.exists():
+        for line in env.read_text().splitlines():
+            line = line.strip()
+            if line and not line.startswith("#") and "=" in line:
+                k, v = line.split("=", 1)
+                os.environ.setdefault(k.strip(), v.strip().strip('"').strip("'"))
+
+
+_load_dotenv()
 
 # USD per 1M tokens: (input, cached input, output). Reasoning tokens bill as output.
 # Edit here when prices change; unknown models are costed at 0 and flagged.
@@ -106,7 +121,8 @@ LEDGER = CostLedger()
 
 class Brain:
     def __init__(self, model: str = DEFAULT_MODEL, cache_dir: str = "runs/llm_cache",
-                 max_calls: int = 2000, max_output_tokens: int = 1500, reasoning_effort: str = "low"):
+                 max_calls: int = 2000, max_output_tokens: int = 1500, reasoning_effort: str = "low",
+                 base_url: str | None = None, api: str | None = None):
         from openai import AsyncOpenAI
 
         self.model = model
@@ -117,7 +133,13 @@ class Brain:
         self.max_calls = max_calls
         self.calls_made = 0
         self.tokens_used = 0
-        self._client = AsyncOpenAI()  # reads OPENAI_API_KEY
+        # Any OpenAI-compatible provider works: set base_url in the agent spec (or
+        # OPENAI_BASE_URL in .env) and put that provider's key in OPENAI_API_KEY.
+        # OpenAI itself speaks the Responses API; other providers (OpenRouter etc.)
+        # get Chat Completions unless the spec forces api="responses".
+        self._client = AsyncOpenAI(base_url=base_url) if base_url else AsyncOpenAI()
+        effective_url = base_url or os.environ.get("OPENAI_BASE_URL", "")
+        self.api = api or ("chat" if effective_url and "openai.com" not in effective_url else "responses")
 
     def _cache_path(self, system: str, prompt: str) -> Path:
         key = hashlib.sha256(f"{self.model}\x00{self.reasoning_effort}\x00{system}\x00{prompt}".encode()).hexdigest()
@@ -144,12 +166,25 @@ class Brain:
         if self.calls_made >= self.max_calls:
             raise BudgetExceeded(f"LLM call budget of {self.max_calls} exhausted")
         self.calls_made += 1
-        kwargs = dict(model=self.model, instructions=system, input=prompt, max_output_tokens=self.max_output_tokens)
-        if self.model.startswith(("gpt-5", "o")):
-            kwargs["reasoning"] = {"effort": self.reasoning_effort}
-        resp = await self._client.responses.create(**kwargs)
-        text = resp.output_text or ""
-        usage = self._usage(resp)
+        if self.api == "chat":
+            kwargs = dict(model=self.model,
+                          messages=[{"role": "system", "content": system}, {"role": "user", "content": prompt}],
+                          max_completion_tokens=self.max_output_tokens,
+                          extra_body={"reasoning": {"effort": self.reasoning_effort}})  # OpenRouter-style; others ignore it
+            resp = await self._client.chat.completions.create(**kwargs)
+            text = (resp.choices[0].message.content or "") if resp.choices else ""
+            u = getattr(resp, "usage", None)
+            g = lambda obj, name: getattr(obj, name, 0) or 0  # noqa: E731
+            usage = {"input_tokens": g(u, "prompt_tokens"), "output_tokens": g(u, "completion_tokens"),
+                     "cached_tokens": g(getattr(u, "prompt_tokens_details", None), "cached_tokens"),
+                     "reasoning_tokens": g(getattr(u, "completion_tokens_details", None), "reasoning_tokens")}
+        else:
+            kwargs = dict(model=self.model, instructions=system, input=prompt, max_output_tokens=self.max_output_tokens)
+            if self.model.startswith(("gpt-5", "o")):
+                kwargs["reasoning"] = {"effort": self.reasoning_effort}
+            resp = await self._client.responses.create(**kwargs)
+            text = resp.output_text or ""
+            usage = self._usage(resp)
         self.tokens_used += usage["input_tokens"] + usage["output_tokens"]
         LEDGER.record(self.model, usage, cached_hit=False)
         path.write_text(json.dumps({"model": self.model, "system": system, "prompt": prompt,
@@ -187,4 +222,6 @@ def make_brain(spec: dict, cache_dir: str):
         max_calls=spec.get("max_calls", 2000),
         max_output_tokens=spec.get("max_output_tokens", 1500),
         reasoning_effort=spec.get("reasoning_effort", "low"),
+        base_url=spec.get("base_url"),
+        api=spec.get("api"),
     )

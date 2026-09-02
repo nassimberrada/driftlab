@@ -42,11 +42,13 @@ def write_run(out_dir: Path, run_id: str, cell: dict, header_extra: dict, record
               cost: dict, wall_s: float, config: dict | None = None) -> dict:
     out_dir.mkdir(parents=True, exist_ok=True)
     path = out_dir / f"{run_id}.jsonl"
-    with path.open("w") as f:
+    tmp = path.with_name(path.name + ".tmp")  # write-then-replace: a kill mid-write never truncates a log
+    with tmp.open("w") as f:
         f.write(json.dumps({"kind": "header", "cell": cell, "ts": time.time(), "wall_s": wall_s,
                             "cost": cost, **header_extra}) + "\n")
         for r in records:
             f.write(json.dumps({"kind": "step", **r}) + "\n")
+    tmp.replace(path)
     entry = {"run": run_id, "path": str(path), "cost": cost, "wall_s": wall_s}
     manifest = out_dir / "manifest.json"
     prior = json.loads(manifest.read_text()) if manifest.exists() else {"runs": [], "grid_costs": []}
@@ -54,7 +56,9 @@ def write_run(out_dir: Path, run_id: str, cell: dict, header_extra: dict, record
     if config is not None:
         prior["config"] = config
     prior["unpriced_models"] = sorted(LEDGER.unpriced_models)
-    manifest.write_text(json.dumps(prior, indent=2))
+    mtmp = manifest.with_name("manifest.json.tmp")
+    mtmp.write_text(json.dumps(prior, indent=2))
+    mtmp.replace(manifest)
     return entry
 
 

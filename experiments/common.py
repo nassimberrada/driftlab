@@ -138,6 +138,9 @@ def resolve_agents(args, reference_agents: list[dict]) -> list[dict]:
         specs = [{"name": "tabular", "type": "tabular"}]
     elif args.agent and args.agent.startswith("cli:"):
         _, harness, *model = args.agent.split(":", 2)
+        if not model:
+            print(f"warning: no model pinned for cli:{harness} — the harness's account default will play "
+                  f"and the run headers will not record which model it was. Prefer cli:{harness}:<model>.")
         specs = [{"name": f"{harness}_cli", "type": "harness_cli", "harness": harness,
                   **({"model": model[0]} if model else {})}]
     elif args.agent and args.agent.startswith("custom:"):

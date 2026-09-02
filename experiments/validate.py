@@ -65,12 +65,9 @@ def _oriented(effects, a, b):
 
 
 def _full_length_rows(run_dir: Path) -> list[dict]:
-    """Per-run profile rows for a directory, excluding quick-mode runs."""
-    manifest = run_dir / "manifest.json"
-    if manifest.exists():
-        cfg = json.loads(manifest.read_text()).get("config") or {}
-        if cfg.get("quick"):
-            return []
+    """Per-run profile rows for a directory, excluding quick-mode runs. The filter is
+    per run (step count), never the manifest's directory-level quick flag: that flag
+    reflects only the most recent grid, and one quick probe must not hide full data."""
     prof = profile_dir(str(run_dir))
     return [r for r in prof["runs"] if r["n_steps"] >= MIN_STEPS]
 
