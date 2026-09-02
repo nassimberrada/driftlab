@@ -26,6 +26,18 @@ def default_run_id(cell: dict) -> str:
     return f"{cell['agent']['name']}__{cell.get('regime', 'na')}__seed{cell['seed']}"
 
 
+def run_complete(path: Path) -> bool:
+    """True when `path` holds a fully written run. write_run only writes after an episode
+    finishes, so a parseable header and a parseable last line mean the episode completed;
+    anything else (missing, empty, truncated by a crash) is re-run on resume."""
+    try:
+        lines = path.read_text().splitlines()
+        return (len(lines) >= 2 and json.loads(lines[0]).get("kind") == "header"
+                and bool(json.loads(lines[-1])))
+    except (OSError, json.JSONDecodeError):
+        return False
+
+
 def write_run(out_dir: Path, run_id: str, cell: dict, header_extra: dict, records: list[dict],
               cost: dict, wall_s: float, config: dict | None = None) -> dict:
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -38,7 +50,7 @@ def write_run(out_dir: Path, run_id: str, cell: dict, header_extra: dict, record
     entry = {"run": run_id, "path": str(path), "cost": cost, "wall_s": wall_s}
     manifest = out_dir / "manifest.json"
     prior = json.loads(manifest.read_text()) if manifest.exists() else {"runs": [], "grid_costs": []}
-    prior["runs"].append(entry)
+    prior["runs"] = [r for r in prior["runs"] if r["run"] != run_id] + [entry]  # a rerun replaces its entry
     if config is not None:
         prior["config"] = config
     prior["unpriced_models"] = sorted(LEDGER.unpriced_models)
@@ -47,7 +59,7 @@ def write_run(out_dir: Path, run_id: str, cell: dict, header_extra: dict, record
 
 
 async def run_cells(cells: list[dict], scenario_factory, agent_factory, out_dir: str, concurrency: int = 6,
-                    run_id=default_run_id, config: dict | None = None) -> list[dict]:
+                    run_id=default_run_id, config: dict | None = None, resume: bool = False) -> list[dict]:
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     ctx = {"out_dir": out, "cache_dir": out.parent / "llm_cache", "agent_factory": agent_factory}
@@ -57,6 +69,9 @@ async def run_cells(cells: list[dict], scenario_factory, agent_factory, out_dir:
     async def guarded(cell):
         async with sem:
             rid = run_id(cell)
+            if resume and run_complete(out / f"{rid}.jsonl"):
+                print(f"resume: {rid} already complete, skipped")
+                return {"run": rid, "path": str(out / f"{rid}.jsonl"), "skipped": True}
             current_run.set(rid)
             scenario = scenario_factory(cell, ctx)
             agent = agent_factory(cell, scenario, ctx)

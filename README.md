@@ -92,6 +92,17 @@ world, and returns the computed metrics when the last one finishes. Logs land in
 
 `start_run` / `describe_experiment` give single-configuration control for when you want it.
 
+### Resuming interrupted grids
+
+A run is one seeded episode with a deterministic id, written only when it
+completes — so any grid resumes at episode granularity. `--resume` (on any
+experiment and on the benchmark) skips cells whose log is already complete
+and re-runs missing or truncated ones; `run_experiment(..., resume=True)`
+(or `launch.py --resume`) does the same for a harness. Hit an account's usage
+limit mid-suite, sync `runs/`, and anyone can continue the same grid — use
+one `agent_label` per configuration, since the label is what a resumed
+episode is matched on.
+
 ### Two ways to benchmark a harness
 
 **Path A — autonomous (harness benchmarking).** The harness plays through the MCP

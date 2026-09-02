@@ -34,7 +34,7 @@ sys.path.insert(0, str(ROOT))
 from driftlab.core import run  # noqa: E402
 from driftlab.live import LIVE, current_run  # noqa: E402
 from driftlab.harness.channel import ChannelAgent  # noqa: E402
-from driftlab.runner import write_run  # noqa: E402
+from driftlab.runner import run_complete, write_run  # noqa: E402
 
 server = MCPServer("driftlab", instructions=(
     "driftlab runs an agent through a job at a fictional company and measures how it copes. To run an experiment end to end, "
@@ -204,7 +204,7 @@ async def _begin_episode(idx: int) -> dict:
 @server.tool()
 async def run_experiment(experiment: str, agent_label: str = "harness", seeds: int = 1,
                          independent_worlds: bool = True, quick: bool = False, world: str = "rule_world",
-                         agent_profile: dict | None = None) -> dict:
+                         agent_profile: dict | None = None, resume: bool = False) -> dict:
     """Run a whole experiment: every environment configuration in turn, then the metrics.
     Call once, then keep calling act(text) until the result says finished. `experiment` may be
     'exp04', 'exp04_surface_vs_latent' or just '4'. `seeds` = independent repeats per configuration.
@@ -215,6 +215,9 @@ async def run_experiment(experiment: str, agent_label: str = "harness", seeds: i
     `world`: rule_world | form_filler | inventory | codebase (experiments refuse worlds lacking what they need).
     `agent_profile`: optional facts about yourself (model, version, memory strategy, ...) recorded
     verbatim in every run header so results stay attributable.
+    `resume`: skip episodes whose run log is already complete for this agent_label — episodes are
+    seeded, so an experiment interrupted by a usage limit continues exactly where it stopped, on
+    this machine or another one sharing the runs directory.
     You get a personal notebook file; whatever you write there is versioned and shown on the dashboard."""
     if STATE.get("task") and not STATE["task"].done():
         return {"error": "a run is in progress; call abort() or finish it first"}
@@ -223,10 +226,26 @@ async def run_experiment(experiment: str, agent_label: str = "harness", seeds: i
     cells = [{"world": world, **c} for c in m.cells(seeds)]
     if independent_worlds:
         cells = [{**c, "seed": c["seed"] + 1000 * (i + 1)} for i, c in enumerate(cells)]
+    skipped = 0
+    if resume:
+        exp_dir = ROOT / "runs" / name.split("_")[0] / world
+        remaining = [c for c in cells
+                     if not run_complete(exp_dir / f"{agent_label}__{c.get('regime', 'na')}__seed{c['seed']}.jsonl")]
+        skipped = len(cells) - len(remaining)
+        cells = remaining
+        if not cells:
+            STATE.clear()
+            STATE.update(experiment=name, out=exp_dir)
+            analysis = _analysis_text()
+            STATE.clear()
+            return {"finished": True, "experiment": name, "episodes_skipped": skipped,
+                    "note": "every episode for this agent_label is already complete; nothing to play",
+                    "metrics": analysis}
     STATE.clear()
     STATE.update(experiment=name, agent_label=agent_label, cells=cells, auto=True, quick=quick,
                  agent_profile=agent_profile, memory_versions=[], notebook_digest=None)
-    return {"experiment": name, "episodes": len(STATE["cells"]), "quick": quick, **(await _begin_episode(0))}
+    return {"experiment": name, "episodes": len(STATE["cells"]),
+            **({"episodes_skipped": skipped} if skipped else {}), "quick": quick, **(await _begin_episode(0))}
 
 
 @server.tool()

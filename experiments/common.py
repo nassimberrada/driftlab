@@ -94,6 +94,10 @@ def cli(name: str, description: str, extra=None) -> argparse.Namespace:
     ap.add_argument("--concurrency", type=int, default=6)
     ap.add_argument("--out", default=None, help="log directory (default runs/<exp>/<world>)")
     ap.add_argument("--budget-usd", type=float, default=None, help="abort once cumulative LLM spend exceeds this")
+    ap.add_argument("--resume", action="store_true",
+                    help="skip cells whose run log is already complete; episodes are seeded, so a "
+                         "grid interrupted anywhere (or continued from another machine sharing runs/) "
+                         "picks up exactly where it left off")
     ap.add_argument("--live", action="store_true", help="stream steps, world events and running metrics")
     ap.add_argument("--live-every", type=int, default=10)
     if extra:
@@ -163,7 +167,7 @@ def run_experiment(name, doc, cells, scenario, reference_agents, analyze, config
     factory = lambda cell, scen, ctx: make_agent(cell["agent"], cell, scen, ctx)  # noqa: E731
     asyncio.run(run_cells(grid, scenario, factory, args.out, args.concurrency,
                           config={**(config or {}), "quick": QUICK, "world": args.world,
-                                  "registry": REGISTRY.get(name)}))
+                                  "registry": REGISTRY.get(name)}, resume=args.resume))
     import contextlib
     import io
     from driftlab.live import LIVE

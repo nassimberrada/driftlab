@@ -52,6 +52,7 @@ def _cli() -> argparse.Namespace:
     ap.add_argument("--agent-spec", default=None, help="JSON file with a list of agent specs")
     ap.add_argument("--concurrency", type=int, default=6)
     ap.add_argument("--budget-usd", type=float, default=None)
+    ap.add_argument("--resume", action="store_true", help="skip episodes whose run log is already complete")
     args = ap.parse_args()
     if args.budget_usd is not None:
         from driftlab.agents.brain import LEDGER
@@ -73,7 +74,8 @@ def run_suite(args):
         print(f"\n== {name} ({REGISTRY[name]['title']}) -> {os.path.relpath(out)}")
         env = [{"world": args.world, **c} for c in m.cells(args.seeds or (1 if QUICK else DEFAULT_SEEDS))]
         asyncio.run(run_cells(expand(env, specs), m.scenario, factory, str(out), args.concurrency,
-                              config={"suite": True, "quick": QUICK, "world": args.world, "registry": REGISTRY[name]}))
+                              config={"suite": True, "quick": QUICK, "world": args.world, "registry": REGISTRY[name]},
+                              resume=args.resume))
 
 
 def matrix(world: str) -> dict:

@@ -48,7 +48,7 @@ DRIFTLAB_TOOLS = ",".join(f"mcp__driftlab__{t}" for t in (
     "start_run", "write_notebook", "read_notebook"))
 
 PROMPT = ("Use the driftlab MCP tools to run experiment {exp} end to end: call "
-          "run_experiment(\"{exp}\", world=\"{world}\", seeds={seeds}, quick={quick}, agent_label=\"{label}\") "
+          "run_experiment(\"{exp}\", world=\"{world}\", seeds={seeds}, quick={quick}, agent_label=\"{label}\"{resume_arg}) "
           "once, then keep calling act(text) with your reply to each observation until the result says "
           "finished. Follow the reply format each result gives you. When it finishes, report the metrics.")
 
@@ -62,6 +62,9 @@ def _cli() -> argparse.Namespace:
     ap.add_argument("--world", default="rule_world")
     ap.add_argument("--seeds", type=int, default=1)
     ap.add_argument("--quick", action="store_true")
+    ap.add_argument("--resume", action="store_true",
+                    help="tell the harness to skip episodes already complete for this label — pick up "
+                         "a suite another account or machine started (share the runs directory)")
     ap.add_argument("--label", default=None, help="agent_label; default <harness>[_<model>]")
     ap.add_argument("--profile", action="append", default=[], metavar="KEY=VALUE",
                     help="extra enforced profile fields, repeatable")
@@ -78,7 +81,8 @@ def build(args) -> dict:
                **({"effort": args.effort} if args.effort else {}),
                **dict(kv.split("=", 1) for kv in args.profile)}
     prompt = PROMPT.format(exp=args.experiment, world=args.world, seeds=args.seeds,
-                           quick=str(args.quick), label=label)
+                           quick=str(args.quick), label=label,
+                           resume_arg=", resume=True" if args.resume else "")
     env_json = json.dumps(profile)
     server_cfg = {"command": sys.executable, "args": [str(SERVER)], "env": {"DRIFTLAB_AGENT_PROFILE": env_json}}
     plan: dict = {"profile": profile, "files": {}, "pre": []}
