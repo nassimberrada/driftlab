@@ -233,66 +233,65 @@
 <main id="viewHome" class="page">
   <div class="panel">
     <h2>Welcome to the driftlab dashboard</h2>
-    <p class="hometext">driftlab runs agents through jobs whose rules keep changing, and measures how they cope against the world's
-    hidden ground truth. Everything here is read from the run logs: watch agents work live, replay finished runs, compare
-    agents across experiments, and browse the research program. Every panel carries its own explanation under its heading.</p>
+    <p class="hometext">driftlab puts agents in jobs whose rules keep changing and measures how they cope, against ground truth the
+    agents never see. Everything here is read from the run logs. You can watch agents work live, replay finished runs, compare
+    agents across experiments, and browse the research. Every panel explains itself under its heading.</p>
   </div>
   <div class="panel"><h2>Core concepts</h2>
     <div class="hometabs">
       <div><h3>World</h3>
-        <p class="hometext">A job at a fictional company — an intake desk, order-form data entry, an inventory buyer, a developer —
-        with seeded hidden rules that decide what is correct. The agent is never told it is in an experiment; it just works the job.</p></div>
+        <p class="hometext">A job at a made-up company: an intake desk, order-form data entry, an inventory buyer, a developer.
+        Hidden, seeded rules decide what counts as correct. The agent is never told it is in an experiment. It just works the job.</p></div>
       <div><h3>Agent</h3>
-        <p class="hometext">Anything that answers text with text: it gets an observation, replies with an action, and hears the outcome.
-        An LLM with a memory strategy, a lookup-table baseline, or an external harness such as Claude Code or Antigravity — all play
-        under the same contract and the same metrics.</p></div>
+        <p class="hometext">Anything that answers text with text. It gets an observation, replies with an action, and hears the
+        outcome. An LLM with a memory strategy, a simple lookup baseline, and an external coding agent such as Claude Code all play
+        under the same contract and the same measurements.</p></div>
       <div><h3>Drift</h3>
-        <p class="hometext">How the world changes. Substantive: the correct behavior changes (a rule flips, demand jumps). Cosmetic:
-        only the wording changes, so reacting is a mistake. Self-caused: the agent's own behavior triggers the change, and nothing
-        external marks the moment.</p></div>
+        <p class="hometext">How the world changes. A real change moves what is correct: a rule flips, demand jumps. A cosmetic change
+        moves only the wording, so reacting to it is a mistake. A self-caused change happens because of the agent's own behavior,
+        and nothing announces it.</p></div>
       <div><h3>Experiment</h3>
-        <p class="hometext">A protocol laid over a world: when drift happens, what memos and probes appear, and what gets measured.
-        There are fifteen, each registered with its hypothesis, variables and a version (see Research). The same experiment can run
-        on any world that supports what it needs.</p></div>
+        <p class="hometext">A protocol laid over a world: when and how the world changes, what warnings or probes appear, and what
+        gets measured. There are fifteen, each registered with its design, settings and a version (see Research). The same
+        experiment can run on any world that supports what it needs.</p></div>
       <div><h3>Regime</h3>
-        <p class="hometext">One condition within an experiment — for example surface vs latent change, or a drift rate of 0, 4 or 12.
-        Regimes crossed with seeds (the world's random draw) make the grid of cells an experiment runs; the same seeds across agents
-        are what make comparisons paired.</p></div>
+        <p class="hometext">One condition inside an experiment, such as cosmetic vs real change, or a change rate of 0, 4 or 12.
+        Each condition runs several times with different seeds (the world's random draw), and every agent gets the same seeds, so
+        everyone faces the exact same worlds. That is what makes the comparisons fair.</p></div>
       <div><h3>Run</h3>
-        <p class="hometext">One agent playing one cell for a fixed number of steps: one episode, one entry in the Runs list, one
-        trajectory log. The log records every step next to the hidden ground truth the agent never saw, and it is the source
-        everything else on this dashboard is computed from.</p></div>
+        <p class="hometext">One agent playing one condition for a fixed number of steps. Each run is one entry in the Runs list and
+        one log file. The log records every step next to the hidden ground truth the agent never saw, and everything on this
+        dashboard is computed from those logs.</p></div>
       <div><h3>Profile &amp; score</h3>
-        <p class="hometext">Post-hoc measurements over a run directory: detection and recovery lags, retention, stale-memory rate,
-        calibration, cost — normalized into four 0–1 dimensions whose mean is the driftlab score. The vector is the result; the
-        score is a convenience for ranking.</p></div>
+        <p class="hometext">After runs finish, their logs are measured into a standard profile: how fast the agent noticed and
+        recovered from each change, how much stuck, whether its confidence was honest, and what it cost. These normalize into four
+        dimensions from 0 to 1, and their average is the driftlab score. The profile is the result; the score just ranks.</p></div>
       <div><h3>Hypothesis</h3>
-        <p class="hometext">A scientific claim that spans experiments (H001–H005), kept in the research log with a status and an
-        evidence table that accumulates across runs — contradictions included. Experiments produce numbers; hypotheses are where
-        they become knowledge.</p></div>
+        <p class="hometext">A claim that spans experiments (H001 to H005), kept in the research log with a status and an evidence
+        table that grows with every run, contradictions included. Experiments produce numbers; hypotheses are where the numbers
+        become knowledge.</p></div>
     </div>
   </div>
   <div class="panel"><h2>The tabs</h2>
     <div class="hometabs">
       <div><h3>Research · Hypotheses <button class="linkbtn" data-top="research" data-rtab="hyp">open</button></h3>
-        <p class="hometext">The lab's claims (H001–H005), each with its human status, the machine-proposed verdict from CI-based
-        validation, and the evidence rows behind it — claim, basis and confidence interval per agent and world.</p></div>
+        <p class="hometext">The lab's claims in plain words, each with its status, the verdict the run data supports so far, and
+        the numbers behind it: one row per agent and world, with confidence intervals.</p></div>
       <div><h3>Research · Experiments <button class="linkbtn" data-top="research" data-rtab="exp">open</button></h3>
-        <p class="hometext">The registry: what each of the fifteen experiments tests — its hypothesis, drift types, version, and the
-        machine-checkable prediction it registers for validation.</p></div>
+        <p class="hometext">The registry: what each of the fifteen experiments does, all of its settings, and the prediction it
+        registers so results can be checked automatically.</p></div>
       <div><h3>Research · Benchmarks <button class="linkbtn" data-top="research" data-rtab="bench">open</button></h3>
-        <p class="hometext">How agents compare: the agent × experiment score matrix (click a cell to jump to those runs), mean score
-        dimensions per agent, and per-experiment panels with the adaptation profile, paired effects and metrics tables.
-        Recomputed whenever an analysis runs; the stamp shows when.</p></div>
+        <p class="hometext">How the agents compare: the score matrix (click a cell to open those runs), each agent's score
+        dimensions, and detailed results per experiment. Recomputed whenever an analysis runs; the stamp shows when.</p></div>
       <div><h3>Runs · Activity <button class="linkbtn" data-top="runs">open</button></h3>
-        <p class="hometext">The selected run as it happens: what the agent sees, replies and is told; its memory, versioned when it
-        writes any; and the world changing — the per-task grid, hidden state and the timeline of changes and memos.</p></div>
+        <p class="hometext">The selected run as it happens: what the agent sees and answers, its memory as it writes it, and the
+        world changing around it.</p></div>
       <div><h3>Runs · Performance <button class="linkbtn" data-top="runs">open</button></h3>
-        <p class="hometext">Headline tiles (rolling accuracy, cumulative reward, parse failures, world changes, spend, step time)
-        and the reward chart with change markers, recovery shading and stated confidence.</p></div>
+        <p class="hometext">Headline numbers for the selected run, and the reward chart with every change marked and recovery
+        windows shaded.</p></div>
       <div><h3>Runs · Configuration <button class="linkbtn" data-top="runs">open</button></h3>
-        <p class="hometext">Who played and under what conditions: the agent's recorded profile (pinned, when enforced), the world in
-        plain language, and the experiment's registry definition with the verbatim task text.</p></div>
+        <p class="hometext">Who played and under what settings: the agent, the world in plain terms, and the experiment's full
+        definition with the verbatim job description.</p></div>
     </div>
   </div>
 </main>
@@ -340,13 +339,14 @@
       <div class="panel memory fill">
         <h2 id="hMemory">Agent memory <span class="muted" id="memMeta"></span></h2>
         <div class="versions" id="versions"></div>
-        <pre id="memory" class="empty tall">nothing yet — reference agents report notes rewrites; an MCP harness gets a notebook whose edits show here. A CLI-driven agent (path B) keeps its memory inside its own session, invisible by design.</pre>
+        <pre id="memory" class="empty tall">nothing yet. Agents that keep visible notes show every rewrite here. An agent playing through its own command-line tool keeps its memory in its own session, out of driftlab's sight by design.</pre>
       </div>
       <div class="panel worldp">
         <h2 id="hWorld">The world</h2>
-        <div id="gridPanel" style="display:none"><h3>request keys — last outcome per key (letter = correct desk; orange dot = rule changed; blue = current)</h3><div class="grid" id="grid"></div></div>
+        <div id="gridPanel" style="display:none"><h3>the whole task space: one cell per kind of request. The letter is the desk that is currently correct</h3><div class="grid" id="grid"></div>
+        <div class="legend" style="margin:6px 0 2px;display:block;font-size:11px">green = last attempt accepted · red = rejected · grey = not tried yet · orange dot = this cell's rule has changed · blue outline = the task in front of the agent now. Columns pair a region with a size (hover a header).</div></div>
         <div id="extraPanel" style="display:none;flex:1;min-height:0"><h3 id="extraTitle">state</h3><div class="chartwrap" style="min-height:70px"><svg class="chart" id="extraChart"></svg></div><div class="legend" id="extraLegend"></div></div>
-        <h3>timeline of changes, notices and memory rewrites</h3><ul class="log" id="log"></ul>
+        <h3>what changed and when, newest first</h3><ul class="log" id="log"></ul>
       </div>
     </section>
 
@@ -414,6 +414,8 @@
       <div class="tablewrap" id="benchMatrix"><p class="muted">no matrix yet</p></div></div>
     <div class="panel"><h2 id="hDims">Mean score dimensions per agent</h2>
       <div class="tablewrap" id="benchDims"></div></div>
+    <div class="panel"><h2 id="hGloss">What the metrics mean</h2>
+      <div class="kv" id="glossary" style="max-width:980px"></div></div>
     <div id="benchExps"></div>
   </section>
 </main>
@@ -450,17 +452,36 @@
     return human(a.name) + (a.model ? ` · ${a.model}` : "");
   }
   const WORLD_INFO = {
-    rule_world: ["Intake desk", "Assign each incoming request to one of four handling desks. Hidden routing rules decide what is correct; a substantive change flips a rule, a cosmetic change relabels the desks, and a desk the agent overloads can shed work by itself."],
-    form_filler: ["Order-form data entry", "Copy source records into an order form. A substantive change renames a field or changes its format, requirements or caps; a cosmetic change renames the source columns; IT may quietly add an alias for a field name the agent keeps typing."],
-    inventory: ["Inventory buyer", "Order stock for one product line against hidden demand. A substantive change jumps the demand rate; a cosmetic change re-words the daily report; a big order strains the supplier and lengthens lead times for a while."],
-    codebase: ["Platform developer", "Implement tickets against a hidden style guide. A substantive change revises the guide; a cosmetic change re-words the ticket template; the reviewer adopts habits seen in the agent's recent submissions."],
+    rule_world: ["Intake desk", "The agent sends each incoming request to one of four handling desks. Hidden rules decide which desk is right. A real change flips one of those rules, a cosmetic change renames the desks, and a desk the agent overloads can shed its work on its own."],
+    form_filler: ["Order-form data entry", "The agent copies source records into an order form. A real change renames a field or alters its format or limits, a cosmetic change renames the source columns, and IT sometimes quietly starts accepting a wrong field name the agent keeps typing."],
+    inventory: ["Inventory buyer", "The agent orders stock for one product line without seeing true demand. A real change moves the demand rate, a cosmetic change rewords the daily report, and a huge order strains the supplier, which slows deliveries for a while."],
+    codebase: ["Platform developer", "The agent implements tickets against a style guide it cannot read. A real change revises the guide, a cosmetic change rewords the ticket template, and the reviewer picks up habits from the agent's recent submissions."],
   };
   const AGENT_NOTES = {
-    reference: "An in-process LLM agent with a pluggable memory substrate; its notes rewrites appear on the Activity tab.",
-    tabular: "A non-LLM memorization baseline: recency-weighted success counts per request key. A floor, not a contender.",
-    harness: "An external harness playing autonomously through the MCP server (path A). It paces itself and may keep a notebook.",
-    harness_cli: "A harness CLI driven one call per step under pinned configuration (path B). Its memory lives in its own session, which driftlab deliberately cannot read.",
-    custom: "A user-supplied agent factory.",
+    reference: "An LLM agent that lives inside driftlab, with a pluggable memory. When it rewrites its notes, the new version shows on the Activity tab.",
+    tabular: "A simple baseline with no LLM: it memorizes which answers worked recently for each kind of task. A floor to beat, not a contender.",
+    harness: "An external coding agent, such as Claude Code or Antigravity, playing on its own through driftlab's server. It sets its own pace and may keep a notebook.",
+    harness_cli: "An external coding agent driven one command-line call per step, with settings pinned by driftlab. Its memory lives inside its own session, where driftlab cannot look.",
+    custom: "A user-supplied agent.",
+  };
+  // metric glossary: shown on the Benchmarks tab and as hover help on profile tables
+  const METRIC_HELP = {
+    "detection latency": "After a change, the number of tries on the affected tasks before the agent stops giving the old, now-wrong answer. Lower is better.",
+    "recovery latency": "After a change, the number of tries on the affected tasks before the agent first gives the new right answer. Lower is better.",
+    "final accuracy": "The share of correct actions over the last fifth of the run. This is what the agent ends up knowing. Higher is better.",
+    "retention": "Accuracy on the tasks a change affected, measured well after that change. It shows whether the new rule stuck. Higher is better.",
+    "stale-memory rate": "How often the agent still gives the old answer after it has already proven it knows the new rule. Lower is better.",
+    "interference": "How accuracy moved on the tasks a change did not touch. Zero is ideal; below zero means learning one thing damaged another.",
+    "calibration error": "The gap between how confident the agent says it is and how often it is actually right. Lower is better.",
+    "overconfidence": "Stated confidence minus actual accuracy. Above zero means the agent trusts itself more than its results justify.",
+    "parse failure rate": "The share of replies the world could not read as a valid action. Should be near zero.",
+    "cost per success ($)": "LLM spending divided by the number of correct actions. Lower is better.",
+    "final mean reward": "Average reward over the last fifth of the run, for jobs where the outcome is more than right or wrong. Higher is better.",
+    "driftlab score": "The average of the four dimensions below. A convenience for ranking, never a substitute for the full profile.",
+    "adaptation": "0 to 1. How quickly the agent notices a change and gets back to correct behavior.",
+    "knowledge": "0 to 1. How accurate the agent ends up, whether new rules stick, and whether learning one thing damaged another.",
+    "epistemics": "0 to 1. Whether the agent's confidence is honest and its memory free of outdated beliefs.",
+    "efficiency": "0 to 1. How reliably its replies parse, and what each success costs.",
   };
 
   function state(label) {
@@ -490,28 +511,32 @@
   // ---- rendering ---------------------------------------------------------------
   const fmt = x => (x === null || x === undefined || Number.isNaN(x)) ? "—" : (Math.round(x * 100) / 100).toFixed(2);
   const TUTORIAL_TILES = {
-    roll: "Mean reward over the LAST 10 steps. Shows how the agent is doing right now — reacts fast to a recent world change.",
-    cum: "Mean reward over ALL steps so far. Moves slowly; an early mistake or an early change drags it down for a long time.",
-    pf: "Replies the world couldn't turn into a valid action. Should sit near zero — a rising count points at a reply-format problem, not a learning one.",
-    nch: "Rule flips, relabels, notices and similar events logged so far. Compare against the timeline and the chart to see whether reward dipped around them.",
-    spend: "LLM spend attributed to this run: reference agents from the price table, path B CLIs from their own usage reports. MCP harness runs are not metered, so this stays blank for them.",
-    steptime: "Mean wall-clock seconds per agent reply. Only runs recorded after step timing was added carry it.",
+    roll: "Average reward over the last 10 steps. This is the number that reacts when the world changes.",
+    cum: "Average reward over the whole run so far. It moves slowly, so an early mistake drags it down for a long time.",
+    pf: "Replies the world could not read as a valid action. Near zero is normal. A climbing count means a formatting problem, not a learning problem.",
+    nch: "Rule changes, relabelings and notices so far. Check the chart to see whether reward dipped around them.",
+    spend: "What this run has cost in LLM calls. Agents driven through their own command-line tools report their own usage. Fully autonomous runs are not metered and stay blank.",
+    steptime: "Average seconds the agent takes to answer one step.",
   };
   const TUTORIAL_PANELS = {
-    hPerf: "Reward over time. Orange (cumulative) moves slowly and shows overall competence; blue (rolling 10) reacts fast and shows current performance. Dashed lines mark a world change or notice — look for a dip just after one, and how long it takes to recover.",
-    hWorld: "What changed, and the hidden state the agent doesn't see. The grid (RuleWorld only) shows the last outcome for every request key; an orange dot means that key's rule changed. The timeline lists every change, notice and memory update as it happened.",
-    hAgent: "What the agent is looking at right now, what it answered, and what it was told in return. This is the raw exchange — everything else on the page is computed from a sequence of these.",
-    hMemory: "Whatever the agent chose to write down for itself. Reference agents rewrite notes periodically; an MCP harness gets notebook tools it can call. A CLI-driven agent (path B) holds its memory in its own session, which driftlab deliberately cannot read. Empty here means the agent isn't using a visible store, not that nothing is being logged.",
-    hRuns: "Every run on disk, live or finished. Each entry names the agent (memory architecture and model, or harness and model) and shows its mean reward per step. The newest run is followed until you click one to pin it; ▶ replays a finished log.",
-    hExp: "What this experiment tests — its hypothesis and variables from the registry — and the exact job description the agent was given at the start of the run.",
-    hAgentCfg: "The agent's recorded identity: everything the run header knows about who played. For an enforced profile (path A launcher, path B specs) this is pinned configuration, not self-description.",
-    hMatrix: "Every agent with analyzed full-length runs, whether launched through the reference suite or an individual experiment: each cell is that agent's driftlab score on one experiment (darker = higher). Click a cell to jump to those runs. The score is a convenience; the profiles below are the result.",
-    hDims: "Each agent's four score dimensions averaged across the suite: adaptation (detection/recovery), knowledge (accuracy/retention/interference), epistemics (calibration/stale memory), efficiency (parsing/cost). — means no experiment in the suite measured it.",
-    hRegistry: "What each experiment tests: its hypothesis, the machine-checkable prediction it registers for validation, and which research hypotheses it bears on. The same definition is stamped into every run's record.",
-    hHyp: "The research log: one claim per file, each with a human status and, when validation has run, a machine-proposed verdict. A prediction is supported when its paired effect's 95% CI excludes zero in the predicted direction with enough matched cells — scoped to the agents and worlds actually tested, never a global truth-stamp.",
-    hWorldCfg: "The job the agent was doing, and what kinds of change this world can undergo.",
+    hPerf: "The orange line is the average over the whole run: it moves slowly and shows overall competence. The blue line is the average of the last 10 steps: it reacts fast and shows current form. Each dashed vertical line marks a change or a notice. Look for a dip right after one; the shaded stretch shows how long recovery took.",
+    hWorld: "The world's side of the story, including what the agent cannot see. The grid (intake-desk job only) shows the last outcome for every kind of request, and an orange dot means that kind's rule has changed. The list below it shows every change as it happened.",
+    hAgent: "The raw exchange: what the agent sees, what it answered, and what it was told back. Everything else on this page is computed from a sequence of these.",
+    hMemory: "Whatever the agent wrote down for itself, version by version. An agent that plays through its own command-line tool keeps its memory in its own session, where driftlab cannot look, so an empty panel is expected for those.",
+    hRuns: "Every run on disk, live or finished. Each entry names the agent and shows its average reward per step. The newest run is followed until you click one to pin it. The ▶ button replays a finished run.",
+    hExp: "What this experiment does, all of its settings, and the exact job description the agent was given at the start of the run.",
+    hAgentCfg: "Everything the run's record says about who played. When driftlab enforced these settings, they are facts, not the agent's self-description.",
+    hMatrix: "Every agent with analyzed full-length runs. Each cell is that agent's driftlab score on one experiment; darker is higher. Click a cell to open those runs. The score is for ranking; the profiles further down are the real result.",
+    hDims: "Each agent's four score dimensions, averaged across its experiments. The glossary below defines each one. A dash means no experiment measured that dimension.",
+    hRegistry: "One entry per experiment: what it does, its settings, what it varies and measures, and the prediction it registers so results can be checked automatically. The same definition is stamped into every run's record.",
+    hHyp: "The lab's claims, one per entry: the claim in plain words, its current status, the verdict the run data supports so far, and the numbers behind that verdict. A verdict only speaks for the agents and worlds actually tested.",
+    hWorldCfg: "The job the agent was doing and the kinds of change this world can throw at it.",
+    hGloss: "Plain definitions of every number in the tables on this page.",
   };
   function applyTutorial() {  // explanations are always shown, under the values
+    const g = $("glossary");
+    if (g && !g.childElementCount) g.innerHTML = Object.entries(METRIC_HELP).map(([k, v]) =>
+      `<span class="k">${escapeHtml(k)}</span><span>${escapeHtml(v)}</span>`).join("");
     for (const [id, text] of Object.entries(TUTORIAL_TILES)) {
       const valueEl = document.getElementById(id); if (!valueEl) continue;
       let sub = valueEl.parentElement.querySelector(".s");
@@ -553,7 +578,7 @@
     const last = s.steps[n - 1];
     if (last) {
       const good = last.reward > 0, badge = $("outcome");
-      badge.className = "badge " + (good ? "good" : "bad"); badge.textContent = `${good ? "accepted / positive" : "rejected / negative"}  ${last.reward >= 0 ? "+" : ""}${fmt(last.reward)}`;
+      badge.className = "badge " + (good ? "good" : "bad"); badge.textContent = `${good ? "positive outcome" : "negative outcome"}  ${last.reward >= 0 ? "+" : ""}${fmt(last.reward)}`;
       $("nowT").textContent = `step ${last.t + 1}`;
       $("obs").textContent = last.observation || "—"; $("reply").textContent = last.reply || last.action || "—"; $("fb").textContent = last.feedback || "—";
       $("noticeBox").style.display = last.notice ? "" : "none"; $("noticeText").textContent = last.notice || "";
@@ -575,7 +600,7 @@
         const rows = []; i += 2;
         while (i < lines.length && lines[i].trim() && !/^-{4,}/.test(lines[i].trim())) { rows.push(lines[i].trim().split(/\s{2,}/)); i++; }
         html += `<div class="tablewrap"><table class="cohort"><tr>${cols.map(c => `<th>${escapeHtml(c)}</th>`).join("")}</tr>` +
-                rows.map(r => `<tr>${r.map((c, j) => `<td${j === 0 ? ' style="text-align:left"' : ""}>${escapeHtml(human(c))}</td>`).join("")}</tr>`).join("") +
+                rows.map(r => `<tr>${r.map((c, j) => `<td${j === 0 ? ` style="text-align:left"${METRIC_HELP[c] ? ` title="${escapeHtml(METRIC_HELP[c])}"` : ""}` : ""}>${escapeHtml(human(c))}</td>`).join("")}</tr>`).join("") +
                 `</table></div>`;
       } else { if (line.trim()) html += `<p class="aline">${escapeHtml(line)}</p>`; i++; }
     }
@@ -587,9 +612,9 @@
   function cohortHTML(p, dir) {
     const dims = ["adaptation", "knowledge", "epistemics", "efficiency"];
     const f = v => (v == null || Number.isNaN(+v)) ? "—" : (+v).toFixed(2);
-    let html = `<div class="benchhint">Adaptation profile: each agent's four score dimensions (0–1) over this experiment's runs — adaptation (detection/recovery speed), knowledge (accuracy/retention/interference), epistemics (calibration/stale memory), efficiency (parsing/cost) — and their mean as the driftlab score. "—" means this experiment's runs don't measure it.</div>` +
+    let html = `<div class="benchhint">Each agent's four score dimensions (0 to 1) over this experiment's runs, and their average as the driftlab score. Hover a column heading for what it measures. A dash means these runs do not measure it.</div>` +
       `<div class="tablewrap"><table class="cohort">` +
-      `<tr><th>agent</th>${dims.map(d => `<th>${d.slice(0, 5)}</th>`).join("")}<th>score</th></tr>` +
+      `<tr><th>agent</th>${dims.map(d => `<th title="${escapeHtml(METRIC_HELP[d] || "")}">${d}</th>`).join("")}<th title="${escapeHtml(METRIC_HELP["driftlab score"] || "")}">score</th></tr>` +
       Object.entries(p.agents).map(([name, a]) =>
         `<tr><td style="text-align:left" title="${escapeHtml(name)}">${escapeHtml(agentLabel({ name, ...(a.spec || {}) }) || human(name))}</td>` +
         dims.map(d => `<td>${f(a.dimensions[d])}</td>`).join("") +
@@ -597,7 +622,7 @@
     const fx = (p.effects?.agent || []).concat(p.effects?.regime || []);
     if (fx.length) {
       html += `<h3>Paired effects on ${escapeHtml(human(p.effects.field))}</h3>` +
-        `<div class="benchhint">Each row compares two conditions on the same seeded cells: the mean of (b − a), its 95% bootstrap confidence interval, and how many matched pairs it rests on. An interval that excludes 0 is a difference the seeds can't explain away.</div><ul class="fx">` +
+        `<div class="benchhint">Each row compares two conditions on the same seeds: the average difference, its 95% confidence interval, and the number of matched run pairs behind it. When the interval does not touch zero, the difference is real rather than luck of the draw.</div><ul class="fx">` +
         fx.slice(0, 10).map(e => {
           const ci = e.ci ? ` [${e.ci[0] >= 0 ? "+" : ""}${e.ci[0].toFixed(2)}, ${e.ci[1] >= 0 ? "+" : ""}${e.ci[1].toFixed(2)}]` : "";
           return `<li><span>${escapeHtml(human(e.b))} − ${escapeHtml(human(e.a))}${e.agent ? ` <span style="color:var(--text-muted)">(${escapeHtml(human(e.agent))})</span>` : ""}</span>` +
@@ -626,7 +651,7 @@
 
     const wname = s.world || (s.cell || {}).world || "";
     const info = WORLD_INFO[wname];
-    $("worldBlurb").textContent = info ? `${info[0]} — ${info[1]}` : "";
+    $("worldBlurb").textContent = info ? `${info[0]}. ${info[1]}` : "";
     kvRows($("worldProf"), [
       ["world", human(wname || "—")],
       ["regime", human((s.cell || {}).regime ?? "—")],
@@ -637,7 +662,9 @@
     const e = [];
     if (reg) {
       e.push(["experiment", `${reg.title} (${expId(s)}, version ${reg.version})`]);
-      e.push(["hypothesis", reg.hypothesis]);
+      if (reg.design) e.push(["what happens", reg.design]);
+      for (const [k, v] of Object.entries(reg.parameters || {})) e.push([k, v]);
+      e.push(["why it's run", reg.hypothesis]);
       e.push(["varies", (reg.independent || []).map(human).join("; ")]);
       e.push(["measures", (reg.dependent || []).map(human).join("; ")]);
       e.push(["kinds of change", (reg.drift || []).join("; ")]);
@@ -649,7 +676,7 @@
 
   function renderMemory(s) {
     const vs = $("versions"); vs.innerHTML = "";
-    if (!s.memories.length) { $("memory").textContent = "nothing yet — reference agents report notes rewrites; an MCP harness gets a notebook whose edits show here. A CLI-driven agent (path B) keeps its memory inside its own session, invisible by design."; $("memory").className = "empty tall"; $("memMeta").textContent = ""; return; }
+    if (!s.memories.length) { $("memory").textContent = "nothing yet. Agents that keep visible notes show every rewrite here. An agent playing through its own command-line tool keeps its memory in its own session, out of driftlab's sight by design."; $("memory").className = "empty tall"; $("memMeta").textContent = ""; return; }
     const idx = s.memView === null ? s.memories.length - 1 : s.memView, m = s.memories[idx];
     s.memories.forEach((mm, i) => { const b = document.createElement("button"); b.textContent = `v${i + 1} · step ${mm.t}`; b.className = i === idx ? "on" : "";
       b.onclick = () => { s.memView = i; render(); }; vs.appendChild(b); });
@@ -715,7 +742,7 @@
       const icon = e.s ? (e.s.done ? "✓" : (e.s.steps.length ? "▶" : "…")) : (e.done ? "✓" : "◦");
       const status = `${icon}${mean != null ? ` ${fmt(mean)} avg` : ""}`;
       main.innerHTML = `<span class="n" title="${escapeHtml(e.label)}${e.model ? " · " + escapeHtml(e.model) : ""}">${escapeHtml(agentLabel(e.spec) || human(e.agent))}</span>` +
-        `<span class="m" title="✓ finished · ▶ playing · ◦ incomplete log — the number is the run's mean reward per step (1.0 = every step accepted)">${status}</span>`;
+        `<span class="m" title="✓ finished · ▶ playing · ◦ incomplete log. The number is the run's average reward per step (1.0 = every step correct)">${status}</span>`;
       if (e.path && (!e.s || e.s.done)) main.appendChild(playButton(e.path));
       li.appendChild(main);
       const subEl = document.createElement("div"); subEl.className = "rsub"; subEl.textContent = sub; li.appendChild(subEl);
@@ -735,13 +762,21 @@
     renderRuns();
   };
 
+  // Change descriptions come verbatim from the logs; translate the terse ones for display.
+  function humanEvent(msg) {
+    return String(msg).replace(/rule flip \((.*?)\)\s+(\S+) -> (\S+) \(affects (\d+) keys?\)/,
+      (_, key, o, n, k) => {
+        const what = key.replace(/'/g, "").split(",").map(x => x.trim()).filter(Boolean).join(" · ");
+        return `the rule for ${what} requests changed: the correct desk is now ${n} (was ${o}; ${k} kind${k === "1" ? "" : "s"} of request affected)`;
+      });
+  }
   function renderLog(s) {
     const ul = $("log"); ul.innerHTML = "";
     s.events.slice(-60).reverse().forEach(e => {
       const li = document.createElement("li"); li.className = e.kind;
-      li.innerHTML = `<span class="t">t${e.t}</span><span>${escapeHtml(e.msg)}</span>`; ul.appendChild(li);
+      li.innerHTML = `<span class="t">t${e.t}</span><span>${escapeHtml(humanEvent(e.msg))}</span>`; ul.appendChild(li);
     });
-    if (!s.events.length) ul.innerHTML = `<li class="empty">no world events yet</li>`;
+    if (!s.events.length) ul.innerHTML = `<li class="empty">nothing has changed yet</li>`;
   }
 
   // ---- charts (plain SVG) ------------------------------------------------------
@@ -802,11 +837,11 @@
     panel.style.display = "";
     const types = [...new Set([...s.keys.keys()].map(k => k.split("|")[0]))], regions = ["north", "south", "east"], sizes = ["small", "large"];
     const cur = s.steps.length ? (s.steps[s.steps.length - 1].key || []).join("|") : "";
-    let h = `<table><tr><th></th>${regions.map(r => sizes.map(z => `<th class="c">${r[0].toUpperCase()}${z[0]}</th>`).join("")).join("")}</tr>`;
+    let h = `<table><tr><th></th>${regions.map(r => sizes.map(z => `<th class="c" title="${r} · ${z}">${r[0].toUpperCase()}${z[0]}</th>`).join("")).join("")}</tr>`;
     for (const ty of types) { h += `<tr><th>${ty}</th>`;
       for (const r of regions) for (const z of sizes) { const k = `${ty}|${r}|${z}`, v = s.keys.get(k);
         const cls = "cell" + (v ? (v.reward > 0 ? " good" : " bad") : "") + (k === cur ? " cur" : "") + (s.changedKeys.has(k) ? " changed" : "");
-        h += `<td><div class="${cls}" title="${k}${v ? `: last ${v.reward > 0 ? "accepted" : "rejected"} at step ${v.t + 1} (correct ${v.correct})` : ": not seen"}">${v ? v.correct : ""}</div></td>`; }
+        h += `<td><div class="${cls}" title="${k.split("|").join(" · ")}${v ? `: last attempt ${v.reward > 0 ? "accepted" : "rejected"} at step ${v.t + 1}; the correct desk is ${v.correct}` : ": not tried yet"}">${v ? v.correct : ""}</div></td>`; }
       h += `</tr>`; }
     $("grid").innerHTML = h + `</table>`;
   }
@@ -861,8 +896,8 @@
     }
     const world = sel.value || worlds[0] || "rule_world";
     const m = (benchData || {})[world];
-    $("benchStamp").textContent = m ? `built from every analyzed run directory · profiles last recomputed ${new Date(m.generated * 1000).toLocaleString()} · reopen this tab after an analysis to pick up new results`
-                                    : "no profiles computed yet — run an experiment (or --analyze an existing run directory), then reopen this tab";
+    $("benchStamp").textContent = m ? `covers every analyzed run · last recomputed ${new Date(m.generated * 1000).toLocaleString()} · reopen this tab after an analysis to pick up new results`
+                                    : "no profiles computed yet. Run an experiment, or analyze existing runs, then reopen this tab";
     const f = v => (v == null || Number.isNaN(+v)) ? "—" : (+v).toFixed(2);
     if (m) {
       const exps = m.suite;
@@ -874,9 +909,9 @@
             const cell = row.experiments[e], sc = cell ? cell.driftlab_score : null;
             const tint = sc != null && !Number.isNaN(+sc) ? ` style="background:color-mix(in srgb, var(--series-3) ${Math.round(sc * 35)}%, transparent)"` : "";
             const q = cell && cell.quick;
-            return `<td class="cell-drill" data-exp="${e}" data-agent="${escapeHtml(a)}"${tint} title="${q ? "quick-mode sense checks only — not comparable to full-length scores. " : ""}open these runs">${f(sc)}${q ? '<span class="muted">*</span>' : ""}</td>`;
+            return `<td class="cell-drill" data-exp="${e}" data-agent="${escapeHtml(a)}"${tint} title="${q ? "short sense-check runs only, not comparable to full-length scores. " : ""}open these runs">${f(sc)}${q ? '<span class="muted">*</span>' : ""}</td>`;
           }).join("") + `<td class="score"${row.quick_only ? ' title="quick-mode runs only"' : ""}>${f(row.mean_score)}${row.quick_only ? '<span class="muted">*</span>' : ""}</td></tr>`).join("") + `</table>` +
-        (anyQuick ? `<div class="benchhint" style="margin-top:4px">* built from quick-mode sense checks (short episodes) — a plumbing check, not a comparable measurement.</div>` : "");
+        (anyQuick ? `<div class="benchhint" style="margin-top:4px">* from short sense-check runs. These verify the plumbing and are not comparable to full-length scores.</div>` : "");
       document.querySelectorAll("#benchMatrix td.cell-drill").forEach(td => td.onclick = () => drillTo(td.dataset.agent, td.dataset.exp));
       const dims = ["adaptation", "knowledge", "epistemics", "efficiency"];
       $("benchDims").innerHTML = `<table class="cohort"><tr><th>agent</th>${dims.map(d => `<th>${d}</th>`).join("")}</tr>` +
@@ -897,12 +932,12 @@
       const p = profCache[dir], reg = REGISTRY[exp] || {};
       const div = document.createElement("div"); div.className = "panel";
       let inner = `<h2>${exp}${reg.title ? " · " + escapeHtml(reg.title) : ""}</h2>`;
-      if (reg.hypothesis) inner += `<p class="aline">${escapeHtml(reg.hypothesis)}</p>`;
+      if (reg.design || reg.hypothesis) inner += `<p class="aline" style="max-width:100ch">${escapeHtml(reg.design || reg.hypothesis)}</p>`;
       inner += (p && p !== "pending" && p.agents) ? cohortHTML(p, dir)
              : `<p class="muted">no profile computed for this experiment and world yet</p>`;
       const at = analysisByExp[exp];
       if (at) inner += `<h3>Experiment metrics</h3>` +
-        `<div class="benchhint">This experiment's own analysis tables, recomputed over every run in the directory by its analyze(). Lags count encounters on the affected tasks (steps where tasks don't repeat); lower is better.</div>` + analysisHTML(at);
+        `<div class="benchhint">This experiment's own analysis, recomputed over every run it has. Latencies count tries on the affected tasks, not raw steps, and lower is better. The glossary above defines the shared terms.</div>` + analysisHTML(at);
       div.innerHTML = inner; cont.appendChild(div);
     });
   }
@@ -919,15 +954,15 @@
   let valData;
   const VCHIP = { "SUPPORTED": "good", "NOT SUPPORTED": "bad", "PARTIALLY SUPPORTED": "mixed", "INCONCLUSIVE": "" };
   const VMEAN = {
-    "SUPPORTED": "every conclusive prediction agrees with the hypothesis",
-    "NOT SUPPORTED": "every conclusive prediction points the other way",
-    "PARTIALLY SUPPORTED": "conclusive predictions disagree with each other — look at which agents or worlds split",
-    "INCONCLUSIVE": "no prediction reached a verdict yet: not enough full-length, seed-matched runs, or the confidence intervals include zero",
+    "SUPPORTED": "every prediction that reached a verdict agrees with the hypothesis",
+    "NOT SUPPORTED": "every prediction that reached a verdict points the other way",
+    "PARTIALLY SUPPORTED": "predictions that reached a verdict disagree with each other; look at which agents or worlds split",
+    "INCONCLUSIVE": "no prediction has reached a verdict yet: either there are not enough full-length runs on matched seeds, or the confidence intervals still include zero",
   };
   function predDesc(p) {
-    if (p.kind === "reversal") return `test: the sign of the agent-pair effect on ${p.field} flips between '${p.a_regime}' and '${p.b_regime}', with both 95% CIs excluding zero`;
-    if (p.direction === "differs") return `test: some agent pair's paired delta on ${p.field} has a 95% CI excluding zero`;
-    return `test: ${p.field}(${p.b}) − ${p.field}(${p.a}) ${p.direction} 0, per agent, paired by seed; the 95% bootstrap CI must exclude zero`;
+    if (p.kind === "reversal") return `How it's checked: rank the agents on ${human(p.field)} under '${human(p.a_regime)}', then again under '${human(p.b_regime)}'. The prediction holds if some pair of agents swaps order between the two conditions, with both 95% confidence intervals clear of zero.`;
+    if (p.direction === "differs") return `How it's checked: compare every pair of agents on ${human(p.field)}, matched run for run on the same seeds. The prediction holds if some pair differs with a 95% confidence interval clear of zero.`;
+    return `How it's checked: for each agent, compare ${human(p.field)} between '${human(p.a)}' and '${human(p.b)}' on the same seeds. The prediction holds if '${human(p.b)}' minus '${human(p.a)}' is ${p.direction === ">" ? "positive" : "negative"} on average, with its 95% confidence interval clear of zero.`;
   }
   // the numeric evidence view: per prediction, one row per verdict with delta, CI and an interval plot
   const VCOLOR = { supported: "var(--good)", contradicted: "var(--critical)", inconclusive: "var(--text-muted)" };
@@ -964,7 +999,7 @@
                  `<td style="text-align:left">${r.ci || r.delta != null ? ciBar(r.delta, r.ci, span, color) : `<span class="muted" style="font-size:11px">${escapeHtml((r.reason || "no data").split("(")[0].trim())}</span>`}</td></tr>`;
         }).join("") + `</table></div>`;
     }
-    return html + `<div class="benchhint" style="margin:2px 0 6px">Hover a row for the verdict's basis. The plot shows the paired delta (dot) and its 95% bootstrap interval against zero (center line): an interval clear of the line is a conclusive verdict.</div>`;
+    return html + `<div class="benchhint" style="margin:2px 0 6px">Hover a row to see how its verdict was reached. In the plot, the dot is the average difference and the whiskers are its 95% confidence interval; the center line is zero. An interval that stays clear of the line is a conclusive verdict.</div>`;
   }
 
   function mdHTML(md) {  // minimal renderer for the hypothesis files: headings, tables, lists, bold, code
@@ -1018,29 +1053,35 @@
              : `<span class="chip">NO PREDICTION</span>`;
       const preds = hasPred
         ? (e.predictions || []).map(p => `<p style="margin:2px 0"><strong>${escapeHtml(p.claim)}</strong><br><span class="muted" style="font-size:11.5px">${escapeHtml(predDesc(p))}</span></p>`).join("")
-        : `<p class="muted" style="margin:2px 0">none yet — this experiment's dependent variables are not in the standardized profile, so no validation logic is defined for it</p>`;
+        : `<p class="muted" style="margin:2px 0">none yet. What this experiment measures is not in the standardized profile, so no automatic check is defined for it</p>`;
       const evBody = rows.length ? evidenceTables(rows)
         : `<p class="muted" style="margin:2px 0">${hasPred ? "no full-length runs to evaluate yet" : "define a prediction in code to enable validation"}</p>`;
       return `<details class="hyp"><summary><strong>${id.replace("exp", "")}</strong> ${escapeHtml(e.title)} <span class="muted">v${e.version}</span> ${chip}` +
-        `<div class="benchhint" style="margin:4px 0 0 18px">${escapeHtml(e.hypothesis)}</div></summary>` +
+        `<div class="benchhint" style="margin:4px 0 0 18px">${escapeHtml(e.design || e.hypothesis)}</div></summary>` +
         `<div class="subtile"><h4 class="evhead">Machine-checkable prediction</h4>${preds}</div>` +
         `<div class="subtile"><h4 class="evhead">Machine evidence</h4>${evBody}</div>` +
-        `<div class="subtile"><h4 class="evhead">Design</h4><div class="kv">` +
+        `<div class="subtile"><h4 class="evhead">Design</h4>` +
+        (e.design ? `<p style="margin:2px 0 8px;max-width:90ch">${escapeHtml(e.design)}</p>` : "") +
+        `<p style="margin:2px 0 8px;max-width:90ch"><span class="muted">Why it's run:</span> ${escapeHtml(e.hypothesis)}</p><div class="kv">` +
+        Object.entries(e.parameters || {}).map(([k, v]) => `<span class="k">${escapeHtml(k)}</span><span>${escapeHtml(v)}</span>`).join("") +
         `<span class="k">varies</span><span>${(e.independent || []).map(x => escapeHtml(human(x))).join("<br>")}</span>` +
         `<span class="k">measures</span><span>${(e.dependent || []).map(x => escapeHtml(human(x))).join("<br>")}</span>` +
         `<span class="k">worlds</span><span>${escapeHtml((e.worlds || []).join(", "))}</span>` +
-        `<span class="k">bears on</span><span>${(e.hypotheses || []).join(", ")}</span></div></div></details>`;
+        `<span class="k">bears on</span><span>${(e.hypotheses || []).join(", ")}</span></div>` +
+        (e.parameters ? `<p class="benchhint" style="margin:8px 0 0">Short sense-check runs ("quick" mode) scale these lengths and schedules down to about a tenth.</p>` : "") +
+        `</div></details>`;
     }).join("");
     $("valStamp").textContent = valData
-      ? `CI-based validation last computed ${new Date(valData.generated * 1000).toLocaleString()}. How to read the machine verdicts: a prediction is SUPPORTED when the 95% bootstrap confidence interval of its paired delta lies entirely on the predicted side of zero, across at least ${valData.min_pairs} seed-matched run pairs; CONTRADICTED when the interval lies entirely on the other side; INCONCLUSIVE when the interval includes zero or there isn't enough full-length paired data (quick runs never count). Verdicts are statistical, scoped to the agents and worlds tested, and recomputed whenever validation runs; the validation logic itself is defined in code, per experiment.`
-      : "No validation has been computed yet. Each experiment registers machine-checkable predictions; validation evaluates them as paired effects with bootstrap confidence intervals and reports scope-qualified verdicts here.";
+      ? `Validation last ran ${new Date(valData.generated * 1000).toLocaleString()}. Every prediction is tested as a paired comparison: the same experiment, world and seeds, with only the thing the prediction names differing. SUPPORTED means the difference sits on the predicted side of zero with its whole 95% confidence interval, across at least ${valData.min_pairs} matched pairs of runs. CONTRADICTED means the interval sits entirely on the other side. INCONCLUSIVE means the interval still includes zero, or there is not enough full-length paired data (short sense-check runs never count). A verdict only speaks for the agents and worlds tested.`
+      : "Validation has not run yet. Each experiment registers predictions that can be checked automatically; validation tests them as paired comparisons with confidence intervals and reports its verdicts here.";
     $("hypList").innerHTML = (hypData || []).map(h => {
       const v = valData && valData.hypotheses ? valData.hypotheses[h.id] : null;
       const chip = v ? `<span class="chip ${VCHIP[v.proposed_status] || ""}" title="${escapeHtml(VMEAN[v.proposed_status] || "")}">${escapeHtml(v.proposed_status)}</span>` : `<span class="chip">NOT VALIDATED</span>`;
-      const meaning = v ? `<div class="benchhint" style="margin:4px 0 0 18px">${escapeHtml(VMEAN[v.proposed_status] || "")} — ${escapeHtml(v.scope)}</div>` : "";
+      const claim = h.claim ? `<div class="benchhint" style="margin:4px 0 0 18px;max-width:90ch">${escapeHtml(h.claim)}</div>` : "";
+      const meaning = v ? `<div class="benchhint" style="margin:4px 0 0 18px">Verdict so far: ${escapeHtml(VMEAN[v.proposed_status] || "")} (${escapeHtml(v.scope)})</div>` : "";
       const evBody = v && v.rows && v.rows.length ? evidenceTables(v.rows)
         : (v ? `<p class="muted" style="margin:2px 0">${v.predicted_by && v.predicted_by.length ? `predictions are registered (${v.predicted_by.join(", ")}) but none of those experiments has full-length runs yet` : "none of this hypothesis's experiments has a machine-checkable prediction yet"}</p>` : `<p class="muted" style="margin:2px 0">validation has not been computed</p>`);
-      return `<details class="hyp"><summary><strong>${escapeHtml(h.id)}</strong> ${escapeHtml(h.title)} ${chip}${meaning}</summary>` +
+      return `<details class="hyp"><summary><strong>${escapeHtml(h.id)}</strong> ${escapeHtml(h.title)} ${chip}${claim}${meaning}</summary>` +
         `<div class="subtile"><h4 class="evhead">Machine evidence</h4>${evBody}</div>` +
         `<div class="subtile"><h4 class="evhead">Details</h4>${mdHTML(h.body)}</div></details>`;
     }).join("") || '<p class="muted">no hypotheses defined yet</p>';
@@ -1079,7 +1120,7 @@
     // replay into the run's own entry: run_start resets its state in place, so the list order holds
     const label = path.split("/").pop().replace(".jsonl", ""); const h = data.header;
     replaying = true; active = label; pinned = true;
-    ingest({ run: label, kind: "run_start", cell: h.cell, T: data.steps.length, instructions: "(instructions are not stored in logs; see the experiment's world)", experiment: path.split("/")[1], world: (h.cell || {}).world, cost: h.cost });
+    ingest({ run: label, kind: "run_start", cell: h.cell, T: data.steps.length, instructions: "(the exact job text is not stored in run logs)", experiment: path.split("/")[1], world: (h.cell || {}).world, cost: h.cost });
     const memVersions = (h.memory_versions || []).slice(); // harness notebook edits, stored in the header
     for (const st of data.steps) {
       (st.changes || st.mutations || []).forEach(mu => ingest({ run: label, kind: "event", event_kind: "world_change", msg: mu.desc || `rule flip ${JSON.stringify(mu.key)} ${mu.old} → ${mu.new} (affects ${(mu.affected || []).length} keys)` }));

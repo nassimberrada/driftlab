@@ -2,6 +2,12 @@
 
 Status: UNTESTED
 
+## The claim, in plain words
+
+An agent's stated confidence sags when the world shifts under it, before its
+behavior recovers and sometimes before it can say what changed. If that holds,
+confidence is a cheap, always-on change detector that needs no ground truth.
+
 ## Prediction
 
 - Stated confidence falls on affected tasks after a substantive change, and

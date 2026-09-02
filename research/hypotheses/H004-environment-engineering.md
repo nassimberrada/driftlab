@@ -2,6 +2,13 @@
 
 Status: UNTESTED
 
+## The claim, in plain words
+
+You can make an agent learn faster without touching the agent. Which tasks it
+sees and in what order, how rich and how prompt its feedback is, and when
+changes are allowed to land are all dials on the environment's side. Turning
+them well is worth as much as a better agent.
+
 ## Prediction
 
 Holding the agent fixed, the environment side controls learning speed:

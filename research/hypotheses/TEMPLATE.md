@@ -2,6 +2,12 @@
 
 Status: UNTESTED
 
+## The claim, in plain words
+
+Two or three full sentences a newcomer can understand without context: what
+the claim says about the world, and why it would matter if true. The dashboard
+shows this paragraph as the hypothesis's summary.
+
 ## Prediction
 
 What should be observed if the claim is true — named metrics, direction,

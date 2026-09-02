@@ -165,8 +165,16 @@ class Handler(BaseHTTPRequestHandler):
                 lines = p.read_text().splitlines()
                 title = lines[0].lstrip("# ").split("—", 1)[-1].strip() if lines else p.stem
                 status = next((ln.split(":", 1)[1].strip() for ln in lines if ln.lower().startswith("status:")), "")
+                claim, in_claim = [], False  # the "in plain words" section, shown as the summary
+                for ln in lines:
+                    if ln.startswith("## "):
+                        if in_claim:
+                            break
+                        in_claim = "plain words" in ln.lower()
+                    elif in_claim and ln.strip():
+                        claim.append(ln.strip())
                 items.append({"id": p.name.split("-")[0], "file": p.name, "title": title,
-                              "status": status, "body": p.read_text()})
+                              "status": status, "claim": " ".join(claim), "body": p.read_text()})
             return self._send(200, json.dumps(items))
         if u.path == "/runs":
             logs = sorted(p for p in ROOT.joinpath("runs").rglob("*.jsonl")

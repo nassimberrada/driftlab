@@ -2,6 +2,13 @@
 
 Status: UNTESTED
 
+## The claim, in plain words
+
+A change in how things look hurts agents more than it should, and a change in
+how things actually work hurts them less than it should. Agents take wording
+as evidence: relabel the options and they abandon working knowledge; quietly
+flip the real rule and they keep acting on the old one.
+
 ## Prediction
 
 - Over-reaction index dip(surface)/dip(latent) > 1 (exp04): a cosmetic

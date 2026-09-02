@@ -2,6 +2,13 @@
 
 Status: UNTESTED
 
+## The claim, in plain words
+
+The changes an agent causes itself are the ones it is worst at seeing. When
+the world shifts because of the agent's own behavior, there is no memo and no
+announcement, only its own footprint. And agents would rather blame their own
+ignorance than believe the world moved.
+
 ## Prediction
 
 - Recovery from endogenous changes is slower than from scheduled changes of

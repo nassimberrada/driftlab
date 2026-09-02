@@ -2,6 +2,14 @@
 
 Status: UNTESTED
 
+## The claim, in plain words
+
+How an agent stores what it learns (raw history, distilled notes, extracted
+procedures, or nothing) matters more for coping with a changing world than
+which model it is. And there is no best design: each one trades fast noticing,
+fast recovery, durable knowledge and resistance to outdated beliefs against
+the others, so the right memory depends on how the world changes.
+
 ## Prediction
 
 How an agent remembers determines the split between detecting a change and
