@@ -56,6 +56,22 @@ def world_for(cell: dict, T: int, needs: tuple = (), **kw):
     return w
 
 
+def organization(**kw):
+    """A before_step hook that drives caused, correlated drift: one OrganizationProcess
+    per world (seeded from the world's own seed), stepping every step. Changes it emits
+    carry a shared cause id. Keyword arguments go to OrganizationProcess (rate, coherence,
+    surface_share, warmup)."""
+    from driftlab.drift import OrganizationProcess
+    procs: dict = {}
+
+    def before(t, w):
+        p = procs.get(id(w))
+        if p is None:
+            p = procs[id(w)] = OrganizationProcess(seed=getattr(w, "seed", 0), **kw)
+        p.step(t, w)
+    return before
+
+
 def scheduled(latent=(), surface=(), novelty=()):
     """A before_step hook that applies world changes at the given steps."""
     latent, surface, novelty = set(latent), set(surface), set(novelty)

@@ -164,6 +164,35 @@ FormWorld add `introduce_novelty` and `probe`; RuleWorld alone has `task_key`
 `sample_contrast_pair`. CodebaseWorld executes submitted code in a subprocess with
 a timeout; that is a convenience, not a sandbox.
 
+## Beyond toy setups
+
+Four opt-in mechanisms push the worlds toward realism while keeping ground
+truth exact (everything below is seeded and fully known to the logger):
+
+- **Rules as programs.** RuleWorld's policy is already a program (nested
+  exceptions, `depth=`). FormWorld and CodebaseWorld now support hidden
+  conditional rules over the task itself (`conditional_rules=` /
+  `conditional_conventions=`, built on `worlds/policy.py`): "when the order is
+  large, priority is required", "string-handling functions need type hints".
+  Drift can rewire a conditional instead of flipping a flat fact.
+- **Drift with causes.** `driftlab/drift.py` is a seeded organization whose
+  pressure channels (reorg, policy, workload, tooling) fire bursts of related
+  changes stamped with one cause id — RuleWorld translates a reorg into a
+  desk dissolving (`apply_intent`); other worlds get coherent bursts of their
+  ordinary changes. Drive it with `before_step=organization(rate=...)` from
+  `experiments.common`; whether an agent infers the common cause behind
+  co-occurring changes is measurable from the logs.
+- **Long-horizon tasks.** FormWorld's multi-attempt records and CodebaseWorld's
+  review rounds (`review_rounds=`) make one task span several exchanges, with
+  the reward landing when the task resolves (graded by attempts/rounds via
+  `attempt_penalty=` / `round_penalty=`). Logs carry `task_id`/`task_step`/
+  `task_done`, and the profile collapses steps to tasks automatically, so
+  accuracy and lags count tasks rather than the exchanges inside them.
+- **Structured task streams.** What arrives is the experiment's choice: pass
+  `task_fn=` (a seeded `(idx, world) -> task`) into any world that declares the
+  capability; `worlds/streams.py` ships bursty, seasonal and mixture-drift
+  streams for RuleWorld and FormWorld.
+
 ## Worlds x experiments
 
 Experiments schedule changes themselves through the capabilities, so the same

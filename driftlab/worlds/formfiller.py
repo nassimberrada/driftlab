@@ -32,6 +32,7 @@ from dataclasses import dataclass, field
 import numpy as np
 
 from .base import CONFIDENCE_SUFFIX
+from .policy import ConditionalPolicy
 
 COUNTRIES = {"France": "FR", "Germany": "DE", "Spain": "ES", "Italy": "IT", "Poland": "PL"}
 PRIORITIES = [["low", "normal", "high"], ["P3", "P2", "P1"], ["standard", "rush"]]
@@ -67,6 +68,9 @@ class FormWorld:
     max_attempts: int = 3
     ask_confidence: bool = False
     endogenous: bool = False
+    conditional_rules: int = 0       # hidden IF-THEN requirements over the source record (rules as a program)
+    task_fn: object = None           # (task_idx, world) -> source record; default: seeded random (streams plug in here)
+    attempt_penalty: float = 0.0     # long-horizon grading: success reward = 1 - penalty * failed attempts
     name: str = "form_filler"
 
     system_prompt: str = field(init=False)
@@ -90,7 +94,14 @@ class FormWorld:
         self._last_conf = None
         self._last_truth: list = []
         self._unresolved_since: int | None = None
-        self.task = self._new_task()
+        self._task_info = {"task_id": 0, "task_step": 0, "task_done": False}
+        self.policy = ConditionalPolicy(self.seed, self.conditional_rules, predicates={
+            "large_order": lambda rec: rec["quantity"] > 60,
+            "rush_order": lambda rec: rec["priority_level"] == 2,
+            "export_order": lambda rec: rec["shipping_country"] in ("Germany", "France"),
+            "late_month": lambda rec: int(rec["order_date"].split("-")[2]) > 20,
+        }, effects=["order_date", "priority"]) if self.conditional_rules else None
+        self.task = self.task_fn(0, self) if self.task_fn else self._new_task()
 
     def _record(self, t, kind, desc, **extra):
         ch = {"t": t, "kind": kind, "desc": desc, "affected": [], **extra}
@@ -102,9 +113,12 @@ class FormWorld:
 
     # ---- change capabilities ----------------------------------------------------
     def change_latent(self, t: int) -> str:
-        kind = str(self.rng.choice(["rename", "enum", "required", "date", "country", "qty_max"]))
+        kinds = ["rename", "enum", "required", "date", "country", "qty_max"] + (["conditional"] if self.policy else [])
+        kind = str(self.rng.choice(kinds))
         s = self.schema
-        if kind == "rename":
+        if kind == "conditional":
+            desc = self.policy.mutate()
+        elif kind == "rename":
             k = str(self.rng.choice(list(RENAMES)))
             s["names"][k] = str(self.rng.choice([n for n in RENAMES[k] if n != s["names"][k]]))
             desc = f"form field renamed: {k} is now '{s['names'][k]}'"
@@ -174,6 +188,7 @@ class FormWorld:
 
     def _validate(self, submission: dict) -> list[tuple[str, str]]:
         s, n, exp = self.schema, self.schema["names"], self._expected()
+        required = set(s["required"]) | (set(self.policy.active(self.task)) if self.policy else set())
         sub = {}
         for k, v in submission.items():
             canon = s["aliases"].get(k)
@@ -182,7 +197,7 @@ class FormWorld:
         for canon, visible in n.items():
             val = sub.get(visible)
             if val is None or val == "":
-                if canon in s["required"]:
+                if canon in required:
                     errors.append((visible, "required field missing"))
                 continue
             if canon == "qty":
@@ -256,11 +271,12 @@ class FormWorld:
         return json.dumps(action, sort_keys=True)[:200]
 
     def act(self, t: int, action: dict) -> tuple[float, str]:
+        task_id, task_step = self.task_idx, self.attempt
         self._endogenous_check(t, action)
         errors = self._validate(action)
         self._last_truth = errors
         if not errors:
-            reward, fb = 1.0, "Accepted."
+            reward, fb = max(0.2, 1.0 - self.attempt_penalty * task_step), "Accepted."
             self.successes += 1
             self._unresolved_since = None
             self._advance(t)
@@ -277,6 +293,7 @@ class FormWorld:
             if self.attempt >= self.max_attempts:
                 fb += "\nNo attempts left; the record goes to manual review and you get the next one."
                 self._advance(t)
+        self._task_info = {"task_id": task_id, "task_step": task_step, "task_done": self.task_idx != task_id}
         return reward, fb
 
     def _advance(self, t: int):
@@ -285,13 +302,14 @@ class FormWorld:
         self.last_errors = []
         if self.task_idx % self.version_every == 0:
             self.change_latent(t)
-        self.task = self._new_task()
+        self.task = self.task_fn(self.task_idx, self) if self.task_fn else self._new_task()
 
     def privileged(self, t: int) -> dict:
         new, self._new = self._new, []
         return {"version": self.version, "task_idx": self.task_idx, "attempt": self.attempt, "confidence": self._last_conf,
                 "error_truth": [list(e) for e in self._last_truth], "affected_now": self._unresolved_since is not None,
-                "changes": new, "schema": json.dumps(self.schema, default=list, sort_keys=True)}
+                **self._task_info, "changes": new, "schema": json.dumps(self.schema, default=list, sort_keys=True),
+                "conditionals": self.policy.describe() if self.policy else []}
 
     def summary(self) -> dict:
         return {"successes": self.successes, "tasks_seen": self.task_idx, "changes": self.changes, "final_version": self.version,

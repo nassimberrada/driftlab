@@ -187,6 +187,28 @@ class RuleWorld:
 
     introduce_type = introduce_novelty
 
+    def apply_intent(self, t: int, intent: dict) -> str:
+        """Coherent drift from an OrganizationProcess. A 'reorg' dissolves the desk with the
+        most base rules — every one of them moves at once, one cause. 'tooling' re-words the
+        surface and flips one rule. Anything else is a burst of related flips."""
+        n = max(1, int(intent.get("n", 1)))
+        if intent.get("channel") == "reorg":
+            base = [k for k in self.rules if len(k) == 1]
+            by_opt: dict = {}
+            for k in base:
+                by_opt.setdefault(self.rules[k], []).append(k)
+            desk, keys = max(by_opt.items(), key=lambda kv: len(kv[1]))
+            for key in keys[:n]:
+                self.mutate_now(t, key=key)
+            return f"reorg: desk {desk} dissolved; {min(n, len(keys))} request types reassigned"
+        if intent.get("channel") == "tooling":
+            self.change_surface(t)
+            self.mutate_now(t)
+            return "tooling change: relabel plus one rule flip"
+        for _ in range(n):
+            self.mutate_now(t)
+        return f"{intent.get('channel', 'change')}: {n} related rule flips"
+
     def advance_to(self, t: int) -> list[str]:
         due = [ms for ms in self.mutation_steps if self._applied_until < ms <= t]
         self._applied_until = t

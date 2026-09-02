@@ -56,6 +56,26 @@ def print_table(summary: dict, keys: tuple, fields: tuple, width: int = 16):
         print(row + "".join(f"{s[f]:>{w[f]}.3f}" for f in fields))
 
 
+def collapse_tasks(steps: list[dict]) -> list[dict]:
+    """For logs where one task spans several steps (worlds that report task_id): one row per
+    task, taking the resolving step's outcome and merging the changes seen along the way.
+    Logs without task_id pass through unchanged, so all step-level metrics stay valid."""
+    if not any("task_id" in s for s in steps):
+        return steps
+    out: list[dict] = []
+    cur: dict | None = None
+    for s in steps:
+        if cur is not None and s.get("task_id") == cur.get("task_id"):
+            cur = {**s, "changes": cur.get("changes", []) + s.get("changes", [])}
+        else:
+            if cur is not None:
+                out.append(cur)
+            cur = dict(s)
+    if cur is not None:
+        out.append(cur)
+    return out
+
+
 # ---- RuleWorld change metrics ------------------------------------------------------
 
 def change_events(steps: list[dict], kinds=("latent", "endogenous")) -> list[dict]:

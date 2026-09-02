@@ -35,7 +35,7 @@ from pathlib import Path
 
 import numpy as np
 
-from .metrics import change_events, collect_steps, lags_generic
+from .metrics import change_events, collapse_tasks, collect_steps, lags_generic
 
 SCHEMA_VERSION = 1
 
@@ -117,7 +117,10 @@ def _interference(steps, succ, m) -> float:
 
 
 def run_profile(header: dict, steps: list[dict]) -> dict:
-    """The standardized per-run result: every metric NaN when not measured."""
+    """The standardized per-run result: every metric NaN when not measured.
+    Multi-step tasks (task_id in the log) are collapsed to one row per task first,
+    so accuracy and lags count tasks, not the exchanges inside them."""
+    steps = collapse_tasks(steps)
     cell = header["cell"]
     succ = _successes(steps)
     changes = change_events(steps)

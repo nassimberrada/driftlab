@@ -40,7 +40,9 @@ Worlds own their state; scenarios own the timing of changes. Feedback richness i
 from typing import Any, Protocol
 
 CAPABILITIES = ("change_latent", "change_surface", "introduce_novelty", "probe", "sample_task",
-                "sample_contrast_pair", "ask_confidence", "task_key", "endogenous")
+                "sample_contrast_pair", "ask_confidence", "task_key", "endogenous",
+                "apply_intent",   # coherent multi-change drift from an OrganizationProcess (driftlab/drift.py)
+                "task_fn")        # accepts an external task stream: task_fn(idx, world) -> task
 
 CONFIDENCE_SUFFIX = ("\nAlso say how confident you are that this will be accepted, as a percentage, on its own line:\n"
                      "CONFIDENCE: <0-100>")
@@ -49,7 +51,7 @@ CONFIDENCE_SUFFIX = ("\nAlso say how confident you are that this will be accepte
 def capabilities(world) -> set:
     caps = set()
     for c in CAPABILITIES:
-        if c in ("ask_confidence", "endogenous", "task_key"):
+        if c in ("ask_confidence", "endogenous", "task_key", "task_fn"):
             if hasattr(world, c) and (c != "task_key" or callable(getattr(world, c))):
                 caps.add(c)
         elif callable(getattr(world, c, None)):

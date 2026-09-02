@@ -41,6 +41,7 @@ from dataclasses import dataclass, field
 import numpy as np
 
 from .base import CONFIDENCE_SUFFIX
+from .policy import ConditionalPolicy
 
 HELPERS = '''
 _LOG = []
@@ -144,6 +145,10 @@ class CodebaseWorld:
     feedback: str = "names"     # tests_only | names | verbose
     ask_confidence: bool = False
     endogenous: bool = False
+    review_rounds: int = 1       # >1: a rejected ticket comes back with feedback; reward lands when it resolves
+    round_penalty: float = 0.15  # each extra review round shaves this off the final reward
+    conditional_conventions: int = 0  # hidden IF-THEN conventions over the ticket (rules as a program)
+    task_fn: object = None       # (ticket_idx, world) -> index into TASKS; default: seeded permutation
     name: str = "codebase"
 
     system_prompt: str = field(init=False)
@@ -165,6 +170,15 @@ class CodebaseWorld:
         self._new: list = []
         self._last_conf = None
         self._changed_at: int | None = None
+        self._ticket = 0            # tickets started; the task id
+        self._round = 0             # review rounds used on the open ticket
+        self._last_fb: str | None = None
+        self._task_info = {"task_id": 0, "task_step": 0, "task_done": False}
+        self.policy = ConditionalPolicy(self.seed, self.conditional_conventions, predicates={
+            "multi_param": lambda name: SIGNATURES[name].count(",") >= 1,
+            "string_task": lambda name: name in ("slugify", "parse_kv", "word_freq"),
+            "collection_task": lambda name: name in ("chunk", "dedupe", "flatten", "running_mean"),
+        }, effects=list(CONVENTIONS)) if self.conditional_conventions else None
 
     def _record(self, t, kind, desc, **extra):
         ch = {"t": t, "kind": kind, "desc": desc, "affected": [], **extra}
@@ -176,6 +190,8 @@ class CodebaseWorld:
 
     # ---- change capabilities ---------------------------------------------------------
     def change_latent(self, t: int) -> str:
+        if self.policy and self.rng.random() < 0.4:
+            return self._record(t, "latent", f"style guide revised: {self.policy.mutate()}")
         names = [c for c in CONVENTIONS if c not in self.active]
         new = [str(c) for c in self.rng.choice(names, size=min(self.conventions_per_session, len(names)), replace=False)]
         old, self.active = self.active, new
@@ -209,11 +225,14 @@ class CodebaseWorld:
             out.append([str(c) for c in self.rng.choice(names, size=self.conventions_per_session, replace=False)])
         return out
 
-    def _task(self, t: int):
-        return TASKS[self.order[t % len(TASKS)]]
+    def _task(self, _t: int = 0):
+        idx = self.task_fn(self._ticket, self) if self.task_fn else self.order[self._ticket % len(TASKS)]
+        return TASKS[int(idx) % len(TASKS)]
 
     def _active(self, t: int) -> list[str]:
-        return self.active
+        name = self._task()[0]
+        extra = [c for c in self.policy.active(name) if c not in self.active] if self.policy else []
+        return self.active + extra
 
     def _maybe_new_session(self, t: int):
         if t and t % self.session_length == 0:
@@ -222,11 +241,15 @@ class CodebaseWorld:
     # ---- World protocol -----------------------------------------------------
     def observe(self, t: int) -> str:
         self._maybe_new_session(t)
-        name, spec, _ = self._task(t)
-        templates = [f"Ticket #{1000 + t}: implement `{SIGNATURES[name]}`. {spec}",
-                     f"[TASK-{1000 + t}] New helper needed: `{SIGNATURES[name]}`\nAcceptance: {spec}",
+        name, spec, _ = self._task()
+        templates = [f"Ticket #{1000 + self._ticket}: implement `{SIGNATURES[name]}`. {spec}",
+                     f"[TASK-{1000 + self._ticket}] New helper needed: `{SIGNATURES[name]}`\nAcceptance: {spec}",
                      f"Hey, can you add `{SIGNATURES[name]}`? Should {spec[0].lower() + spec[1:]}"]
-        return templates[self.template]
+        text = templates[self.template]
+        if self._round and self._last_fb:
+            text += (f"\n\nReview round {self._round + 1} of {self.review_rounds} for this ticket. "
+                     f"Your last submission was not merged:\n{self._last_fb}")
+        return text
 
     def parse(self, text: str):
         c = re.search(r"CONFIDENCE:\s*(\d{1,3})", text)
@@ -242,12 +265,14 @@ class CodebaseWorld:
         return action.replace("\n", "\\n")[:200]
 
     def act(self, t: int, action: str) -> tuple[float, str]:
-        name, _, tests = self._task(t)
+        name, _, tests = self._task()
+        task_id, task_step = self._ticket, self._round
+        active = self._active(t)
         passed, total, failures = run_tests(action, tests)
-        violations = check_conventions(action, name, self._active(t))
+        violations = check_conventions(action, name, active)
         self._endogenous_check(t, action, name)
         tests_ok, conv_ok = passed == total, not violations
-        reward = 1.0 if tests_ok and conv_ok else (0.5 if tests_ok else 0.0)
+        base = 1.0 if tests_ok and conv_ok else (0.5 if tests_ok else 0.0)
         fb = f"Tests: {passed}/{total} passed."
         if self.feedback in ("names", "verbose") and violations:
             fb += " Convention violations: " + ", ".join(violations) + "."
@@ -259,8 +284,18 @@ class CodebaseWorld:
             for v in violations:
                 if v in CONVENTIONS:
                     fb += f"\nRule '{v}': {CONVENTIONS[v]}."
+        done = (tests_ok and conv_ok) or (task_step + 1 >= self.review_rounds)
+        if done:
+            reward = base * max(0.0, 1.0 - self.round_penalty * task_step) if self.review_rounds > 1 else base
+            self._ticket += 1
+            self._round, self._last_fb = 0, None
+        else:  # the ticket comes back for another round; the reward lands when it resolves
+            reward = 0.0
+            self._round, self._last_fb = task_step + 1, fb
+            fb += "\nNot merged yet; the reviewer sent it back — revise and resubmit."
+        self._task_info = {"task_id": task_id, "task_step": task_step, "task_done": done}
         self.results.append({"t": t, "task": name, "passed": passed, "total": total, "violations": violations,
-                             "active": self._active(t), "reward": reward})
+                             "active": active, "reward": reward})
         return reward, fb
 
     def privileged(self, t: int) -> dict:
@@ -268,7 +303,9 @@ class CodebaseWorld:
         new, self._new = self._new, []
         return {"task": r["task"], "passed": r["passed"], "total": r["total"], "violations": r["violations"],
                 "active_conventions": list(r["active"]), "session": t // self.session_length, "confidence": self._last_conf,
-                "affected_now": self._changed_at is not None and t - self._changed_at <= 3, "changes": new}
+                "affected_now": self._changed_at is not None and t - self._changed_at <= 3,
+                **self._task_info, "changes": new,
+                "conditionals": self.policy.describe() if self.policy else []}
 
     def summary(self) -> dict:
         return {"changes": self.changes, "n_endogenous": sum(1 for c in self.changes if c["kind"] == "endogenous"),
