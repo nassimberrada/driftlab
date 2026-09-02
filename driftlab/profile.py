@@ -132,6 +132,8 @@ def run_profile(header: dict, steps: list[dict]) -> dict:
     n_success = sum(succ) if succ else 0
     return {
         "agent": cell["agent"]["name"], "regime": cell.get("regime"), "seed": cell.get("seed"),
+        "agent_spec": {k: cell["agent"][k] for k in ("type", "model", "harness", "substrate")
+                       if cell["agent"].get(k) is not None},
         "world": cell.get("world"), "n_steps": len(steps), "n_changes": len(changes),
         "detection_lag": _nanmean([l["detection_lag"] for l in lags]),
         "recovery_lag": _nanmean([l["recovery_lag"] for l in lags]),
@@ -194,7 +196,8 @@ def profile_dir(run_dir: str) -> dict:
         p = {f: _nanmean([r[f] for r in rs]) for f, _, _ in METRICS}
         p.update(n_changes=_nanmean([r["n_changes"] for r in rs]), cost_usd=sum(r["cost_usd"] for r in rs))
         dims = dimension_scores(p)
-        agents[name] = {"n_runs": len(rs), "metrics": p, "dimensions": dims, "driftlab_score": driftlab_score(dims)}
+        agents[name] = {"n_runs": len(rs), "spec": next((r["agent_spec"] for r in rs if r.get("agent_spec")), {}),
+                        "metrics": p, "dimensions": dims, "driftlab_score": driftlab_score(dims)}
     return {"schema": SCHEMA_VERSION, "run_dir": str(run_dir), "generated": time.time(),
             "world": runs[0]["world"] if runs else None, "agents": agents,
             "excluded_quick": len(all_runs) - len(runs),

@@ -1,11 +1,16 @@
 {
   "schema": 1,
   "run_dir": "runs/exp06/rule_world",
-  "generated": 1788275434.5984836,
+  "generated": 1788383456.004286,
   "world": "rule_world",
   "agents": {
     "agy_g36flash": {
       "n_runs": 1,
+      "spec": {
+        "type": "harness",
+        "model": "gemini-3.6-flash-medium",
+        "harness": "antigravity"
+      },
       "metrics": {
         "detection_lag": 0.25,
         "recovery_lag": NaN,
@@ -30,6 +35,7 @@
       "driftlab_score": 0.551235119047619
     }
   },
+  "excluded_quick": 0,
   "effects": {
     "field": "final_accuracy",
     "agent": [],
@@ -40,6 +46,11 @@
       "agent": "agy_g36flash",
       "regime": "changing",
       "seed": 1000,
+      "agent_spec": {
+        "type": "harness",
+        "model": "gemini-3.6-flash-medium",
+        "harness": "antigravity"
+      },
       "world": "rule_world",
       "n_steps": 12,
       "n_changes": 5,

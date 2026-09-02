@@ -34,6 +34,94 @@ def _clean_json(path: Path) -> str:
     return json.dumps(json.loads(path.read_text(), parse_constant=lambda c: None))
 
 
+_RUN_CACHE: dict = {}  # str(path) -> ((mtime_ns, size), entry) — /runs is polled, logs are immutable once written
+
+
+def _run_entry(p: Path) -> dict:
+    """One /runs row: who played (the header's agent spec), where it stands (steps,
+    mean reward) and whether the log is a complete episode (same test as resume uses:
+    parseable header + parseable last line)."""
+    st = p.stat()
+    key = (st.st_mtime_ns, st.st_size)
+    hit = _RUN_CACHE.get(str(p))
+    if hit and hit[0] == key:
+        return hit[1]
+    entry = {"path": str(p.relative_to(ROOT)), "label": p.stem}
+    try:
+        lines = p.read_text().splitlines()
+        header = json.loads(lines[0]) if lines else {}
+        if header.get("kind") == "header":
+            cell = header.get("cell") or {}
+            rewards = []
+            last_ok = False
+            for ln in lines[1:]:
+                if not ln.strip():
+                    continue
+                try:
+                    rec = json.loads(ln)
+                    last_ok = True
+                except json.JSONDecodeError:
+                    last_ok = False
+                    continue
+                if "reward" in rec:
+                    rewards.append(rec["reward"])
+            entry.update(agent=cell.get("agent") or {}, regime=cell.get("regime"), seed=cell.get("seed"),
+                         world=cell.get("world"), steps=len(rewards),
+                         mean_reward=(sum(rewards) / len(rewards)) if rewards else None,
+                         complete=bool(len(lines) >= 2 and last_ok))
+    except (OSError, json.JSONDecodeError):
+        pass
+    _RUN_CACHE[str(p)] = (key, entry)
+    return entry
+
+
+def _benchmarks() -> dict:
+    """The agent x experiment score matrix per world, computed from every profile.json
+    under runs/exp*/ — any agent with analyzed runs appears, not just agents launched
+    through the benchmark suite runner."""
+    suite = set()
+    try:
+        sys.path.insert(0, str(ROOT))
+        from experiments.benchmark import SUITE
+        suite = {e.split("_")[0] for e in SUITE}
+    except Exception:  # noqa: BLE001  (the matrix still renders from whatever profiles exist)
+        pass
+    dims = ("adaptation", "knowledge", "epistemics", "efficiency")
+    num = lambda v: isinstance(v, (int, float))  # noqa: E731  (NaN was parsed to None)
+    out: dict = {}
+    for prof_path in sorted((ROOT / "runs").glob("exp*/*/profile.json")):
+        exp, world = prof_path.parent.parent.name, prof_path.parent.name
+        try:
+            prof = json.loads(prof_path.read_text(), parse_constant=lambda c: None)
+        except (OSError, ValueError):
+            continue
+        w = out.setdefault(world, {"suite": set(), "agents": {}, "generated": 0})
+        w["suite"].add(exp)
+        w["generated"] = max(w["generated"], prof.get("generated") or 0)
+        # a profile that had to fall back to quick runs (no full-length data) is a sense
+        # check, not a measurement: carry the flag so the matrix can say so
+        quick_only = bool(prof.get("runs")) and all((r.get("n_steps") or 0) < 30 for r in prof["runs"])
+        for name, a in (prof.get("agents") or {}).items():
+            row = w["agents"].setdefault(name, {"experiments": {}, "spec": {}})
+            row["experiments"][exp] = {"driftlab_score": a.get("driftlab_score"),
+                                       "dimensions": a.get("dimensions") or {}, "quick": quick_only}
+            if not row["spec"] and a.get("spec"):
+                row["spec"] = a["spec"]
+    for w in out.values():
+        w["suite"] = sorted(suite | w["suite"])
+        for row in w["agents"].values():
+            full = [e["driftlab_score"] for e in row["experiments"].values() if num(e["driftlab_score"]) and not e["quick"]]
+            scores = full or [e["driftlab_score"] for e in row["experiments"].values() if num(e["driftlab_score"])]
+            row["mean_score"] = sum(scores) / len(scores) if scores else None
+            src = [e for e in row["experiments"].values() if not e["quick"]] or list(row["experiments"].values())
+            row["mean_dimensions"] = {
+                d: (lambda vs: sum(vs) / len(vs) if vs else None)(
+                    [e["dimensions"].get(d) for e in src if num(e["dimensions"].get(d))])
+                for d in dims}
+            row["quick_only"] = all(e["quick"] for e in row["experiments"].values())
+    return out
+
+
 class Handler(BaseHTTPRequestHandler):
     def log_message(self, *a):  # quiet
         pass
@@ -67,9 +155,7 @@ class Handler(BaseHTTPRequestHandler):
                 return self._send(200, "null")
             return self._send(200, _clean_json(path))
         if u.path == "/benchmarks":
-            out = {p.stem: json.loads(_clean_json(p)) for p in sorted((ROOT / "runs" / "benchmark").glob("*.json"))} \
-                if (ROOT / "runs" / "benchmark").is_dir() else {}
-            return self._send(200, json.dumps(out))
+            return self._send(200, json.dumps(_benchmarks()))
         if u.path == "/validation":
             p = ROOT / "runs" / "validation.json"
             return self._send(200, _clean_json(p) if p.exists() else "null")
@@ -83,8 +169,9 @@ class Handler(BaseHTTPRequestHandler):
                               "status": status, "body": p.read_text()})
             return self._send(200, json.dumps(items))
         if u.path == "/runs":
-            logs = sorted(ROOT.joinpath("runs").rglob("*.jsonl"))
-            return self._send(200, json.dumps([str(p.relative_to(ROOT)) for p in logs if p.name != "events.jsonl"]))
+            logs = sorted(p for p in ROOT.joinpath("runs").rglob("*.jsonl")
+                          if p.name != "events.jsonl" and p.parent.name != "llm_cache")
+            return self._send(200, json.dumps([_run_entry(p) for p in logs]))
         if u.path == "/log":
             rel = parse_qs(u.query).get("path", [""])[0]
             path = (ROOT / rel).resolve()

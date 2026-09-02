@@ -429,6 +429,26 @@
   // ---- humanizing ---------------------------------------------------------------
   const human = x => String(x).replace(/_/g, " ");
   const humanRun = l => human(String(l).replace(/^replay:/, "replay · ").replace(/__/g, " · ")).replace(/seed(\d+)/, "seed $1");
+  // What to call an agent, from the run header's spec: the memory architecture and model for
+  // reference agents (the ablation arms are the same model with different memory), the harness
+  // and pinned model for external agents. Falls back to the raw name for old records.
+  function agentLabel(a) {
+    if (!a || !a.name) return "";
+    const s = a.substrate || {};
+    if (a.type === "tabular" || a.name === "tabular") return "tabular baseline";
+    if (a.type === "reference") {
+      const mem = s.kind === "none" ? "no memory"
+        : s.kind === "transcript" ? `transcript${s.window ? ` (last ${s.window} steps)` : ""}`
+        : s.kind === "notes" ? `notes${s.budget_chars ? ` (max ${s.budget_chars} chars)` : ""}`
+        : s.kind === "skills" ? "skills" : human(s.kind || a.name);
+      return a.model ? `${mem} · ${a.model.split("/").pop()}` : mem;
+    }
+    if (a.type === "harness_cli" || a.type === "harness") {
+      const base = a.harness || human(a.name);
+      return a.model ? `${base} · ${a.model}` : base;
+    }
+    return human(a.name) + (a.model ? ` · ${a.model}` : "");
+  }
   const WORLD_INFO = {
     rule_world: ["Intake desk", "Assign each incoming request to one of four handling desks. Hidden routing rules decide what is correct; a substantive change flips a rule, a cosmetic change relabels the desks, and a desk the agent overloads can shed work by itself."],
     form_filler: ["Order-form data entry", "Copy source records into an order form. A substantive change renames a field or changes its format, requirements or caps; a cosmetic change renames the source columns; IT may quietly add an alias for a field name the agent keeps typing."],
@@ -482,10 +502,10 @@
     hWorld: "What changed, and the hidden state the agent doesn't see. The grid (RuleWorld only) shows the last outcome for every request key; an orange dot means that key's rule changed. The timeline lists every change, notice and memory update as it happened.",
     hAgent: "What the agent is looking at right now, what it answered, and what it was told in return. This is the raw exchange — everything else on the page is computed from a sequence of these.",
     hMemory: "Whatever the agent chose to write down for itself. Reference agents rewrite notes periodically; an MCP harness gets notebook tools it can call. A CLI-driven agent (path B) holds its memory in its own session, which driftlab deliberately cannot read. Empty here means the agent isn't using a visible store, not that nothing is being logged.",
-    hRuns: "Every run this dashboard has seen, live or finished. The newest run is followed until you click one to pin it; ▶ replays a finished log.",
+    hRuns: "Every run on disk, live or finished. Each entry names the agent (memory architecture and model, or harness and model) and shows its mean reward per step. The newest run is followed until you click one to pin it; ▶ replays a finished log.",
     hExp: "What this experiment tests — its hypothesis and variables from the registry — and the exact job description the agent was given at the start of the run.",
     hAgentCfg: "The agent's recorded identity: everything the run header knows about who played. For an enforced profile (path A launcher, path B specs) this is pinned configuration, not self-description.",
-    hMatrix: "The reference-suite summary: each cell is one agent's driftlab score on one experiment (darker = higher). Click a cell to jump to those runs. The score is a convenience; the profiles below are the result.",
+    hMatrix: "Every agent with analyzed full-length runs, whether launched through the reference suite or an individual experiment: each cell is that agent's driftlab score on one experiment (darker = higher). Click a cell to jump to those runs. The score is a convenience; the profiles below are the result.",
     hDims: "Each agent's four score dimensions averaged across the suite: adaptation (detection/recovery), knowledge (accuracy/retention/interference), epistemics (calibration/stale memory), efficiency (parsing/cost). — means no experiment in the suite measured it.",
     hRegistry: "What each experiment tests: its hypothesis, the machine-checkable prediction it registers for validation, and which research hypotheses it bears on. The same definition is stamped into every run's record.",
     hHyp: "The research log: one claim per file, each with a human status and, when validation has run, a machine-proposed verdict. A prediction is supported when its paired effect's 95% CI excludes zero in the predicted direction with enough matched cells — scoped to the agents and worlds actually tested, never a global truth-stamp.",
@@ -571,7 +591,7 @@
       `<div class="tablewrap"><table class="cohort">` +
       `<tr><th>agent</th>${dims.map(d => `<th>${d.slice(0, 5)}</th>`).join("")}<th>score</th></tr>` +
       Object.entries(p.agents).map(([name, a]) =>
-        `<tr><td style="text-align:left" title="${escapeHtml(name)}">${escapeHtml(human(name))}</td>` +
+        `<tr><td style="text-align:left" title="${escapeHtml(name)}">${escapeHtml(agentLabel({ name, ...(a.spec || {}) }) || human(name))}</td>` +
         dims.map(d => `<td>${f(a.dimensions[d])}</td>`).join("") +
         `<td class="score">${f(a.driftlab_score)}</td></tr>`).join("") + `</table></div>`;
     const fx = (p.effects?.agent || []).concat(p.effects?.regime || []);
@@ -648,15 +668,16 @@
     const m = stem.match(/^(.*?)__(.*?)__seed(\d+)$/);
     return m ? { agent: m[1], regime: m[2], seed: m[3] } : { agent: stem, regime: "", seed: "" };
   }
-  function entryFor(s, path) {
+  function entryFor(s, d) {  // s: an ingested run's state; d: the /runs disk entry (either may be missing)
     if (s) {
       const c = s.cell || {}, a = c.agent || {}, st = stemParts(s.label);
-      return { label: s.label, s, path, agent: a.name || st.agent, model: a.model || "",
+      return { label: s.label, s, path: d && d.path, agent: a.name || st.agent, model: a.model || "", spec: a,
                regime: String(c.regime ?? st.regime ?? ""), seed: String(c.seed ?? st.seed ?? ""), exp: expId(s) || "" };
     }
-    const stem = path.split("/").pop().replace(".jsonl", ""), st = stemParts(stem);
-    return { label: stem, path, agent: st.agent, model: "", regime: st.regime, seed: st.seed,
-             exp: (path.match(/exp\d+/) || [""])[0] };
+    const a = d.agent || {}, st = stemParts(d.label);
+    return { label: d.label, path: d.path, agent: a.name || st.agent, model: a.model || "", spec: a,
+             regime: String(d.regime ?? st.regime ?? ""), seed: String(d.seed ?? st.seed ?? ""),
+             exp: (d.path.match(/exp\d+/) || [""])[0], mean: d.mean_reward, done: d.complete };
   }
   function passes(e) {
     const title = (REGISTRY[e.exp] || {}).title || "";
@@ -679,10 +700,10 @@
   }
   function renderRuns() {
     const ul = $("runs"); ul.innerHTML = "";
-    const logByStem = new Map(diskLogs.map(p => [p.split("/").pop().replace(".jsonl", ""), p]));
+    const logByStem = new Map(diskLogs.map(d => [d.label, d]));
     const ingested = [...runs.values()].reverse().map(s => entryFor(s, logByStem.get(s.label)));
     const seen = new Set(ingested.map(e => e.label));
-    const diskOnly = diskLogs.filter(p => !seen.has(p.split("/").pop().replace(".jsonl", ""))).map(p => entryFor(null, p));
+    const diskOnly = diskLogs.filter(d => !seen.has(d.label)).map(d => entryFor(null, d));
     const entries = ingested.concat(diskOnly);
     refreshFilterOptions(entries);
     entries.filter(passes).forEach(e => {
@@ -690,8 +711,11 @@
       const title = (REGISTRY[e.exp] || {}).title || human(e.exp);
       const sub = [title, e.regime ? human(e.regime) : "", e.seed !== "" ? `seed ${e.seed}` : ""].filter(Boolean).join(" · ");
       const main = document.createElement("div"); main.className = "rmain";
-      const status = e.s ? `${e.s.done ? "✓" : (e.s.steps.length ? "▶" : "…")} ${fmt(e.s.steps.length ? e.s.steps.reduce((a, b) => a + b.reward, 0) / e.s.steps.length : null)}` : "log";
-      main.innerHTML = `<span class="n" title="${escapeHtml(e.label)}${e.model ? " · " + escapeHtml(e.model) : ""}">${escapeHtml(human(e.agent))}</span><span class="m">${status}</span>`;
+      const mean = e.s ? (e.s.steps.length ? e.s.steps.reduce((a, b) => a + b.reward, 0) / e.s.steps.length : null) : e.mean;
+      const icon = e.s ? (e.s.done ? "✓" : (e.s.steps.length ? "▶" : "…")) : (e.done ? "✓" : "◦");
+      const status = `${icon}${mean != null ? ` ${fmt(mean)} avg` : ""}`;
+      main.innerHTML = `<span class="n" title="${escapeHtml(e.label)}${e.model ? " · " + escapeHtml(e.model) : ""}">${escapeHtml(agentLabel(e.spec) || human(e.agent))}</span>` +
+        `<span class="m" title="✓ finished · ▶ playing · ◦ incomplete log — the number is the run's mean reward per step (1.0 = every step accepted)">${status}</span>`;
       if (e.path && (!e.s || e.s.done)) main.appendChild(playButton(e.path));
       li.appendChild(main);
       const subEl = document.createElement("div"); subEl.className = "rsub"; subEl.textContent = sub; li.appendChild(subEl);
@@ -837,27 +861,31 @@
     }
     const world = sel.value || worlds[0] || "rule_world";
     const m = (benchData || {})[world];
-    $("benchStamp").textContent = m ? `recomputed ${new Date(m.generated * 1000).toLocaleString()} · reopen this tab after an analysis to pick up new results`
-                                    : "no benchmark matrix has been computed yet — run the reference suite, or analyze existing runs, and reopen this tab";
+    $("benchStamp").textContent = m ? `built from every analyzed run directory · profiles last recomputed ${new Date(m.generated * 1000).toLocaleString()} · reopen this tab after an analysis to pick up new results`
+                                    : "no profiles computed yet — run an experiment (or --analyze an existing run directory), then reopen this tab";
     const f = v => (v == null || Number.isNaN(+v)) ? "—" : (+v).toFixed(2);
     if (m) {
       const exps = m.suite;
+      const rowName = (a, row) => agentLabel({ name: a, ...(row.spec || {}) }) || human(a);
+      const anyQuick = Object.values(m.agents).some(r => Object.values(r.experiments).some(e => e.quick));
       $("benchMatrix").innerHTML = `<table class="cohort"><tr><th>agent</th>${exps.map(e => `<th title="${escapeHtml((REGISTRY[e] || {}).title || "")}">${e}</th>`).join("")}<th>mean</th></tr>` +
         Object.entries(m.agents).map(([a, row]) =>
-          `<tr><td style="text-align:left">${escapeHtml(human(a))}</td>` + exps.map(e => {
-            const sc = row.experiments[e] ? row.experiments[e].driftlab_score : null;
+          `<tr><td style="text-align:left" title="${escapeHtml(a)}">${escapeHtml(rowName(a, row))}</td>` + exps.map(e => {
+            const cell = row.experiments[e], sc = cell ? cell.driftlab_score : null;
             const tint = sc != null && !Number.isNaN(+sc) ? ` style="background:color-mix(in srgb, var(--series-3) ${Math.round(sc * 35)}%, transparent)"` : "";
-            return `<td class="cell-drill" data-exp="${e}" data-agent="${escapeHtml(a)}"${tint} title="open these runs">${f(sc)}</td>`;
-          }).join("") + `<td class="score">${f(row.mean_score)}</td></tr>`).join("") + `</table>`;
+            const q = cell && cell.quick;
+            return `<td class="cell-drill" data-exp="${e}" data-agent="${escapeHtml(a)}"${tint} title="${q ? "quick-mode sense checks only — not comparable to full-length scores. " : ""}open these runs">${f(sc)}${q ? '<span class="muted">*</span>' : ""}</td>`;
+          }).join("") + `<td class="score"${row.quick_only ? ' title="quick-mode runs only"' : ""}>${f(row.mean_score)}${row.quick_only ? '<span class="muted">*</span>' : ""}</td></tr>`).join("") + `</table>` +
+        (anyQuick ? `<div class="benchhint" style="margin-top:4px">* built from quick-mode sense checks (short episodes) — a plumbing check, not a comparable measurement.</div>` : "");
       document.querySelectorAll("#benchMatrix td.cell-drill").forEach(td => td.onclick = () => drillTo(td.dataset.agent, td.dataset.exp));
       const dims = ["adaptation", "knowledge", "epistemics", "efficiency"];
       $("benchDims").innerHTML = `<table class="cohort"><tr><th>agent</th>${dims.map(d => `<th>${d}</th>`).join("")}</tr>` +
-        Object.entries(m.agents).map(([a, row]) => `<tr><td style="text-align:left">${escapeHtml(human(a))}</td>` +
+        Object.entries(m.agents).map(([a, row]) => `<tr><td style="text-align:left" title="${escapeHtml(a)}">${escapeHtml(rowName(a, row))}</td>` +
           dims.map(d => `<td>${f(row.mean_dimensions[d])}</td>`).join("") + `</tr>`).join("") + `</table>`;
     } else { $("benchMatrix").innerHTML = '<p class="muted">no matrix yet</p>'; $("benchDims").innerHTML = ""; }
     // one panel per experiment directory: the cohort profile, effects, and the analyze() tables
     const expSet = new Set(m ? m.suite : []);
-    diskLogs.forEach(p => { const e = (p.match(/exp\d+/) || [])[0]; if (e && p.includes(`/${world}/`)) expSet.add(e); });
+    diskLogs.forEach(d => { const e = (d.path.match(/exp\d+/) || [])[0]; if (e && d.path.includes(`/${world}/`)) expSet.add(e); });
     const cont = $("benchExps"); cont.innerHTML = "";
     [...expSet].sort().forEach(exp => {
       const dir = `runs/${exp}/${world}`;

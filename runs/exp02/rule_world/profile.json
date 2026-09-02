@@ -1,11 +1,16 @@
 {
   "schema": 1,
   "run_dir": "runs/exp02/rule_world",
-  "generated": 1788377265.7164614,
+  "generated": 1788383455.0837438,
   "world": "rule_world",
   "agents": {
     "codex_g56luna": {
       "n_runs": 5,
+      "spec": {
+        "type": "harness_cli",
+        "model": "gpt-5.6-luna",
+        "harness": "codex"
+      },
       "metrics": {
         "detection_lag": 1.1166666666666667,
         "recovery_lag": 1.75,
@@ -31,6 +36,13 @@
     },
     "llm_none": {
       "n_runs": 5,
+      "spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "none"
+        }
+      },
       "metrics": {
         "detection_lag": 0.0,
         "recovery_lag": 0.25,
@@ -56,6 +68,14 @@
     },
     "llm_notes": {
       "n_runs": 5,
+      "spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "notes",
+          "every": 10
+        }
+      },
       "metrics": {
         "detection_lag": 0.78,
         "recovery_lag": 1.94,
@@ -81,6 +101,14 @@
     },
     "llm_skills": {
       "n_runs": 5,
+      "spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "skills",
+          "every": 10
+        }
+      },
       "metrics": {
         "detection_lag": 0.31333333333333335,
         "recovery_lag": 1.1333333333333333,
@@ -106,6 +134,14 @@
     },
     "llm_transcript": {
       "n_runs": 5,
+      "spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "transcript",
+          "window": 40
+        }
+      },
       "metrics": {
         "detection_lag": 1.4200000000000002,
         "recovery_lag": 2.7066666666666666,
@@ -131,6 +167,9 @@
     },
     "tabular": {
       "n_runs": 10,
+      "spec": {
+        "type": "tabular"
+      },
       "metrics": {
         "detection_lag": 0.5666666666666667,
         "recovery_lag": 1.4416666666666669,
@@ -332,6 +371,9 @@
       "agent": "agy_g36flash",
       "regime": "changing",
       "seed": 1000,
+      "agent_spec": {
+        "type": "harness"
+      },
       "world": "rule_world",
       "n_steps": 12,
       "n_changes": 5,
@@ -352,6 +394,11 @@
       "agent": "codex_g56luna",
       "regime": "changing",
       "seed": 0,
+      "agent_spec": {
+        "type": "harness_cli",
+        "model": "gpt-5.6-luna",
+        "harness": "codex"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 6,
@@ -372,6 +419,11 @@
       "agent": "codex_g56luna",
       "regime": "changing",
       "seed": 1,
+      "agent_spec": {
+        "type": "harness_cli",
+        "model": "gpt-5.6-luna",
+        "harness": "codex"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 6,
@@ -392,6 +444,11 @@
       "agent": "codex_g56luna",
       "regime": "changing",
       "seed": 2,
+      "agent_spec": {
+        "type": "harness_cli",
+        "model": "gpt-5.6-luna",
+        "harness": "codex"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 6,
@@ -412,6 +469,11 @@
       "agent": "codex_g56luna",
       "regime": "changing",
       "seed": 3,
+      "agent_spec": {
+        "type": "harness_cli",
+        "model": "gpt-5.6-luna",
+        "harness": "codex"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 6,
@@ -432,6 +494,11 @@
       "agent": "codex_g56luna",
       "regime": "changing",
       "seed": 4,
+      "agent_spec": {
+        "type": "harness_cli",
+        "model": "gpt-5.6-luna",
+        "harness": "codex"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 6,
@@ -452,6 +519,13 @@
       "agent": "llm_none",
       "regime": "changing",
       "seed": 0,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "none"
+        }
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 6,
@@ -472,6 +546,13 @@
       "agent": "llm_none",
       "regime": "changing",
       "seed": 1,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "none"
+        }
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 6,
@@ -492,6 +573,13 @@
       "agent": "llm_none",
       "regime": "changing",
       "seed": 2,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "none"
+        }
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 6,
@@ -512,6 +600,13 @@
       "agent": "llm_none",
       "regime": "changing",
       "seed": 3,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "none"
+        }
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 6,
@@ -532,6 +627,13 @@
       "agent": "llm_none",
       "regime": "changing",
       "seed": 4,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "none"
+        }
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 6,
@@ -552,6 +654,14 @@
       "agent": "llm_notes",
       "regime": "changing",
       "seed": 0,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "notes",
+          "every": 10
+        }
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 6,
@@ -572,6 +682,14 @@
       "agent": "llm_notes",
       "regime": "changing",
       "seed": 1,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "notes",
+          "every": 10
+        }
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 6,
@@ -592,6 +710,14 @@
       "agent": "llm_notes",
       "regime": "changing",
       "seed": 2,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "notes",
+          "every": 10
+        }
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 6,
@@ -612,6 +738,14 @@
       "agent": "llm_notes",
       "regime": "changing",
       "seed": 3,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "notes",
+          "every": 10
+        }
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 6,
@@ -632,6 +766,14 @@
       "agent": "llm_notes",
       "regime": "changing",
       "seed": 4,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "notes",
+          "every": 10
+        }
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 6,
@@ -652,6 +794,14 @@
       "agent": "llm_skills",
       "regime": "changing",
       "seed": 0,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "skills",
+          "every": 10
+        }
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 6,
@@ -672,6 +822,14 @@
       "agent": "llm_skills",
       "regime": "changing",
       "seed": 1,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "skills",
+          "every": 10
+        }
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 6,
@@ -692,6 +850,14 @@
       "agent": "llm_skills",
       "regime": "changing",
       "seed": 2,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "skills",
+          "every": 10
+        }
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 6,
@@ -712,6 +878,14 @@
       "agent": "llm_skills",
       "regime": "changing",
       "seed": 3,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "skills",
+          "every": 10
+        }
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 6,
@@ -732,6 +906,14 @@
       "agent": "llm_skills",
       "regime": "changing",
       "seed": 4,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "skills",
+          "every": 10
+        }
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 6,
@@ -752,6 +934,14 @@
       "agent": "llm_transcript",
       "regime": "changing",
       "seed": 0,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "transcript",
+          "window": 40
+        }
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 6,
@@ -772,6 +962,14 @@
       "agent": "llm_transcript",
       "regime": "changing",
       "seed": 1,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "transcript",
+          "window": 40
+        }
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 6,
@@ -792,6 +990,14 @@
       "agent": "llm_transcript",
       "regime": "changing",
       "seed": 2,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "transcript",
+          "window": 40
+        }
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 6,
@@ -812,6 +1018,14 @@
       "agent": "llm_transcript",
       "regime": "changing",
       "seed": 3,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "transcript",
+          "window": 40
+        }
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 6,
@@ -832,6 +1046,14 @@
       "agent": "llm_transcript",
       "regime": "changing",
       "seed": 4,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "transcript",
+          "window": 40
+        }
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 6,
@@ -852,6 +1074,9 @@
       "agent": "tabular",
       "regime": "changing",
       "seed": 0,
+      "agent_spec": {
+        "type": "tabular"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 6,
@@ -872,6 +1097,9 @@
       "agent": "tabular",
       "regime": "changing",
       "seed": 1,
+      "agent_spec": {
+        "type": "tabular"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 6,
@@ -892,6 +1120,9 @@
       "agent": "tabular",
       "regime": "changing",
       "seed": 2,
+      "agent_spec": {
+        "type": "tabular"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 6,
@@ -912,6 +1143,9 @@
       "agent": "tabular",
       "regime": "changing",
       "seed": 3,
+      "agent_spec": {
+        "type": "tabular"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 6,
@@ -932,6 +1166,9 @@
       "agent": "tabular",
       "regime": "changing",
       "seed": 4,
+      "agent_spec": {
+        "type": "tabular"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 6,
@@ -952,6 +1189,9 @@
       "agent": "tabular",
       "regime": "changing",
       "seed": 5,
+      "agent_spec": {
+        "type": "tabular"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 6,
@@ -972,6 +1212,9 @@
       "agent": "tabular",
       "regime": "changing",
       "seed": 6,
+      "agent_spec": {
+        "type": "tabular"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 6,
@@ -992,6 +1235,9 @@
       "agent": "tabular",
       "regime": "changing",
       "seed": 7,
+      "agent_spec": {
+        "type": "tabular"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 6,
@@ -1012,6 +1258,9 @@
       "agent": "tabular",
       "regime": "changing",
       "seed": 8,
+      "agent_spec": {
+        "type": "tabular"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 6,
@@ -1032,6 +1281,9 @@
       "agent": "tabular",
       "regime": "changing",
       "seed": 9,
+      "agent_spec": {
+        "type": "tabular"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 6,

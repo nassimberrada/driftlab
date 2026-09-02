@@ -1,11 +1,14 @@
 {
   "schema": 1,
   "run_dir": "runs/exp04/rule_world",
-  "generated": 1788275434.0992398,
+  "generated": 1788383455.5116813,
   "world": "rule_world",
   "agents": {
     "agy_g36flash": {
       "n_runs": 4,
+      "spec": {
+        "type": "harness"
+      },
       "metrics": {
         "detection_lag": 0.0,
         "recovery_lag": 0.0,
@@ -30,6 +33,7 @@
       "driftlab_score": 0.8958333333333334
     }
   },
+  "excluded_quick": 0,
   "effects": {
     "field": "final_accuracy",
     "agent": [],
@@ -40,6 +44,9 @@
       "agent": "agy_g36flash",
       "regime": "both",
       "seed": 4000,
+      "agent_spec": {
+        "type": "harness"
+      },
       "world": "rule_world",
       "n_steps": 12,
       "n_changes": 3,
@@ -60,6 +67,9 @@
       "agent": "agy_g36flash",
       "regime": "latent",
       "seed": 3000,
+      "agent_spec": {
+        "type": "harness"
+      },
       "world": "rule_world",
       "n_steps": 12,
       "n_changes": 3,
@@ -80,6 +90,9 @@
       "agent": "agy_g36flash",
       "regime": "none",
       "seed": 1000,
+      "agent_spec": {
+        "type": "harness"
+      },
       "world": "rule_world",
       "n_steps": 12,
       "n_changes": 0,
@@ -100,6 +113,9 @@
       "agent": "agy_g36flash",
       "regime": "surface",
       "seed": 2000,
+      "agent_spec": {
+        "type": "harness"
+      },
       "world": "rule_world",
       "n_steps": 12,
       "n_changes": 0,

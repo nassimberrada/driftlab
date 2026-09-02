@@ -1,11 +1,82 @@
 {
   "schema": 1,
   "run_dir": "runs/exp05/rule_world",
-  "generated": 1788360356.0491185,
+  "generated": 1788383455.9738636,
   "world": "rule_world",
   "agents": {
+    "notes_1500": {
+      "n_runs": 5,
+      "spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "notes",
+          "every": 10,
+          "budget_chars": 1500
+        }
+      },
+      "metrics": {
+        "detection_lag": NaN,
+        "recovery_lag": NaN,
+        "final_accuracy": 0.6916666666666667,
+        "retention": NaN,
+        "stale_rate": NaN,
+        "interference": NaN,
+        "calibration_error": NaN,
+        "overconfidence": NaN,
+        "parse_failure_rate": 0.0,
+        "cost_per_success": 0.007023087694636681,
+        "final_reward": 0.6916666666666667,
+        "n_changes": 0.0,
+        "cost_usd": 2.1675208500000083
+      },
+      "dimensions": {
+        "adaptation": NaN,
+        "knowledge": 0.6916666666666667,
+        "epistemics": NaN,
+        "efficiency": 0.7937187477202099
+      },
+      "driftlab_score": 0.7426927071934383
+    },
+    "notes_300": {
+      "n_runs": 5,
+      "spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "notes",
+          "every": 10,
+          "budget_chars": 300
+        }
+      },
+      "metrics": {
+        "detection_lag": NaN,
+        "recovery_lag": NaN,
+        "final_accuracy": 0.2833333333333333,
+        "retention": NaN,
+        "stale_rate": NaN,
+        "interference": NaN,
+        "calibration_error": NaN,
+        "overconfidence": NaN,
+        "parse_failure_rate": 0.0,
+        "cost_per_success": 0.01321850937636559,
+        "final_reward": 0.2833333333333333,
+        "n_changes": 0.0,
+        "cost_usd": 1.9560067000000079
+      },
+      "dimensions": {
+        "adaptation": NaN,
+        "knowledge": 0.2833333333333333,
+        "epistemics": NaN,
+        "efficiency": 0.715345434926566
+      },
+      "driftlab_score": 0.49933938412994966
+    },
     "tabular": {
       "n_runs": 30,
+      "spec": {
+        "type": "tabular"
+      },
       "metrics": {
         "detection_lag": 0.5958333333333333,
         "recovery_lag": 1.7183333333333333,
@@ -28,12 +99,376 @@
         "efficiency": 1.0
       },
       "driftlab_score": 0.8331793711883454
+    },
+    "transcript_120": {
+      "n_runs": 5,
+      "spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "transcript",
+          "window": 120
+        }
+      },
+      "metrics": {
+        "detection_lag": NaN,
+        "recovery_lag": NaN,
+        "final_accuracy": 0.8916666666666668,
+        "retention": NaN,
+        "stale_rate": NaN,
+        "interference": NaN,
+        "calibration_error": NaN,
+        "overconfidence": NaN,
+        "parse_failure_rate": 0.0,
+        "cost_per_success": 0.006252008228768512,
+        "final_reward": 0.8916666666666668,
+        "n_changes": 0.0,
+        "cost_usd": 2.780407800000008
+      },
+      "dimensions": {
+        "adaptation": NaN,
+        "knowledge": 0.8916666666666668,
+        "epistemics": NaN,
+        "efficiency": 0.807654286757574
+      },
+      "driftlab_score": 0.8496604767121204
+    },
+    "transcript_15": {
+      "n_runs": 4,
+      "spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "transcript",
+          "window": 15
+        }
+      },
+      "metrics": {
+        "detection_lag": NaN,
+        "recovery_lag": NaN,
+        "final_accuracy": 0.4791666666666667,
+        "retention": NaN,
+        "stale_rate": NaN,
+        "interference": NaN,
+        "calibration_error": NaN,
+        "overconfidence": NaN,
+        "parse_failure_rate": 0.0,
+        "cost_per_success": 0.01220009436024055,
+        "final_reward": 0.4791666666666667,
+        "n_changes": 0.0,
+        "cost_usd": 2.921782550000003
+      },
+      "dimensions": {
+        "adaptation": NaN,
+        "knowledge": 0.4791666666666667,
+        "epistemics": NaN,
+        "efficiency": 0.7252242679181937
+      },
+      "driftlab_score": 0.6021954672924302
+    },
+    "transcript_40": {
+      "n_runs": 5,
+      "spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "transcript",
+          "window": 40
+        }
+      },
+      "metrics": {
+        "detection_lag": NaN,
+        "recovery_lag": NaN,
+        "final_accuracy": 0.7583333333333334,
+        "retention": NaN,
+        "stale_rate": NaN,
+        "interference": NaN,
+        "calibration_error": NaN,
+        "overconfidence": NaN,
+        "parse_failure_rate": 0.0,
+        "cost_per_success": 0.007205011795476282,
+        "final_reward": 0.7583333333333334,
+        "n_changes": 0.0,
+        "cost_usd": 2.8499458000000066
+      },
+      "dimensions": {
+        "adaptation": NaN,
+        "knowledge": 0.7583333333333334,
+        "epistemics": NaN,
+        "efficiency": 0.7906129945993208
+      },
+      "driftlab_score": 0.7744731639663271
+    },
+    "transcript_5": {
+      "n_runs": 5,
+      "spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "transcript",
+          "window": 5
+        }
+      },
+      "metrics": {
+        "detection_lag": NaN,
+        "recovery_lag": NaN,
+        "final_accuracy": 0.2916666666666667,
+        "retention": NaN,
+        "stale_rate": NaN,
+        "interference": NaN,
+        "calibration_error": NaN,
+        "overconfidence": NaN,
+        "parse_failure_rate": 0.003333333333333333,
+        "cost_per_success": 0.018749464085792276,
+        "final_reward": 0.2916666666666667,
+        "n_changes": 0.0,
+        "cost_usd": 3.342286100000008
+      },
+      "dimensions": {
+        "adaptation": NaN,
+        "knowledge": 0.2916666666666667,
+        "epistemics": NaN,
+        "efficiency": 0.6722496186970996
+      },
+      "driftlab_score": 0.4819581426818832
     }
   },
   "excluded_quick": 3,
   "effects": {
     "field": "final_accuracy",
-    "agent": [],
+    "agent": [
+      {
+        "vary": "agent",
+        "a": "notes_1500",
+        "b": "notes_300",
+        "delta": -0.4083333333333333,
+        "ci": [
+          -0.4916666666666666,
+          -0.325
+        ],
+        "n": 5
+      },
+      {
+        "vary": "agent",
+        "a": "notes_1500",
+        "b": "tabular",
+        "delta": 0.050000000000000024,
+        "ci": [
+          -0.01666666666666663,
+          0.10833333333333331
+        ],
+        "n": 5
+      },
+      {
+        "vary": "agent",
+        "a": "notes_1500",
+        "b": "transcript_120",
+        "delta": 0.2,
+        "ci": [
+          0.11666666666666672,
+          0.29166666666666663
+        ],
+        "n": 5
+      },
+      {
+        "vary": "agent",
+        "a": "notes_1500",
+        "b": "transcript_15",
+        "delta": -0.23958333333333331,
+        "ci": [
+          -0.38541666666666663,
+          -0.125
+        ],
+        "n": 4
+      },
+      {
+        "vary": "agent",
+        "a": "notes_1500",
+        "b": "transcript_40",
+        "delta": 0.0666666666666667,
+        "ci": [
+          -0.024999999999999956,
+          0.18333333333333332
+        ],
+        "n": 5
+      },
+      {
+        "vary": "agent",
+        "a": "notes_1500",
+        "b": "transcript_5",
+        "delta": -0.4,
+        "ci": [
+          -0.4749999999999999,
+          -0.3416666666666667
+        ],
+        "n": 5
+      },
+      {
+        "vary": "agent",
+        "a": "notes_300",
+        "b": "tabular",
+        "delta": 0.45833333333333337,
+        "ci": [
+          0.35,
+          0.5666666666666667
+        ],
+        "n": 5
+      },
+      {
+        "vary": "agent",
+        "a": "notes_300",
+        "b": "transcript_120",
+        "delta": 0.6083333333333333,
+        "ci": [
+          0.5166666666666667,
+          0.7166666666666666
+        ],
+        "n": 5
+      },
+      {
+        "vary": "agent",
+        "a": "notes_300",
+        "b": "transcript_15",
+        "delta": 0.1875,
+        "ci": [
+          0.0625,
+          0.33333333333333326
+        ],
+        "n": 4
+      },
+      {
+        "vary": "agent",
+        "a": "notes_300",
+        "b": "transcript_40",
+        "delta": 0.475,
+        "ci": [
+          0.35000000000000003,
+          0.5916666666666667
+        ],
+        "n": 5
+      },
+      {
+        "vary": "agent",
+        "a": "notes_300",
+        "b": "transcript_5",
+        "delta": 0.008333333333333337,
+        "ci": [
+          -0.075,
+          0.1
+        ],
+        "n": 5
+      },
+      {
+        "vary": "agent",
+        "a": "tabular",
+        "b": "transcript_120",
+        "delta": 0.15,
+        "ci": [
+          0.06666666666666668,
+          0.2333333333333333
+        ],
+        "n": 5
+      },
+      {
+        "vary": "agent",
+        "a": "tabular",
+        "b": "transcript_15",
+        "delta": -0.28125,
+        "ci": [
+          -0.42708333333333337,
+          -0.14583333333333334
+        ],
+        "n": 4
+      },
+      {
+        "vary": "agent",
+        "a": "tabular",
+        "b": "transcript_40",
+        "delta": 0.016666666666666673,
+        "ci": [
+          -0.08354166666666667,
+          0.12500000000000003
+        ],
+        "n": 5
+      },
+      {
+        "vary": "agent",
+        "a": "tabular",
+        "b": "transcript_5",
+        "delta": -0.45,
+        "ci": [
+          -0.5250000000000001,
+          -0.35833333333333334
+        ],
+        "n": 5
+      },
+      {
+        "vary": "agent",
+        "a": "transcript_120",
+        "b": "transcript_15",
+        "delta": -0.40625000000000006,
+        "ci": [
+          -0.46875,
+          -0.3541666666666667
+        ],
+        "n": 4
+      },
+      {
+        "vary": "agent",
+        "a": "transcript_120",
+        "b": "transcript_40",
+        "delta": -0.13333333333333333,
+        "ci": [
+          -0.19166666666666662,
+          -0.075
+        ],
+        "n": 5
+      },
+      {
+        "vary": "agent",
+        "a": "transcript_120",
+        "b": "transcript_5",
+        "delta": -0.6,
+        "ci": [
+          -0.6416666666666666,
+          -0.5666666666666667
+        ],
+        "n": 5
+      },
+      {
+        "vary": "agent",
+        "a": "transcript_15",
+        "b": "transcript_40",
+        "delta": 0.25000000000000006,
+        "ci": [
+          0.1770833333333334,
+          0.36458333333333337
+        ],
+        "n": 4
+      },
+      {
+        "vary": "agent",
+        "a": "transcript_15",
+        "b": "transcript_5",
+        "delta": -0.17708333333333331,
+        "ci": [
+          -0.22916666666666663,
+          -0.11458333333333331
+        ],
+        "n": 4
+      },
+      {
+        "vary": "agent",
+        "a": "transcript_40",
+        "b": "transcript_5",
+        "delta": -0.4666666666666667,
+        "ci": [
+          -0.5583333333333333,
+          -0.4
+        ],
+        "n": 5
+      }
+    ],
     "regime": [
       {
         "agent": "tabular",
@@ -78,6 +513,11 @@
       "agent": "agy_g36flash",
       "regime": "drift_high",
       "seed": 3000,
+      "agent_spec": {
+        "type": "harness",
+        "model": "gemini-3.6-flash-medium",
+        "harness": "antigravity"
+      },
       "world": "rule_world",
       "n_steps": 12,
       "n_changes": 5,
@@ -98,6 +538,11 @@
       "agent": "agy_g36flash",
       "regime": "drift_low",
       "seed": 2000,
+      "agent_spec": {
+        "type": "harness",
+        "model": "gemini-3.6-flash-medium",
+        "harness": "antigravity"
+      },
       "world": "rule_world",
       "n_steps": 12,
       "n_changes": 4,
@@ -118,6 +563,11 @@
       "agent": "agy_g36flash",
       "regime": "drift_none",
       "seed": 1000,
+      "agent_spec": {
+        "type": "harness",
+        "model": "gemini-3.6-flash-medium",
+        "harness": "antigravity"
+      },
       "world": "rule_world",
       "n_steps": 12,
       "n_changes": 0,
@@ -135,9 +585,302 @@
       "cost_per_success": NaN
     },
     {
+      "agent": "notes_1500",
+      "regime": "drift_none",
+      "seed": 0,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "notes",
+          "every": 10,
+          "budget_chars": 1500
+        }
+      },
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 0,
+      "detection_lag": NaN,
+      "recovery_lag": NaN,
+      "final_accuracy": 0.625,
+      "final_reward": 0.625,
+      "retention": NaN,
+      "stale_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.4050079,
+      "cost_per_success": 0.00570433661971831
+    },
+    {
+      "agent": "notes_1500",
+      "regime": "drift_none",
+      "seed": 1,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "notes",
+          "every": 10,
+          "budget_chars": 1500
+        }
+      },
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 0,
+      "detection_lag": NaN,
+      "recovery_lag": NaN,
+      "final_accuracy": 0.7916666666666666,
+      "final_reward": 0.7916666666666666,
+      "retention": NaN,
+      "stale_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.4388893500000003,
+      "cost_per_success": 0.00812758055555556
+    },
+    {
+      "agent": "notes_1500",
+      "regime": "drift_none",
+      "seed": 2,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "notes",
+          "every": 10,
+          "budget_chars": 1500
+        }
+      },
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 0,
+      "detection_lag": NaN,
+      "recovery_lag": NaN,
+      "final_accuracy": 0.7916666666666666,
+      "final_reward": 0.7916666666666666,
+      "retention": NaN,
+      "stale_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.41550790000000215,
+      "cost_per_success": 0.005067169512195148
+    },
+    {
+      "agent": "notes_1500",
+      "regime": "drift_none",
+      "seed": 3,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "notes",
+          "every": 10,
+          "budget_chars": 1500
+        }
+      },
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 0,
+      "detection_lag": NaN,
+      "recovery_lag": NaN,
+      "final_accuracy": 0.6666666666666666,
+      "final_reward": 0.6666666666666666,
+      "retention": NaN,
+      "stale_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.46375955000000246,
+      "cost_per_success": 0.00828142053571433
+    },
+    {
+      "agent": "notes_1500",
+      "regime": "drift_none",
+      "seed": 4,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "notes",
+          "every": 10,
+          "budget_chars": 1500
+        }
+      },
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 0,
+      "detection_lag": NaN,
+      "recovery_lag": NaN,
+      "final_accuracy": 0.5833333333333334,
+      "final_reward": 0.5833333333333334,
+      "retention": NaN,
+      "stale_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.4443561500000035,
+      "cost_per_success": 0.007934931250000063
+    },
+    {
+      "agent": "notes_300",
+      "regime": "drift_none",
+      "seed": 0,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "notes",
+          "every": 10,
+          "budget_chars": 300
+        }
+      },
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 0,
+      "detection_lag": NaN,
+      "recovery_lag": NaN,
+      "final_accuracy": 0.125,
+      "final_reward": 0.125,
+      "retention": NaN,
+      "stale_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.3538583499999998,
+      "cost_per_success": 0.01220201206896551
+    },
+    {
+      "agent": "notes_300",
+      "regime": "drift_none",
+      "seed": 1,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "notes",
+          "every": 10,
+          "budget_chars": 300
+        }
+      },
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 0,
+      "detection_lag": NaN,
+      "recovery_lag": NaN,
+      "final_accuracy": 0.25,
+      "final_reward": 0.25,
+      "retention": NaN,
+      "stale_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.32294184999999953,
+      "cost_per_success": 0.021529456666666634
+    },
+    {
+      "agent": "notes_300",
+      "regime": "drift_none",
+      "seed": 2,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "notes",
+          "every": 10,
+          "budget_chars": 300
+        }
+      },
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 0,
+      "detection_lag": NaN,
+      "recovery_lag": NaN,
+      "final_accuracy": 0.4166666666666667,
+      "final_reward": 0.4166666666666667,
+      "retention": NaN,
+      "stale_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.43452740000000234,
+      "cost_per_success": 0.00819863018867929
+    },
+    {
+      "agent": "notes_300",
+      "regime": "drift_none",
+      "seed": 3,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "notes",
+          "every": 10,
+          "budget_chars": 300
+        }
+      },
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 0,
+      "detection_lag": NaN,
+      "recovery_lag": NaN,
+      "final_accuracy": 0.375,
+      "final_reward": 0.375,
+      "retention": NaN,
+      "stale_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.4278734500000021,
+      "cost_per_success": 0.012584513235294179
+    },
+    {
+      "agent": "notes_300",
+      "regime": "drift_none",
+      "seed": 4,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "notes",
+          "every": 10,
+          "budget_chars": 300
+        }
+      },
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 0,
+      "detection_lag": NaN,
+      "recovery_lag": NaN,
+      "final_accuracy": 0.25,
+      "final_reward": 0.25,
+      "retention": NaN,
+      "stale_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.41680565000000414,
+      "cost_per_success": 0.011577934722222337
+    },
+    {
       "agent": "tabular",
       "regime": "drift_high",
       "seed": 0,
+      "agent_spec": {
+        "type": "tabular"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 12,
@@ -158,6 +901,9 @@
       "agent": "tabular",
       "regime": "drift_high",
       "seed": 1,
+      "agent_spec": {
+        "type": "tabular"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 12,
@@ -178,6 +924,9 @@
       "agent": "tabular",
       "regime": "drift_high",
       "seed": 2,
+      "agent_spec": {
+        "type": "tabular"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 12,
@@ -198,6 +947,9 @@
       "agent": "tabular",
       "regime": "drift_high",
       "seed": 3,
+      "agent_spec": {
+        "type": "tabular"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 12,
@@ -218,6 +970,9 @@
       "agent": "tabular",
       "regime": "drift_high",
       "seed": 4,
+      "agent_spec": {
+        "type": "tabular"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 12,
@@ -238,6 +993,9 @@
       "agent": "tabular",
       "regime": "drift_high",
       "seed": 5,
+      "agent_spec": {
+        "type": "tabular"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 12,
@@ -258,6 +1016,9 @@
       "agent": "tabular",
       "regime": "drift_high",
       "seed": 6,
+      "agent_spec": {
+        "type": "tabular"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 12,
@@ -278,6 +1039,9 @@
       "agent": "tabular",
       "regime": "drift_high",
       "seed": 7,
+      "agent_spec": {
+        "type": "tabular"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 12,
@@ -298,6 +1062,9 @@
       "agent": "tabular",
       "regime": "drift_high",
       "seed": 8,
+      "agent_spec": {
+        "type": "tabular"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 12,
@@ -318,6 +1085,9 @@
       "agent": "tabular",
       "regime": "drift_high",
       "seed": 9,
+      "agent_spec": {
+        "type": "tabular"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 12,
@@ -338,6 +1108,9 @@
       "agent": "tabular",
       "regime": "drift_low",
       "seed": 0,
+      "agent_spec": {
+        "type": "tabular"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 4,
@@ -358,6 +1131,9 @@
       "agent": "tabular",
       "regime": "drift_low",
       "seed": 1,
+      "agent_spec": {
+        "type": "tabular"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 4,
@@ -378,6 +1154,9 @@
       "agent": "tabular",
       "regime": "drift_low",
       "seed": 2,
+      "agent_spec": {
+        "type": "tabular"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 4,
@@ -398,6 +1177,9 @@
       "agent": "tabular",
       "regime": "drift_low",
       "seed": 3,
+      "agent_spec": {
+        "type": "tabular"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 4,
@@ -418,6 +1200,9 @@
       "agent": "tabular",
       "regime": "drift_low",
       "seed": 4,
+      "agent_spec": {
+        "type": "tabular"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 4,
@@ -438,6 +1223,9 @@
       "agent": "tabular",
       "regime": "drift_low",
       "seed": 5,
+      "agent_spec": {
+        "type": "tabular"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 4,
@@ -458,6 +1246,9 @@
       "agent": "tabular",
       "regime": "drift_low",
       "seed": 6,
+      "agent_spec": {
+        "type": "tabular"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 4,
@@ -478,6 +1269,9 @@
       "agent": "tabular",
       "regime": "drift_low",
       "seed": 7,
+      "agent_spec": {
+        "type": "tabular"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 4,
@@ -498,6 +1292,9 @@
       "agent": "tabular",
       "regime": "drift_low",
       "seed": 8,
+      "agent_spec": {
+        "type": "tabular"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 4,
@@ -518,6 +1315,9 @@
       "agent": "tabular",
       "regime": "drift_low",
       "seed": 9,
+      "agent_spec": {
+        "type": "tabular"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 4,
@@ -538,6 +1338,9 @@
       "agent": "tabular",
       "regime": "drift_none",
       "seed": 0,
+      "agent_spec": {
+        "type": "tabular"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 0,
@@ -558,6 +1361,9 @@
       "agent": "tabular",
       "regime": "drift_none",
       "seed": 1,
+      "agent_spec": {
+        "type": "tabular"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 0,
@@ -578,6 +1384,9 @@
       "agent": "tabular",
       "regime": "drift_none",
       "seed": 2,
+      "agent_spec": {
+        "type": "tabular"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 0,
@@ -598,6 +1407,9 @@
       "agent": "tabular",
       "regime": "drift_none",
       "seed": 3,
+      "agent_spec": {
+        "type": "tabular"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 0,
@@ -618,6 +1430,9 @@
       "agent": "tabular",
       "regime": "drift_none",
       "seed": 4,
+      "agent_spec": {
+        "type": "tabular"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 0,
@@ -638,6 +1453,9 @@
       "agent": "tabular",
       "regime": "drift_none",
       "seed": 5,
+      "agent_spec": {
+        "type": "tabular"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 0,
@@ -658,6 +1476,9 @@
       "agent": "tabular",
       "regime": "drift_none",
       "seed": 6,
+      "agent_spec": {
+        "type": "tabular"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 0,
@@ -678,6 +1499,9 @@
       "agent": "tabular",
       "regime": "drift_none",
       "seed": 7,
+      "agent_spec": {
+        "type": "tabular"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 0,
@@ -698,6 +1522,9 @@
       "agent": "tabular",
       "regime": "drift_none",
       "seed": 8,
+      "agent_spec": {
+        "type": "tabular"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 0,
@@ -718,6 +1545,9 @@
       "agent": "tabular",
       "regime": "drift_none",
       "seed": 9,
+      "agent_spec": {
+        "type": "tabular"
+      },
       "world": "rule_world",
       "n_steps": 120,
       "n_changes": 0,
@@ -733,6 +1563,538 @@
       "parse_failure_rate": 0.0,
       "cost_usd": 0,
       "cost_per_success": NaN
+    },
+    {
+      "agent": "transcript_120",
+      "regime": "drift_none",
+      "seed": 0,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "transcript",
+          "window": 120
+        }
+      },
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 0,
+      "detection_lag": NaN,
+      "recovery_lag": NaN,
+      "final_accuracy": 0.9166666666666666,
+      "final_reward": 0.9166666666666666,
+      "retention": NaN,
+      "stale_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.7104209499999993,
+      "cost_per_success": 0.008260708720930224
+    },
+    {
+      "agent": "transcript_120",
+      "regime": "drift_none",
+      "seed": 1,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "transcript",
+          "window": 120
+        }
+      },
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 0,
+      "detection_lag": NaN,
+      "recovery_lag": NaN,
+      "final_accuracy": 0.8333333333333334,
+      "final_reward": 0.8333333333333334,
+      "retention": NaN,
+      "stale_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.45053624999999986,
+      "cost_per_success": 0.005005958333333332
+    },
+    {
+      "agent": "transcript_120",
+      "regime": "drift_none",
+      "seed": 2,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "transcript",
+          "window": 120
+        }
+      },
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 0,
+      "detection_lag": NaN,
+      "recovery_lag": NaN,
+      "final_accuracy": 0.9583333333333334,
+      "final_reward": 0.9583333333333334,
+      "retention": NaN,
+      "stale_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.5148972500000017,
+      "cost_per_success": 0.0054776303191489545
+    },
+    {
+      "agent": "transcript_120",
+      "regime": "drift_none",
+      "seed": 3,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "transcript",
+          "window": 120
+        }
+      },
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 0,
+      "detection_lag": NaN,
+      "recovery_lag": NaN,
+      "final_accuracy": 0.8333333333333334,
+      "final_reward": 0.8333333333333334,
+      "retention": NaN,
+      "stale_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.5984567500000035,
+      "cost_per_success": 0.007298253048780531
+    },
+    {
+      "agent": "transcript_120",
+      "regime": "drift_none",
+      "seed": 4,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "transcript",
+          "window": 120
+        }
+      },
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 0,
+      "detection_lag": NaN,
+      "recovery_lag": NaN,
+      "final_accuracy": 0.9166666666666666,
+      "final_reward": 0.9166666666666666,
+      "retention": NaN,
+      "stale_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.5060966000000033,
+      "cost_per_success": 0.005217490721649519
+    },
+    {
+      "agent": "transcript_15",
+      "regime": "drift_none",
+      "seed": 0,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "transcript",
+          "window": 15
+        }
+      },
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 0,
+      "detection_lag": NaN,
+      "recovery_lag": NaN,
+      "final_accuracy": 0.5416666666666666,
+      "final_reward": 0.5416666666666666,
+      "retention": NaN,
+      "stale_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.6758286499999993,
+      "cost_per_success": 0.010559822656249988
+    },
+    {
+      "agent": "transcript_15",
+      "regime": "drift_none",
+      "seed": 1,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "transcript",
+          "window": 15
+        }
+      },
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 0,
+      "detection_lag": NaN,
+      "recovery_lag": NaN,
+      "final_accuracy": 0.3333333333333333,
+      "final_reward": 0.3333333333333333,
+      "retention": NaN,
+      "stale_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.7174164999999992,
+      "cost_per_success": 0.011037176923076911
+    },
+    {
+      "agent": "transcript_15",
+      "regime": "drift_none",
+      "seed": 2,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "transcript",
+          "window": 15
+        }
+      },
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 0,
+      "detection_lag": NaN,
+      "recovery_lag": NaN,
+      "final_accuracy": 0.625,
+      "final_reward": 0.625,
+      "retention": NaN,
+      "stale_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.7436432000000026,
+      "cost_per_success": 0.012394053333333377
+    },
+    {
+      "agent": "transcript_15",
+      "regime": "drift_none",
+      "seed": 3,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "transcript",
+          "window": 15
+        }
+      },
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 0,
+      "detection_lag": NaN,
+      "recovery_lag": NaN,
+      "final_accuracy": 0.4166666666666667,
+      "final_reward": 0.4166666666666667,
+      "retention": NaN,
+      "stale_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.7848942000000021,
+      "cost_per_success": 0.014809324528301927
+    },
+    {
+      "agent": "transcript_40",
+      "regime": "drift_none",
+      "seed": 0,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "transcript",
+          "window": 40
+        }
+      },
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 0,
+      "detection_lag": NaN,
+      "recovery_lag": NaN,
+      "final_accuracy": 0.7083333333333334,
+      "final_reward": 0.7083333333333334,
+      "retention": NaN,
+      "stale_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.6485071499999993,
+      "cost_per_success": 0.009264387857142847
+    },
+    {
+      "agent": "transcript_40",
+      "regime": "drift_none",
+      "seed": 1,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "transcript",
+          "window": 40
+        }
+      },
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 0,
+      "detection_lag": NaN,
+      "recovery_lag": NaN,
+      "final_accuracy": 0.75,
+      "final_reward": 0.75,
+      "retention": NaN,
+      "stale_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.5140890000000001,
+      "cost_per_success": 0.006120107142857144
+    },
+    {
+      "agent": "transcript_40",
+      "regime": "drift_none",
+      "seed": 2,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "transcript",
+          "window": 40
+        }
+      },
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 0,
+      "detection_lag": NaN,
+      "recovery_lag": NaN,
+      "final_accuracy": 0.8333333333333334,
+      "final_reward": 0.8333333333333334,
+      "retention": NaN,
+      "stale_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.5575742500000016,
+      "cost_per_success": 0.006483421511627925
+    },
+    {
+      "agent": "transcript_40",
+      "regime": "drift_none",
+      "seed": 3,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "transcript",
+          "window": 40
+        }
+      },
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 0,
+      "detection_lag": NaN,
+      "recovery_lag": NaN,
+      "final_accuracy": 0.625,
+      "final_reward": 0.625,
+      "retention": NaN,
+      "stale_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.594084400000003,
+      "cost_per_success": 0.008138142465753465
+    },
+    {
+      "agent": "transcript_40",
+      "regime": "drift_none",
+      "seed": 4,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "transcript",
+          "window": 40
+        }
+      },
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 0,
+      "detection_lag": NaN,
+      "recovery_lag": NaN,
+      "final_accuracy": 0.875,
+      "final_reward": 0.875,
+      "retention": NaN,
+      "stale_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.5356910000000026,
+      "cost_per_success": 0.006019000000000029
+    },
+    {
+      "agent": "transcript_5",
+      "regime": "drift_none",
+      "seed": 0,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "transcript",
+          "window": 5
+        }
+      },
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 0,
+      "detection_lag": NaN,
+      "recovery_lag": NaN,
+      "final_accuracy": 0.2916666666666667,
+      "final_reward": 0.2916666666666667,
+      "retention": NaN,
+      "stale_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.6280262499999992,
+      "cost_per_success": 0.01744517361111109
+    },
+    {
+      "agent": "transcript_5",
+      "regime": "drift_none",
+      "seed": 1,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "transcript",
+          "window": 5
+        }
+      },
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 0,
+      "detection_lag": NaN,
+      "recovery_lag": NaN,
+      "final_accuracy": 0.25,
+      "final_reward": 0.25,
+      "retention": NaN,
+      "stale_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.6957650499999992,
+      "cost_per_success": 0.024848751785714256
+    },
+    {
+      "agent": "transcript_5",
+      "regime": "drift_none",
+      "seed": 2,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "transcript",
+          "window": 5
+        }
+      },
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 0,
+      "detection_lag": NaN,
+      "recovery_lag": NaN,
+      "final_accuracy": 0.4166666666666667,
+      "final_reward": 0.4166666666666667,
+      "retention": NaN,
+      "stale_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.6705131500000018,
+      "cost_per_success": 0.016762828750000045
+    },
+    {
+      "agent": "transcript_5",
+      "regime": "drift_none",
+      "seed": 3,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "transcript",
+          "window": 5
+        }
+      },
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 0,
+      "detection_lag": NaN,
+      "recovery_lag": NaN,
+      "final_accuracy": 0.25,
+      "final_reward": 0.25,
+      "retention": NaN,
+      "stale_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.008333333333333333,
+      "cost_usd": 0.6875670000000027,
+      "cost_per_success": 0.018582891891891964
+    },
+    {
+      "agent": "transcript_5",
+      "regime": "drift_none",
+      "seed": 4,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5-mini",
+        "substrate": {
+          "kind": "transcript",
+          "window": 5
+        }
+      },
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 0,
+      "detection_lag": NaN,
+      "recovery_lag": NaN,
+      "final_accuracy": 0.25,
+      "final_reward": 0.25,
+      "retention": NaN,
+      "stale_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.008333333333333333,
+      "cost_usd": 0.6604146500000052,
+      "cost_per_success": 0.01610767439024403
     }
   ]
 }
