@@ -26,6 +26,7 @@ through the MCP server.
 
 ```bash
 uv sync --all-extras              # .venv with numpy/scipy + openai (reference agents) + mcp (harness server)
+uv run python -m driftlab         # interactive menu: agents, experiments, benchmark, analysis, dashboard
 uv run python -m experiments.exp02_detect_adapt_lag --quick --mock   # uv run auto-syncs, so this alone works too
 # or, without uv:
 pip install numpy scipy openai mcp
@@ -44,6 +45,7 @@ driftlab/
   runner.py              cells x agents -> one JSONL trajectory per run, cost in every manifest
   metrics.py             log loading, tables, change metrics (detection/recovery lags, dips)
   profile.py             the standardized result: adaptation profile + drift-profile scoring for any run dir
+  cli.py                 `python -m driftlab`: the interactive menu over everything below
   costs.py               `python -m driftlab.costs runs`
   live.py                --live streaming of steps, world events and running metrics
   worlds/                RuleWorld, FormWorld, InventoryWorld (+ oracle), CodebaseWorld; base.py = protocol
