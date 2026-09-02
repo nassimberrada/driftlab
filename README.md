@@ -1,7 +1,9 @@
 # driftlab
 
 **Start with [DESIGN.html](DESIGN.html)** (open it in a browser): the system
-map. It covers the architecture, the episode loop, where state lives, how
+map. Adding a world, experiment, hypothesis or agent? [CONTRIBUTING.md](CONTRIBUTING.md)
+has the per-entity checklists, and `python -m driftlab.doctor` enforces the
+contracts and cross-references. It covers the architecture, the episode loop, where state lives, how
 scoring works, the four worlds, all fifteen experiments, and a command
 reference, as explorable diagrams. This README is the terse version.
 
@@ -46,6 +48,7 @@ driftlab/
   metrics.py             log loading, tables, change metrics (detection/recovery lags, dips)
   profile.py             the standardized result: adaptation profile + drift-profile scoring for any run dir
   cli.py                 `python -m driftlab`: the interactive menu over everything below
+  doctor.py              `python -m driftlab.doctor`: checks every entity's contract and cross-references
   costs.py               `python -m driftlab.costs runs`
   live.py                --live streaming of steps, world events and running metrics
   worlds/                RuleWorld, FormWorld, InventoryWorld (+ oracle), CodebaseWorld; base.py = protocol

@@ -226,6 +226,10 @@ def registry_flow():
     run_cmd(PY + ["experiments.registry"] + ([target] if target else []), confirm=False)
 
 
+def doctor_flow():
+    run_cmd(PY + ["driftlab.doctor"], confirm=False)
+
+
 MENU = [
     ("run", "Run an experiment", run_experiment_flow),
     ("bench", "Run the benchmark suite (or rebuild its matrix)", benchmark_flow),
@@ -234,6 +238,7 @@ MENU = [
     ("analyze", "Analyze: tables, profiles, costs, hypothesis validation", analyze_flow),
     ("registry", "Browse the experiment registry", registry_flow),
     ("viz", "Start or stop the dashboard", dashboard_flow),
+    ("doctor", "Check the system (contracts and cross-references)", doctor_flow),
 ]
 
 
