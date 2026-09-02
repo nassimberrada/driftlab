@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "run_dir": "runs/exp02/rule_world",
-  "generated": 1788371841.2133896,
+  "generated": 1788377265.7164614,
   "world": "rule_world",
   "agents": {
     "codex_g56luna": {
@@ -28,6 +28,106 @@
         "efficiency": 0.93
       },
       "driftlab_score": 0.7415357583681835
+    },
+    "llm_none": {
+      "n_runs": 5,
+      "metrics": {
+        "detection_lag": 0.0,
+        "recovery_lag": 0.25,
+        "final_accuracy": 0.16666666666666666,
+        "retention": 0.14444444444444443,
+        "stale_rate": 0.29238095238095235,
+        "interference": -0.01122044622044622,
+        "calibration_error": NaN,
+        "overconfidence": NaN,
+        "parse_failure_rate": 0.0,
+        "cost_per_success": 0.0022019828431372552,
+        "final_reward": 0.16666666666666666,
+        "n_changes": 6.0,
+        "cost_usd": 0.07705700000000001
+      },
+      "dimensions": {
+        "adaptation": 0.9761904761904762,
+        "knowledge": 0.4295567395567395,
+        "epistemics": 0.7076190476190476,
+        "efficiency": 0.9097694665102847
+      },
+      "driftlab_score": 0.7557839324691369
+    },
+    "llm_notes": {
+      "n_runs": 5,
+      "metrics": {
+        "detection_lag": 0.78,
+        "recovery_lag": 1.94,
+        "final_accuracy": 0.575,
+        "retention": 0.825,
+        "stale_rate": 0.12313131313131312,
+        "interference": 0.1100692363192363,
+        "calibration_error": NaN,
+        "overconfidence": NaN,
+        "parse_failure_rate": 0.0,
+        "cost_per_success": 0.007686411278565525,
+        "final_reward": 0.575,
+        "n_changes": 6.0,
+        "cost_usd": 2.377445250000002
+      },
+      "dimensions": {
+        "adaptation": 0.7927564991075258,
+        "knowledge": 0.7999999999999999,
+        "epistemics": 0.8768686868686869,
+        "efficiency": 0.7827029136238389
+      },
+      "driftlab_score": 0.8130820249000128
+    },
+    "llm_skills": {
+      "n_runs": 5,
+      "metrics": {
+        "detection_lag": 0.31333333333333335,
+        "recovery_lag": 1.1333333333333333,
+        "final_accuracy": 0.37500000000000006,
+        "retention": 0.2333333333333333,
+        "stale_rate": 0.1874074074074074,
+        "interference": 0.03375777000777001,
+        "calibration_error": NaN,
+        "overconfidence": NaN,
+        "parse_failure_rate": 0.0,
+        "cost_per_success": 0.009381624196051227,
+        "final_reward": 0.37500000000000006,
+        "n_changes": 6.0,
+        "cost_usd": 1.972125450000001
+      },
+      "dimensions": {
+        "adaptation": 0.8781231247613333,
+        "knowledge": 0.5361111111111111,
+        "epistemics": 0.8125925925925925,
+        "efficiency": 0.757976315577241
+      },
+      "driftlab_score": 0.7462007860105695
+    },
+    "llm_transcript": {
+      "n_runs": 5,
+      "metrics": {
+        "detection_lag": 1.4200000000000002,
+        "recovery_lag": 2.7066666666666666,
+        "final_accuracy": 0.5916666666666667,
+        "retention": 0.9277777777777778,
+        "stale_rate": 0.05305555555555556,
+        "interference": 0.08657731157731159,
+        "calibration_error": NaN,
+        "overconfidence": NaN,
+        "parse_failure_rate": 0.0,
+        "cost_per_success": 0.010507400719761367,
+        "final_reward": 0.5916666666666667,
+        "n_changes": 6.0,
+        "cost_usd": 3.3899127000000044
+      },
+      "dimensions": {
+        "adaptation": 0.7138025633562937,
+        "knowledge": 0.8398148148148148,
+        "epistemics": 0.9469444444444445,
+        "efficiency": 0.7438144194052781
+      },
+      "driftlab_score": 0.8110940605052077
     },
     "tabular": {
       "n_runs": 10,
@@ -62,11 +162,165 @@
       {
         "vary": "agent",
         "a": "codex_g56luna",
+        "b": "llm_none",
+        "delta": -0.3166666666666667,
+        "ci": [
+          -0.5,
+          -0.11666666666666667
+        ],
+        "n": 5
+      },
+      {
+        "vary": "agent",
+        "a": "codex_g56luna",
+        "b": "llm_notes",
+        "delta": 0.09166666666666665,
+        "ci": [
+          -0.00833333333333337,
+          0.2166666666666667
+        ],
+        "n": 5
+      },
+      {
+        "vary": "agent",
+        "a": "codex_g56luna",
+        "b": "llm_skills",
+        "delta": -0.10833333333333332,
+        "ci": [
+          -0.3166666666666667,
+          0.041874999999998865
+        ],
+        "n": 5
+      },
+      {
+        "vary": "agent",
+        "a": "codex_g56luna",
+        "b": "llm_transcript",
+        "delta": 0.10833333333333332,
+        "ci": [
+          -0.00833333333333337,
+          0.2833333333333333
+        ],
+        "n": 5
+      },
+      {
+        "vary": "agent",
+        "a": "codex_g56luna",
         "b": "tabular",
         "delta": 0.09166666666666665,
         "ci": [
           0.033333333333333326,
           0.1583333333333333
+        ],
+        "n": 5
+      },
+      {
+        "vary": "agent",
+        "a": "llm_none",
+        "b": "llm_notes",
+        "delta": 0.4083333333333333,
+        "ci": [
+          0.3083333333333333,
+          0.5083333333333333
+        ],
+        "n": 5
+      },
+      {
+        "vary": "agent",
+        "a": "llm_none",
+        "b": "llm_skills",
+        "delta": 0.20833333333333331,
+        "ci": [
+          -0.016666666666666656,
+          0.4166666666666667
+        ],
+        "n": 5
+      },
+      {
+        "vary": "agent",
+        "a": "llm_none",
+        "b": "llm_transcript",
+        "delta": 0.425,
+        "ci": [
+          0.325,
+          0.5416666666666666
+        ],
+        "n": 5
+      },
+      {
+        "vary": "agent",
+        "a": "llm_none",
+        "b": "tabular",
+        "delta": 0.4083333333333334,
+        "ci": [
+          0.26666666666666666,
+          0.5416666666666667
+        ],
+        "n": 5
+      },
+      {
+        "vary": "agent",
+        "a": "llm_notes",
+        "b": "llm_skills",
+        "delta": -0.19999999999999998,
+        "ci": [
+          -0.35833333333333334,
+          -0.041666666666666644
+        ],
+        "n": 5
+      },
+      {
+        "vary": "agent",
+        "a": "llm_notes",
+        "b": "llm_transcript",
+        "delta": 0.016666666666666673,
+        "ci": [
+          -0.05833333333333333,
+          0.09166666666666667
+        ],
+        "n": 5
+      },
+      {
+        "vary": "agent",
+        "a": "llm_notes",
+        "b": "tabular",
+        "delta": 0.0,
+        "ci": [
+          -0.07500000000000002,
+          0.07500000000000002
+        ],
+        "n": 5
+      },
+      {
+        "vary": "agent",
+        "a": "llm_skills",
+        "b": "llm_transcript",
+        "delta": 0.2166666666666667,
+        "ci": [
+          -0.016666666666666684,
+          0.45
+        ],
+        "n": 5
+      },
+      {
+        "vary": "agent",
+        "a": "llm_skills",
+        "b": "tabular",
+        "delta": 0.19999999999999998,
+        "ci": [
+          0.033125000000000016,
+          0.375
+        ],
+        "n": 5
+      },
+      {
+        "vary": "agent",
+        "a": "llm_transcript",
+        "b": "tabular",
+        "delta": -0.016666666666666673,
+        "ci": [
+          -0.13333333333333336,
+          0.09166666666666667
         ],
         "n": 5
       }
@@ -193,6 +447,406 @@
       "parse_failure_rate": 0.0,
       "cost_usd": 0.0,
       "cost_per_success": NaN
+    },
+    {
+      "agent": "llm_none",
+      "regime": "changing",
+      "seed": 0,
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 6,
+      "detection_lag": 0.0,
+      "recovery_lag": 0.0,
+      "final_accuracy": 0.16666666666666666,
+      "final_reward": 0.16666666666666666,
+      "retention": 0.5,
+      "stale_rate": 0.2,
+      "interference": -0.01297313797313797,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.0394125,
+      "cost_per_success": 0.0021895833333333333
+    },
+    {
+      "agent": "llm_none",
+      "regime": "changing",
+      "seed": 1,
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 6,
+      "detection_lag": 0.0,
+      "recovery_lag": 0.0,
+      "final_accuracy": 0.25,
+      "final_reward": 0.25,
+      "retention": 0.0,
+      "stale_rate": 0.0,
+      "interference": 0.003891941391941392,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.037644500000000004,
+      "cost_per_success": 0.0022143823529411767
+    },
+    {
+      "agent": "llm_none",
+      "regime": "changing",
+      "seed": 2,
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 6,
+      "detection_lag": 0.0,
+      "recovery_lag": 0.0,
+      "final_accuracy": 0.0,
+      "final_reward": 0.0,
+      "retention": 0.0,
+      "stale_rate": 0.3333333333333333,
+      "interference": -0.0004578754578754493,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.0,
+      "cost_per_success": NaN
+    },
+    {
+      "agent": "llm_none",
+      "regime": "changing",
+      "seed": 3,
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 6,
+      "detection_lag": 0.0,
+      "recovery_lag": NaN,
+      "final_accuracy": 0.08333333333333333,
+      "final_reward": 0.08333333333333333,
+      "retention": 0.0,
+      "stale_rate": 0.42857142857142855,
+      "interference": -0.008898046398046406,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.0,
+      "cost_per_success": NaN
+    },
+    {
+      "agent": "llm_none",
+      "regime": "changing",
+      "seed": 4,
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 6,
+      "detection_lag": 0.0,
+      "recovery_lag": 1.0,
+      "final_accuracy": 0.3333333333333333,
+      "final_reward": 0.3333333333333333,
+      "retention": 0.2222222222222222,
+      "stale_rate": 0.5,
+      "interference": -0.03766511266511267,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.0,
+      "cost_per_success": NaN
+    },
+    {
+      "agent": "llm_notes",
+      "regime": "changing",
+      "seed": 0,
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 6,
+      "detection_lag": 1.0,
+      "recovery_lag": 2.5,
+      "final_accuracy": 0.6666666666666666,
+      "final_reward": 0.6666666666666666,
+      "retention": 0.75,
+      "stale_rate": 0.0,
+      "interference": 0.08760683760683763,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.44010559999999976,
+      "cost_per_success": 0.006985803174603171
+    },
+    {
+      "agent": "llm_notes",
+      "regime": "changing",
+      "seed": 1,
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 6,
+      "detection_lag": 0.2,
+      "recovery_lag": 0.0,
+      "final_accuracy": 0.5416666666666666,
+      "final_reward": 0.5416666666666666,
+      "retention": 0.75,
+      "stale_rate": 0.20454545454545456,
+      "interference": 0.07513458763458764,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.4499060999999998,
+      "cost_per_success": 0.00616309726027397
+    },
+    {
+      "agent": "llm_notes",
+      "regime": "changing",
+      "seed": 2,
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 6,
+      "detection_lag": 1.5,
+      "recovery_lag": 2.6666666666666665,
+      "final_accuracy": 0.4583333333333333,
+      "final_reward": 0.4583333333333333,
+      "retention": 1.0,
+      "stale_rate": 0.1111111111111111,
+      "interference": 0.15003052503052502,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.5105269000000011,
+      "cost_per_success": 0.008956612280701774
+    },
+    {
+      "agent": "llm_notes",
+      "regime": "changing",
+      "seed": 3,
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 6,
+      "detection_lag": 0.0,
+      "recovery_lag": 2.3333333333333335,
+      "final_accuracy": 0.625,
+      "final_reward": 0.625,
+      "retention": 0.625,
+      "stale_rate": 0.16666666666666666,
+      "interference": 0.11333180708180708,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.5600860000000015,
+      "cost_per_success": 0.01037196296296299
+    },
+    {
+      "agent": "llm_notes",
+      "regime": "changing",
+      "seed": 4,
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 6,
+      "detection_lag": 1.2,
+      "recovery_lag": 2.2,
+      "final_accuracy": 0.5833333333333334,
+      "final_reward": 0.5833333333333334,
+      "retention": 1.0,
+      "stale_rate": 0.13333333333333333,
+      "interference": 0.12424242424242422,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.4168206499999998,
+      "cost_per_success": 0.005954580714285711
+    },
+    {
+      "agent": "llm_skills",
+      "regime": "changing",
+      "seed": 0,
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 6,
+      "detection_lag": 0.16666666666666666,
+      "recovery_lag": 2.5,
+      "final_accuracy": 0.25,
+      "final_reward": 0.25,
+      "retention": 0.25,
+      "stale_rate": 0.23333333333333334,
+      "interference": -0.012912087912087913,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.43019534999999975,
+      "cost_per_success": 0.011949870833333327
+    },
+    {
+      "agent": "llm_skills",
+      "regime": "changing",
+      "seed": 1,
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 6,
+      "detection_lag": 0.5,
+      "recovery_lag": 0.5,
+      "final_accuracy": 0.4166666666666667,
+      "final_reward": 0.4166666666666667,
+      "retention": 0.0,
+      "stale_rate": 0.3,
+      "interference": 0.06433774558774562,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.41250409999999976,
+      "cost_per_success": 0.008967480434782604
+    },
+    {
+      "agent": "llm_skills",
+      "regime": "changing",
+      "seed": 2,
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 6,
+      "detection_lag": 0.2,
+      "recovery_lag": 0.0,
+      "final_accuracy": 0.4583333333333333,
+      "final_reward": 0.4583333333333333,
+      "retention": 0.3333333333333333,
+      "stale_rate": 0.24537037037037038,
+      "interference": 0.07570207570207571,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.46117265000000085,
+      "cost_per_success": 0.009812184042553209
+    },
+    {
+      "agent": "llm_skills",
+      "regime": "changing",
+      "seed": 3,
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 6,
+      "detection_lag": 0.5,
+      "recovery_lag": 0.6666666666666666,
+      "final_accuracy": 0.5833333333333334,
+      "final_reward": 0.5833333333333334,
+      "retention": 0.25,
+      "stale_rate": 0.0,
+      "interference": 0.06355311355311355,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.4272713500000017,
+      "cost_per_success": 0.00909087978723408
+    },
+    {
+      "agent": "llm_skills",
+      "regime": "changing",
+      "seed": 4,
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 6,
+      "detection_lag": 0.2,
+      "recovery_lag": 2.0,
+      "final_accuracy": 0.16666666666666666,
+      "final_reward": 0.16666666666666666,
+      "retention": 0.3333333333333333,
+      "stale_rate": 0.15833333333333333,
+      "interference": -0.02189199689199689,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.24098199999999892,
+      "cost_per_success": 0.007087705882352909
+    },
+    {
+      "agent": "llm_transcript",
+      "regime": "changing",
+      "seed": 0,
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 6,
+      "detection_lag": 1.0,
+      "recovery_lag": 3.0,
+      "final_accuracy": 0.7916666666666666,
+      "final_reward": 0.7916666666666666,
+      "retention": 0.75,
+      "stale_rate": 0.09027777777777778,
+      "interference": 0.11700244200244202,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.7346043000000001,
+      "cost_per_success": 0.01096424328358209
+    },
+    {
+      "agent": "llm_transcript",
+      "regime": "changing",
+      "seed": 1,
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 6,
+      "detection_lag": 1.2,
+      "recovery_lag": 2.0,
+      "final_accuracy": 0.5,
+      "final_reward": 0.5,
+      "retention": 1.0,
+      "stale_rate": 0.125,
+      "interference": 0.08658910533910534,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.6373486500000002,
+      "cost_per_success": 0.009104980714285718
+    },
+    {
+      "agent": "llm_transcript",
+      "regime": "changing",
+      "seed": 2,
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 6,
+      "detection_lag": 1.6666666666666667,
+      "recovery_lag": 3.3333333333333335,
+      "final_accuracy": 0.4166666666666667,
+      "final_reward": 0.4166666666666667,
+      "retention": 1.0,
+      "stale_rate": 0.0,
+      "interference": 0.02487789987789989,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.7263245500000022,
+      "cost_per_success": 0.011004917424242457
+    },
+    {
+      "agent": "llm_transcript",
+      "regime": "changing",
+      "seed": 3,
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 6,
+      "detection_lag": 1.4,
+      "recovery_lag": 4.0,
+      "final_accuracy": 0.5416666666666666,
+      "final_reward": 0.5416666666666666,
+      "retention": 1.0,
+      "stale_rate": 0.0,
+      "interference": 0.05940934065934065,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.7982838000000019,
+      "cost_per_success": 0.014514250909090943
+    },
+    {
+      "agent": "llm_transcript",
+      "regime": "changing",
+      "seed": 4,
+      "world": "rule_world",
+      "n_steps": 120,
+      "n_changes": 6,
+      "detection_lag": 1.8333333333333333,
+      "recovery_lag": 1.2,
+      "final_accuracy": 0.7083333333333334,
+      "final_reward": 0.7083333333333334,
+      "retention": 0.8888888888888888,
+      "stale_rate": 0.05,
+      "interference": 0.14500777000777001,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.4933514,
+      "cost_per_success": 0.006948611267605633
     },
     {
       "agent": "tabular",

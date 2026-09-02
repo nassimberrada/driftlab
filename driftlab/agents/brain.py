@@ -45,6 +45,7 @@ PRICES = {
 
 
 def price_call(model: str, input_tokens: int, cached_tokens: int, output_tokens: int) -> float:
+    model = model.split("/")[-1]  # vendor-prefixed slugs (openai/gpt-5-mini) price as the bare model
     key = next((k for k in sorted(PRICES, key=len, reverse=True) if model.startswith(k)), None)
     if key is None:
         return 0.0
@@ -135,10 +136,18 @@ class Brain:
         self.tokens_used = 0
         # Any OpenAI-compatible provider works: set base_url in the agent spec (or
         # OPENAI_BASE_URL in .env) and put that provider's key in OPENAI_API_KEY.
-        # OpenAI itself speaks the Responses API; other providers (OpenRouter etc.)
-        # get Chat Completions unless the spec forces api="responses".
-        self._client = AsyncOpenAI(base_url=base_url) if base_url else AsyncOpenAI()
+        # OPENROUTER_API_KEY is recognized directly: a vendor-prefixed model slug
+        # (openai/gpt-5-mini, anthropic/...) routes to OpenRouter with that key.
+        # OpenAI itself speaks the Responses API; other providers get Chat
+        # Completions unless the spec forces api="responses".
         effective_url = base_url or os.environ.get("OPENAI_BASE_URL", "")
+        if base_url:
+            self._client = AsyncOpenAI(base_url=base_url)
+        elif not effective_url and "/" in model and os.environ.get("OPENROUTER_API_KEY"):
+            effective_url = "https://openrouter.ai/api/v1"
+            self._client = AsyncOpenAI(base_url=effective_url, api_key=os.environ["OPENROUTER_API_KEY"])
+        else:
+            self._client = AsyncOpenAI()  # reads OPENAI_API_KEY (and OPENAI_BASE_URL)
         self.api = api or ("chat" if effective_url and "openai.com" not in effective_url else "responses")
 
     def _cache_path(self, system: str, prompt: str) -> Path:

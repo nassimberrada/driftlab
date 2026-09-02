@@ -4,3 +4,4 @@ __pycache__
 .gemini/
 .venv/
 uv.lock
+llm_cache/

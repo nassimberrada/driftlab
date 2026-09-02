@@ -150,6 +150,346 @@
         }
       },
       "wall_s": 4726.410059213638
+    },
+    {
+      "run": "llm_none__changing__seed1",
+      "path": "runs/exp02/rule_world/llm_none__changing__seed1.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 88,
+          "cache_hits": 199,
+          "input_tokens": 20570,
+          "cached_tokens": 0,
+          "output_tokens": 16251,
+          "reasoning_tokens": 11459,
+          "cost_usd": 0.037644500000000004,
+          "cache_saved_usd": 0.054632250000000014
+        }
+      },
+      "wall_s": 68.81088662147522
+    },
+    {
+      "run": "llm_none__changing__seed0",
+      "path": "runs/exp02/rule_world/llm_none__changing__seed0.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 91,
+          "cache_hits": 223,
+          "input_tokens": 21586,
+          "cached_tokens": 0,
+          "output_tokens": 17008,
+          "reasoning_tokens": 12035,
+          "cost_usd": 0.0394125,
+          "cache_saved_usd": 0.060898250000000015
+        }
+      },
+      "wall_s": 72.04407119750977
+    },
+    {
+      "run": "llm_skills__changing__seed0",
+      "path": "runs/exp02/rule_world/llm_skills__changing__seed0.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 596,
+          "cache_hits": 299,
+          "input_tokens": 470207,
+          "cached_tokens": 58624,
+          "output_tokens": 162917,
+          "reasoning_tokens": 114666,
+          "cost_usd": 0.43019534999999975,
+          "cache_saved_usd": 0.09125125
+        }
+      },
+      "wall_s": 530.9751572608948
+    },
+    {
+      "run": "llm_none__changing__seed2",
+      "path": "runs/exp02/rule_world/llm_none__changing__seed2.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 0,
+          "cache_hits": 120,
+          "input_tokens": 0,
+          "cached_tokens": 0,
+          "output_tokens": 0,
+          "reasoning_tokens": 0,
+          "cost_usd": 0.0,
+          "cache_saved_usd": 0.03374599999999997
+        }
+      },
+      "wall_s": 0.059084415435791016
+    },
+    {
+      "run": "llm_notes__changing__seed0",
+      "path": "runs/exp02/rule_world/llm_notes__changing__seed0.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 605,
+          "cache_hits": 420,
+          "input_tokens": 481368,
+          "cached_tokens": 58624,
+          "output_tokens": 166477,
+          "reasoning_tokens": 116586,
+          "cost_usd": 0.44010559999999976,
+          "cache_saved_usd": 0.12542449999999997
+        }
+      },
+      "wall_s": 540.1794013977051
+    },
+    {
+      "run": "llm_skills__changing__seed1",
+      "path": "runs/exp02/rule_world/llm_skills__changing__seed1.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 525,
+          "cache_hits": 207,
+          "input_tokens": 471546,
+          "cached_tokens": 58624,
+          "output_tokens": 153904,
+          "reasoning_tokens": 107922,
+          "cost_usd": 0.41250409999999976,
+          "cache_saved_usd": 0.0673687499999999
+        }
+      },
+      "wall_s": 482.1010711193085
+    },
+    {
+      "run": "llm_notes__changing__seed1",
+      "path": "runs/exp02/rule_world/llm_notes__changing__seed1.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 574,
+          "cache_hits": 243,
+          "input_tokens": 520970,
+          "cached_tokens": 58624,
+          "output_tokens": 166427,
+          "reasoning_tokens": 116882,
+          "cost_usd": 0.4499060999999998,
+          "cache_saved_usd": 0.07733349999999983
+        }
+      },
+      "wall_s": 522.4572985172272
+    },
+    {
+      "run": "llm_none__changing__seed3",
+      "path": "runs/exp02/rule_world/llm_none__changing__seed3.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 0,
+          "cache_hits": 120,
+          "input_tokens": 0,
+          "cached_tokens": 0,
+          "output_tokens": 0,
+          "reasoning_tokens": 0,
+          "cost_usd": 0.0,
+          "cache_saved_usd": 0.032948000000000005
+        }
+      },
+      "wall_s": 0.04972505569458008
+    },
+    {
+      "run": "llm_transcript__changing__seed1",
+      "path": "runs/exp02/rule_world/llm_transcript__changing__seed1.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 825,
+          "cache_hits": 569,
+          "input_tokens": 740945,
+          "cached_tokens": 70656,
+          "output_tokens": 234005,
+          "reasoning_tokens": 169010,
+          "cost_usd": 0.6373486500000002,
+          "cache_saved_usd": 0.1679699999999999
+        }
+      },
+      "wall_s": 741.9817545413971
+    },
+    {
+      "run": "llm_transcript__changing__seed0",
+      "path": "runs/exp02/rule_world/llm_transcript__changing__seed0.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 936,
+          "cache_hits": 582,
+          "input_tokens": 869134,
+          "cached_tokens": 99072,
+          "output_tokens": 269806,
+          "reasoning_tokens": 196352,
+          "cost_usd": 0.7346043000000001,
+          "cache_saved_usd": 0.1718532499999999
+        }
+      },
+      "wall_s": 1463.3576078414917
+    },
+    {
+      "run": "llm_skills__changing__seed2",
+      "path": "runs/exp02/rule_world/llm_skills__changing__seed2.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 540,
+          "cache_hits": 181,
+          "input_tokens": 580641,
+          "cached_tokens": 62976,
+          "output_tokens": 165091,
+          "reasoning_tokens": 124518,
+          "cost_usd": 0.46117265000000085,
+          "cache_saved_usd": 0.054831749999999985
+        }
+      },
+      "wall_s": 1104.2784128189087
+    },
+    {
+      "run": "llm_none__changing__seed4",
+      "path": "runs/exp02/rule_world/llm_none__changing__seed4.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 0,
+          "cache_hits": 120,
+          "input_tokens": 0,
+          "cached_tokens": 0,
+          "output_tokens": 0,
+          "reasoning_tokens": 0,
+          "cost_usd": 0.0,
+          "cache_saved_usd": 0.034087999999999896
+        }
+      },
+      "wall_s": 0.05101728439331055
+    },
+    {
+      "run": "llm_notes__changing__seed2",
+      "path": "runs/exp02/rule_world/llm_notes__changing__seed2.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 590,
+          "cache_hits": 313,
+          "input_tokens": 631562,
+          "cached_tokens": 62976,
+          "output_tokens": 183403,
+          "reasoning_tokens": 138525,
+          "cost_usd": 0.5105269000000011,
+          "cache_saved_usd": 0.09278924999999982
+        }
+      },
+      "wall_s": 1158.6509816646576
+    },
+    {
+      "run": "llm_transcript__changing__seed2",
+      "path": "runs/exp02/rule_world/llm_transcript__changing__seed2.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 831,
+          "cache_hits": 343,
+          "input_tokens": 918951,
+          "cached_tokens": 85632,
+          "output_tokens": 257927,
+          "reasoning_tokens": 193999,
+          "cost_usd": 0.7263245500000022,
+          "cache_saved_usd": 0.10353699999999985
+        }
+      },
+      "wall_s": 1368.9684295654297
+    },
+    {
+      "run": "llm_skills__changing__seed3",
+      "path": "runs/exp02/rule_world/llm_skills__changing__seed3.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 494,
+          "cache_hits": 190,
+          "input_tokens": 524487,
+          "cached_tokens": 45184,
+          "output_tokens": 153158,
+          "reasoning_tokens": 113465,
+          "cost_usd": 0.4272713500000017,
+          "cache_saved_usd": 0.05937549999999994
+        }
+      },
+      "wall_s": 437.5668523311615
+    },
+    {
+      "run": "llm_notes__changing__seed3",
+      "path": "runs/exp02/rule_world/llm_notes__changing__seed3.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 650,
+          "cache_hits": 206,
+          "input_tokens": 706936,
+          "cached_tokens": 80000,
+          "output_tokens": 200676,
+          "reasoning_tokens": 148807,
+          "cost_usd": 0.5600860000000015,
+          "cache_saved_usd": 0.06465724999999994
+        }
+      },
+      "wall_s": 1204.1793546676636
+    },
+    {
+      "run": "llm_transcript__changing__seed3",
+      "path": "runs/exp02/rule_world/llm_transcript__changing__seed3.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 909,
+          "cache_hits": 224,
+          "input_tokens": 1029820,
+          "cached_tokens": 92032,
+          "output_tokens": 280768,
+          "reasoning_tokens": 210678,
+          "cost_usd": 0.7982838000000019,
+          "cache_saved_usd": 0.07309299999999994
+        }
+      },
+      "wall_s": 1480.0451409816742
+    },
+    {
+      "run": "llm_notes__changing__seed4",
+      "path": "runs/exp02/rule_world/llm_notes__changing__seed4.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 479,
+          "cache_hits": 64,
+          "input_tokens": 572065,
+          "cached_tokens": 29056,
+          "output_tokens": 140171,
+          "reasoning_tokens": 102519,
+          "cost_usd": 0.4168206499999998,
+          "cache_saved_usd": 0.024283500000000013
+        }
+      },
+      "wall_s": 530.1055285930634
+    },
+    {
+      "run": "llm_skills__changing__seed4",
+      "path": "runs/exp02/rule_world/llm_skills__changing__seed4.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 283,
+          "cache_hits": 40,
+          "input_tokens": 339736,
+          "cached_tokens": 6400,
+          "output_tokens": 78744,
+          "reasoning_tokens": 56133,
+          "cost_usd": 0.24098199999999892,
+          "cache_saved_usd": 0.01598849999999996
+        }
+      },
+      "wall_s": 414.3832061290741
+    },
+    {
+      "run": "llm_transcript__changing__seed4",
+      "path": "runs/exp02/rule_world/llm_transcript__changing__seed4.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 562,
+          "cache_hits": 71,
+          "input_tokens": 673676,
+          "cached_tokens": 29056,
+          "output_tokens": 165735,
+          "reasoning_tokens": 121987,
+          "cost_usd": 0.4933514,
+          "cache_saved_usd": 0.027336
+        }
+      },
+      "wall_s": 695.0563323497772
     }
   ],
   "grid_costs": [],

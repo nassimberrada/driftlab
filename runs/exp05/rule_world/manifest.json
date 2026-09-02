@@ -197,6 +197,499 @@
       "path": "runs/exp05/rule_world/tabular__drift_high__seed9.jsonl",
       "cost": {},
       "wall_s": 0.0382685661315918
+    },
+    {
+      "run": "notes_300__drift_none__seed0",
+      "path": "runs/exp05/rule_world/notes_300__drift_none__seed0.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 462,
+          "cache_hits": 35,
+          "input_tokens": 344915,
+          "cached_tokens": 87424,
+          "output_tokens": 143650,
+          "reasoning_tokens": 110057,
+          "cost_usd": 0.3538583499999998,
+          "cache_saved_usd": 0.012805999999999998
+        }
+      },
+      "wall_s": 434.37699151039124
+    },
+    {
+      "run": "notes_1500__drift_none__seed0",
+      "path": "runs/exp05/rule_world/notes_1500__drift_none__seed0.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 519,
+          "cache_hits": 38,
+          "input_tokens": 408774,
+          "cached_tokens": 99456,
+          "output_tokens": 162596,
+          "reasoning_tokens": 125289,
+          "cost_usd": 0.4050079,
+          "cache_saved_usd": 0.014250499999999998
+        }
+      },
+      "wall_s": 498.7465147972107
+    },
+    {
+      "run": "transcript_5__drift_none__seed0",
+      "path": "runs/exp05/rule_world/transcript_5__drift_none__seed0.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 745,
+          "cache_hits": 44,
+          "input_tokens": 795545,
+          "cached_tokens": 259840,
+          "output_tokens": 243802,
+          "reasoning_tokens": 196746,
+          "cost_usd": 0.6280262499999992,
+          "cache_saved_usd": 0.01725225
+        }
+      },
+      "wall_s": 758.6816968917847
+    },
+    {
+      "run": "transcript_40__drift_none__seed0",
+      "path": "runs/exp05/rule_world/transcript_40__drift_none__seed0.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 766,
+          "cache_hits": 60,
+          "input_tokens": 835051,
+          "cached_tokens": 276736,
+          "output_tokens": 251005,
+          "reasoning_tokens": 202826,
+          "cost_usd": 0.6485071499999993,
+          "cache_saved_usd": 0.028214249999999993
+        }
+      },
+      "wall_s": 781.4005107879639
+    },
+    {
+      "run": "transcript_15__drift_none__seed0",
+      "path": "runs/exp05/rule_world/transcript_15__drift_none__seed0.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 801,
+          "cache_hits": 80,
+          "input_tokens": 912785,
+          "cached_tokens": 330496,
+          "output_tokens": 260997,
+          "reasoning_tokens": 211338,
+          "cost_usd": 0.6758286499999993,
+          "cache_saved_usd": 0.04260209999999999
+        }
+      },
+      "wall_s": 817.6887729167938
+    },
+    {
+      "run": "transcript_120__drift_none__seed0",
+      "path": "runs/exp05/rule_world/transcript_120__drift_none__seed0.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 847,
+          "cache_hits": 84,
+          "input_tokens": 994159,
+          "cached_tokens": 386688,
+          "output_tokens": 274443,
+          "reasoning_tokens": 222410,
+          "cost_usd": 0.7104209499999993,
+          "cache_saved_usd": 0.044008099999999994
+        }
+      },
+      "wall_s": 860.1197874546051
+    },
+    {
+      "run": "notes_300__drift_none__seed1",
+      "path": "runs/exp05/rule_world/notes_300__drift_none__seed1.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 429,
+          "cache_hits": 59,
+          "input_tokens": 590673,
+          "cached_tokens": 289024,
+          "output_tokens": 120152,
+          "reasoning_tokens": 90295,
+          "cost_usd": 0.32294184999999953,
+          "cache_saved_usd": 0.022243500000000027
+        }
+      },
+      "wall_s": 372.2042248249054
+    },
+    {
+      "run": "transcript_5__drift_none__seed1",
+      "path": "runs/exp05/rule_world/transcript_5__drift_none__seed1.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 831,
+          "cache_hits": 105,
+          "input_tokens": 1275529,
+          "cached_tokens": 595072,
+          "output_tokens": 255387,
+          "reasoning_tokens": 205912,
+          "cost_usd": 0.6957650499999992,
+          "cache_saved_usd": 0.05228085000000002
+        }
+      },
+      "wall_s": 810.9721620082855
+    },
+    {
+      "run": "transcript_120__drift_none__seed1",
+      "path": "runs/exp05/rule_world/transcript_120__drift_none__seed1.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 582,
+          "cache_hits": 89,
+          "input_tokens": 900969,
+          "cached_tokens": 470400,
+          "output_tokens": 165567,
+          "reasoning_tokens": 127543,
+          "cost_usd": 0.45053624999999986,
+          "cache_saved_usd": 0.04115360000000001
+        }
+      },
+      "wall_s": 518.3595888614655
+    },
+    {
+      "run": "transcript_15__drift_none__seed1",
+      "path": "runs/exp05/rule_world/transcript_15__drift_none__seed1.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 851,
+          "cache_hits": 125,
+          "input_tokens": 1349506,
+          "cached_tokens": 647680,
+          "output_tokens": 262884,
+          "reasoning_tokens": 212568,
+          "cost_usd": 0.7174164999999992,
+          "cache_saved_usd": 0.06797235000000001
+        }
+      },
+      "wall_s": 825.1814575195312
+    },
+    {
+      "run": "transcript_40__drift_none__seed1",
+      "path": "runs/exp05/rule_world/transcript_40__drift_none__seed1.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 644,
+          "cache_hits": 135,
+          "input_tokens": 981460,
+          "cached_tokens": 488320,
+          "output_tokens": 189298,
+          "reasoning_tokens": 147639,
+          "cost_usd": 0.5140890000000001,
+          "cache_saved_usd": 0.08089785000000002
+        }
+      },
+      "wall_s": 584.0098440647125
+    },
+    {
+      "run": "notes_1500__drift_none__seed1",
+      "path": "runs/exp05/rule_world/notes_1500__drift_none__seed1.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 551,
+          "cache_hits": 99,
+          "input_tokens": 790015,
+          "cached_tokens": 364544,
+          "output_tokens": 161704,
+          "reasoning_tokens": 124181,
+          "cost_usd": 0.4388893500000003,
+          "cache_saved_usd": 0.05508900000000001
+        }
+      },
+      "wall_s": 490.392352104187
+    },
+    {
+      "run": "notes_1500__drift_none__seed2",
+      "path": "runs/exp05/rule_world/notes_1500__drift_none__seed2.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 523,
+          "cache_hits": 26,
+          "input_tokens": 628334,
+          "cached_tokens": 275456,
+          "output_tokens": 160201,
+          "reasoning_tokens": 124385,
+          "cost_usd": 0.41550790000000215,
+          "cache_saved_usd": 0.010037500000000033
+        }
+      },
+      "wall_s": 471.07007598876953
+    },
+    {
+      "run": "notes_300__drift_none__seed2",
+      "path": "runs/exp05/rule_world/notes_300__drift_none__seed2.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 544,
+          "cache_hits": 31,
+          "input_tokens": 657748,
+          "cached_tokens": 288896,
+          "output_tokens": 167546,
+          "reasoning_tokens": 129919,
+          "cost_usd": 0.43452740000000234,
+          "cache_saved_usd": 0.01121175000000002
+        }
+      },
+      "wall_s": 490.77904295921326
+    },
+    {
+      "run": "transcript_120__drift_none__seed2",
+      "path": "runs/exp05/rule_world/transcript_120__drift_none__seed2.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 635,
+          "cache_hits": 49,
+          "input_tokens": 833837,
+          "cached_tokens": 384640,
+          "output_tokens": 196491,
+          "reasoning_tokens": 154623,
+          "cost_usd": 0.5148972500000017,
+          "cache_saved_usd": 0.02789275000000002
+        }
+      },
+      "wall_s": 574.1825432777405
+    },
+    {
+      "run": "transcript_40__drift_none__seed2",
+      "path": "runs/exp05/rule_world/transcript_40__drift_none__seed2.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 678,
+          "cache_hits": 69,
+          "input_tokens": 876113,
+          "cached_tokens": 384640,
+          "output_tokens": 212545,
+          "reasoning_tokens": 168447,
+          "cost_usd": 0.5575742500000016,
+          "cache_saved_usd": 0.045093500000000036
+        }
+      },
+      "wall_s": 618.6613299846649
+    },
+    {
+      "run": "transcript_5__drift_none__seed2",
+      "path": "runs/exp05/rule_world/transcript_5__drift_none__seed2.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 809,
+          "cache_hits": 88,
+          "input_tokens": 1117411,
+          "cached_tokens": 512256,
+          "output_tokens": 253209,
+          "reasoning_tokens": 201919,
+          "cost_usd": 0.6705131500000018,
+          "cache_saved_usd": 0.05685875000000004
+        }
+      },
+      "wall_s": 743.6366848945618
+    },
+    {
+      "run": "transcript_15__drift_none__seed2",
+      "path": "runs/exp05/rule_world/transcript_15__drift_none__seed2.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 878,
+          "cache_hits": 97,
+          "input_tokens": 1105952,
+          "cached_tokens": 467328,
+          "output_tokens": 286152,
+          "reasoning_tokens": 230709,
+          "cost_usd": 0.7436432000000026,
+          "cache_saved_usd": 0.05986150000000004
+        }
+      },
+      "wall_s": 830.1782042980194
+    },
+    {
+      "run": "notes_300__drift_none__seed3",
+      "path": "runs/exp05/rule_world/notes_300__drift_none__seed3.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 514,
+          "cache_hits": 37,
+          "input_tokens": 566401,
+          "cached_tokens": 198528,
+          "output_tokens": 165471,
+          "reasoning_tokens": 131180,
+          "cost_usd": 0.4278734500000021,
+          "cache_saved_usd": 0.014166750000000047
+        }
+      },
+      "wall_s": 495.11057591438293
+    },
+    {
+      "run": "transcript_40__drift_none__seed3",
+      "path": "runs/exp05/rule_world/transcript_40__drift_none__seed3.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 699,
+          "cache_hits": 54,
+          "input_tokens": 864248,
+          "cached_tokens": 343936,
+          "output_tokens": 227704,
+          "reasoning_tokens": 183020,
+          "cost_usd": 0.594084400000003,
+          "cache_saved_usd": 0.026752500000000068
+        }
+      },
+      "wall_s": 680.0111241340637
+    },
+    {
+      "run": "transcript_5__drift_none__seed3",
+      "path": "runs/exp05/rule_world/transcript_5__drift_none__seed3.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 808,
+          "cache_hits": 64,
+          "input_tokens": 1093036,
+          "cached_tokens": 486400,
+          "output_tokens": 261874,
+          "reasoning_tokens": 211820,
+          "cost_usd": 0.6875670000000027,
+          "cache_saved_usd": 0.03274650000000011
+        }
+      },
+      "wall_s": 785.9139819145203
+    },
+    {
+      "run": "transcript_120__drift_none__seed3",
+      "path": "runs/exp05/rule_world/transcript_120__drift_none__seed3.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 705,
+          "cache_hits": 65,
+          "input_tokens": 901027,
+          "cached_tokens": 387200,
+          "output_tokens": 230160,
+          "reasoning_tokens": 184940,
+          "cost_usd": 0.5984567500000035,
+          "cache_saved_usd": 0.03498650000000017
+        }
+      },
+      "wall_s": 690.1151628494263
+    },
+    {
+      "run": "notes_1500__drift_none__seed3",
+      "path": "runs/exp05/rule_world/notes_1500__drift_none__seed3.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 561,
+          "cache_hits": 56,
+          "input_tokens": 787803,
+          "cached_tokens": 369152,
+          "output_tokens": 174934,
+          "reasoning_tokens": 137398,
+          "cost_usd": 0.46375955000000246,
+          "cache_saved_usd": 0.032066250000000227
+        }
+      },
+      "wall_s": 534.6002941131592
+    },
+    {
+      "run": "transcript_15__drift_none__seed3",
+      "path": "runs/exp05/rule_world/transcript_15__drift_none__seed3.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 901,
+          "cache_hits": 91,
+          "input_tokens": 1152012,
+          "cached_tokens": 491008,
+          "output_tokens": 303684,
+          "reasoning_tokens": 248538,
+          "cost_usd": 0.7848942000000021,
+          "cache_saved_usd": 0.050768250000000265
+        }
+      },
+      "wall_s": 892.620049238205
+    },
+    {
+      "run": "notes_300__drift_none__seed4",
+      "path": "runs/exp05/rule_world/notes_300__drift_none__seed4.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 506,
+          "cache_hits": 44,
+          "input_tokens": 595517,
+          "cached_tokens": 246656,
+          "output_tokens": 161712,
+          "reasoning_tokens": 127303,
+          "cost_usd": 0.41680565000000414,
+          "cache_saved_usd": 0.017093250000000004
+        }
+      },
+      "wall_s": 470.5189964771271
+    },
+    {
+      "run": "transcript_5__drift_none__seed4",
+      "path": "runs/exp05/rule_world/transcript_5__drift_none__seed4.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 790,
+          "cache_hits": 81,
+          "input_tokens": 1143553,
+          "cached_tokens": 558976,
+          "output_tokens": 250148,
+          "reasoning_tokens": 198573,
+          "cost_usd": 0.6604146500000052,
+          "cache_saved_usd": 0.04327075000000019
+        }
+      },
+      "wall_s": 744.8849411010742
+    },
+    {
+      "run": "transcript_120__drift_none__seed4",
+      "path": "runs/exp05/rule_world/transcript_120__drift_none__seed4.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 616,
+          "cache_hits": 78,
+          "input_tokens": 827420,
+          "cached_tokens": 376704,
+          "output_tokens": 192000,
+          "reasoning_tokens": 150637,
+          "cost_usd": 0.5060966000000033,
+          "cache_saved_usd": 0.04305075000000011
+        }
+      },
+      "wall_s": 568.8854591846466
+    },
+    {
+      "run": "transcript_40__drift_none__seed4",
+      "path": "runs/exp05/rule_world/transcript_40__drift_none__seed4.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 646,
+          "cache_hits": 112,
+          "input_tokens": 868572,
+          "cached_tokens": 384000,
+          "output_tokens": 202474,
+          "reasoning_tokens": 159743,
+          "cost_usd": 0.5356910000000026,
+          "cache_saved_usd": 0.07464820000000019
+        }
+      },
+      "wall_s": 600.7497131824493
+    },
+    {
+      "run": "notes_1500__drift_none__seed4",
+      "path": "runs/exp05/rule_world/notes_1500__drift_none__seed4.jsonl",
+      "cost": {
+        "openai/gpt-5-mini": {
+          "calls": 557,
+          "cache_hits": 114,
+          "input_tokens": 804191,
+          "cached_tokens": 375296,
+          "output_tokens": 163875,
+          "reasoning_tokens": 125969,
+          "cost_usd": 0.4443561500000035,
+          "cache_saved_usd": 0.08634985000000003
+        }
+      },
+      "wall_s": 503.95487356185913
     }
   ],
   "grid_costs": [],
