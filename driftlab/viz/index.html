@@ -243,8 +243,11 @@
         <p class="hometext">The lab's claims in plain words, each with its status, the verdict the run data supports so far, and
         the numbers behind it: one row per agent and world, with confidence intervals.</p></div>
       <div><h3>Research · Experiments <button class="linkbtn" data-top="research" data-rtab="exp">open</button></h3>
-        <p class="hometext">The registry: what each of the fifteen experiments does, all of its settings, and the prediction it
-        registers so results can be checked automatically.</p></div>
+        <p class="hometext">The registry: what each of the fifteen experiments does and all of its settings. Experiments are
+        protocols; the claims they test, and the verdicts, live under Hypotheses.</p></div>
+      <div><h3>Research · Worlds <button class="linkbtn" data-top="research" data-rtab="worlds">open</button></h3>
+        <p class="hometext">The jobs agents can be dropped into: what kinds of change each world supports, which experiments can
+        run on it, and the exact job description the agent receives.</p></div>
       <div><h3>Research · Benchmarks <button class="linkbtn" data-top="research" data-rtab="bench">open</button></h3>
         <p class="hometext">How the agents compare: the score matrix (click a cell to open those runs), each agent's score
         dimensions, and detailed results per experiment. Recomputed whenever an analysis runs; the stamp shows when.</p></div>
@@ -405,6 +408,7 @@
   <nav class="tabbar" style="margin:0 0 10px">
     <button id="rtabHyp" class="on">Hypotheses</button>
     <button id="rtabExp">Experiments</button>
+    <button id="rtabWorlds">Worlds</button>
     <button id="rtabBench">Benchmarks</button>
   </nav>
   <section id="rsecHyp">
@@ -415,6 +419,10 @@
   <section id="rsecExp" hidden>
     <div class="panel"><h2 id="hRegistry">Experiment registry</h2>
       <div id="expList"><p class="muted">loading…</p></div></div>
+  </section>
+  <section id="rsecWorlds" hidden>
+    <div class="panel"><h2 id="hWorlds">Worlds</h2>
+      <div id="worldList"><p class="muted">loading…</p></div></div>
   </section>
   <section id="rsecBench" hidden>
     <div class="benchhead">
@@ -539,9 +547,10 @@
     hAgentCfg: "Everything the run's record says about who played. When driftlab enforced these settings, they are facts, not the agent's self-description.",
     hMatrix: "Every agent with analyzed full-length runs. Each cell is that agent's driftlab score on one experiment; darker is higher. Click a cell to open those runs. The score is for ranking; the profiles further down are the real result.",
     hDims: "Each agent's four score dimensions, averaged across its experiments. The glossary below defines each one. A dash means no experiment measured that dimension.",
-    hRegistry: "One entry per experiment: what it does, its settings, what it varies and measures, and the prediction it registers so results can be checked automatically. The same definition is stamped into every run's record.",
+    hRegistry: "One entry per experiment: what it does, its settings, what it varies and measures, and the claim it is built to test. An experiment is a protocol, not a belief, so verdicts and evidence live under Hypotheses. The same definition is stamped into every run's record.",
     hHyp: "The lab's claims, one per entry: the claim in plain words, its current status, the verdict the run data supports so far, and the numbers behind that verdict. A verdict only speaks for the agents and worlds actually tested.",
     hWorldCfg: "The job the agent was doing and the kinds of change this world can throw at it.",
+    hWorlds: "The jobs agents can be dropped into. Each entry lists what kinds of change the world supports, which experiments can run on it, and the exact job description the agent receives.",
     hGloss: "Plain definitions of every number in the tables on this page.",
   };
   function applyTutorial() {  // explanations are always shown, under the values
@@ -993,8 +1002,36 @@
     $("fExp").value = exp; $("fAgent").value = agent;
   }
 
-  let valData;
+  let valData, worldData = null;
   const VCHIP = { "SUPPORTED": "good", "NOT SUPPORTED": "bad", "PARTIALLY SUPPORTED": "mixed", "INCONCLUSIVE": "" };
+  // what each world capability means, in plain words (internal-only capabilities are omitted)
+  const CAP_HELP = {
+    change_latent: "real changes: what counts as correct can genuinely move",
+    change_surface: "cosmetic changes: wording and labels can move while the rules stay put",
+    endogenous: "self-caused changes: the agent's own behavior can change the world",
+    introduce_novelty: "new kinds of task can appear mid-run",
+    ask_confidence: "can ask the agent to state a confidence with each action",
+    probe: "can quiz the agent without feedback, for held-out tests",
+    task_key: "tasks repeat identically, so latencies can be counted per kind of task",
+    sample_task: "a teacher can choose which task comes next",
+    sample_contrast_pair: "a teacher can build pairs of tasks that differ in exactly one attribute",
+    task_fn: "supports scripted task streams and multi-step tasks",
+  };
+  function renderWorlds() {
+    const el = $("worldList"); if (!el) return;
+    el.innerHTML = (worldData || []).map(w => {
+      const info = WORLD_INFO[w.id] || [human(w.id), ""];
+      const caps = (w.capabilities || []).filter(c => CAP_HELP[c]).map(c => `<li>${escapeHtml(CAP_HELP[c])}</li>`).join("");
+      const used = Object.entries(REGISTRY)
+        .filter(([, e]) => (e.worlds || []).some(x => x === w.id || String(x).startsWith("any")))
+        .map(([id, e]) => `${id.replace("exp", "")} ${e.title}`);
+      return `<details class="hyp"><summary><strong>${escapeHtml(info[0])}</strong> <span class="muted">${escapeHtml(human(w.id))}</span>` +
+        `<div class="benchhint" style="margin:4px 0 0 18px;max-width:90ch">${escapeHtml(info[1])}</div></summary>` +
+        `<div class="subtile"><h4 class="evhead">What can happen here</h4><ul style="margin:4px 0 2px;padding-left:18px;font-size:12.5px">${caps}</ul></div>` +
+        `<div class="subtile"><h4 class="evhead">Experiments that can run here</h4><p style="margin:2px 0;max-width:90ch">${used.map(escapeHtml).join(" · ") || "none"}</p></div>` +
+        `<div class="subtile"><h4 class="evhead">The job description the agent receives, verbatim</h4><pre style="max-height:240px">${escapeHtml(w.system_prompt || "")}</pre></div></details>`;
+    }).join("") || '<p class="muted">the dashboard server is running an older version and does not know this view yet. Stop it and start it again, then reopen this tab.</p>';
+  }
   const VMEAN = {
     "SUPPORTED": "every prediction that reached a verdict agrees with the hypothesis",
     "NOT SUPPORTED": "every prediction that reached a verdict points the other way",
@@ -1017,115 +1054,90 @@
     if (delta != null) g += `<circle cx="${x(delta)}" cy="7" r="3" fill="${color}"/>`;
     return `<svg width="${W}" height="14" viewBox="0 0 ${W} 14" style="vertical-align:middle" role="img" aria-label="interval vs zero">${g}</svg>`;
   }
-  function evidenceTables(allRows) {
+  function ciRowsTable(rs) {
+    const span = Math.max(0.05, ...rs.flatMap(r => [Math.abs(r.delta ?? 0), ...(r.ci ? r.ci.map(Math.abs) : [])])) * 1.15;
+    const num = v => v == null ? "—" : `${v >= 0 ? "+" : ""}${v.toFixed(3)}`;
+    return `<div class="tablewrap"><table class="cohort ev"><tr><th style="text-align:left">verdict</th><th style="text-align:left">world</th><th style="text-align:left">agent</th><th>Δ</th><th>95% CI</th><th>pairs</th><th style="text-align:left">interval vs 0</th></tr>` +
+      rs.map(r => {
+        const color = VCOLOR[r.verdict] || "var(--text-muted)";
+        const civ = r.ci ? `[${num(r.ci[0])}, ${num(r.ci[1])}]` : "—";
+        return `<tr title="${escapeHtml(r.reason || "")}"><td style="text-align:left"><span class="v-${r.verdict}">${r.verdict}</span></td>` +
+               `<td style="text-align:left">${escapeHtml(human(r.world))}</td>` +
+               `<td style="text-align:left">${escapeHtml(human(r.agent))}</td><td>${num(r.delta)}</td><td>${civ}</td><td>${r.n}</td>` +
+               `<td style="text-align:left">${r.ci || r.delta != null ? ciBar(r.delta, r.ci, span, color) : `<span class="muted" style="font-size:11px">${escapeHtml((r.reason || "no data").split("(")[0].trim())}</span>`}</td></tr>`;
+      }).join("") + `</table></div>`;
+  }
+  // one block per registered prediction: the claim, who tests it and how, and its result rows
+  function hypEvidenceHTML(hid, v) {
     const byClaim = new Map(), seen = new Set();
-    allRows.forEach(r => {
+    ((v && v.rows) || []).forEach(r => {
       const key = [r.exp, r.world, r.agent, r.claim].join("|");
       if (seen.has(key)) return;
       seen.add(key);
       if (!byClaim.has(r.claim)) byClaim.set(r.claim, []);
       byClaim.get(r.claim).push(r);
     });
-    let html = "";
-    for (const [claim, rs] of byClaim) {
-      const span = Math.max(0.05, ...rs.flatMap(r => [Math.abs(r.delta ?? 0), ...(r.ci ? r.ci.map(Math.abs) : [])])) * 1.15;
-      html += `<div class="benchhint" style="margin:8px 0 2px">${escapeHtml(claim)}</div>` +
-        `<div class="tablewrap"><table class="cohort ev"><tr><th style="text-align:left">verdict</th><th style="text-align:left">experiment</th><th style="text-align:left">world</th><th style="text-align:left">agent</th><th>Δ</th><th>95% CI</th><th>pairs</th><th style="text-align:left">interval vs 0</th></tr>` +
-        rs.map(r => {
-          const color = VCOLOR[r.verdict] || "var(--text-muted)";
-          const num = v => v == null ? "—" : `${v >= 0 ? "+" : ""}${v.toFixed(3)}`;
-          const civ = r.ci ? `[${num(r.ci[0])}, ${num(r.ci[1])}]` : "—";
-          return `<tr title="${escapeHtml(r.reason || "")}"><td style="text-align:left"><span class="v-${r.verdict}">${r.verdict}</span></td>` +
-                 `<td style="text-align:left">${r.exp} v${r.version}</td><td style="text-align:left">${escapeHtml(human(r.world))}</td>` +
-                 `<td style="text-align:left">${escapeHtml(human(r.agent))}</td><td>${num(r.delta)}</td><td>${civ}</td><td>${r.n}</td>` +
-                 `<td style="text-align:left">${r.ci || r.delta != null ? ciBar(r.delta, r.ci, span, color) : `<span class="muted" style="font-size:11px">${escapeHtml((r.reason || "no data").split("(")[0].trim())}</span>`}</td></tr>`;
-        }).join("") + `</table></div>`;
+    let html = "", anyPred = false, anyRows = false;
+    for (const [id, e] of Object.entries(REGISTRY)) {
+      if (!(e.hypotheses || []).includes(hid)) continue;
+      for (const p of e.predictions || []) {
+        anyPred = true;
+        const rs = byClaim.get(p.claim) || [];
+        anyRows = anyRows || rs.length > 0;
+        html += `<div style="margin:6px 0 14px">` +
+          `<p style="margin:2px 0 4px;max-width:90ch"><strong>${escapeHtml(p.claim)}</strong><br>` +
+          `<span class="muted" style="font-size:11.5px">tested by ${escapeHtml(e.title)} (${id}) · ${escapeHtml(predDesc(p))}</span></p>` +
+          (rs.length ? ciRowsTable(rs) : `<p class="muted" style="margin:2px 0">no full-length runs to evaluate yet</p>`) + `</div>`;
+      }
     }
-    return html + `<div class="benchhint" style="margin:2px 0 6px">Hover a row to see how its verdict was reached. In the plot, the dot is the average difference and the whiskers are its 95% confidence interval; the center line is zero. An interval that stays clear of the line is a conclusive verdict.</div>`;
+    if (!anyPred) return `<p class="muted" style="margin:2px 0">none of this hypothesis's experiments has registered a testable prediction yet</p>`;
+    if (anyRows) html += `<div class="benchhint" style="margin:2px 0 4px">Hover a row to see how its verdict was reached. In the plot, the dot is the average difference and the whiskers are its 95% confidence interval; the center line is zero. An interval that stays clear of the line is a conclusive verdict.</div>`;
+    return html;
   }
 
-  function mdHTML(md) {  // minimal renderer for the hypothesis files: headings, tables, lists, bold, code
-    const lines = md.split("\n");
-    let html = "", i = 0, para = [];
-    const inline = s => s.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/`([^`]+)`/g, "<code>$1</code>")
-                        .replace(/\[\[(.+?)\]\]/g, '<span class="mono">$1</span>');
-    const flush = () => { if (para.length) { html += `<p>${para.join(" ")}</p>`; para = []; } };
-    while (i < lines.length) {
-      const raw = lines[i], l = inline(escapeHtml(raw));
-      if (/^#{1,3}\s/.test(raw)) { flush(); const lvl = raw.match(/^#+/)[0].length + 2;
-        html += `<h${lvl}>${inline(escapeHtml(raw.replace(/^#+\s*/, "")))}</h${lvl}>`; i++; }
-      else if (/^\|/.test(raw)) { flush();
-        const rows = []; while (i < lines.length && /^\|/.test(lines[i])) { rows.push(lines[i]); i++; }
-        const cells = r => r.split("|").slice(1, -1).map(c => inline(escapeHtml(c.trim())));
-        const body = rows.filter(r => !/^\|[\s\-|]+\|$/.test(r));
-        html += `<div class="tablewrap"><table class="cohort lefty"><tr>${cells(body[0]).map(c => `<th style="text-align:left">${c}</th>`).join("")}</tr>` +
-                body.slice(1).map(r => `<tr>${cells(r).map(c => `<td>${c}</td>`).join("")}</tr>`).join("") + `</table></div>`; }
-      else if (/^-\s/.test(raw)) { flush();
-        const items = []; while (i < lines.length && /^-\s/.test(lines[i])) { items.push(inline(escapeHtml(lines[i].replace(/^-\s*/, "")))); i++; }
-        html += `<ul>${items.map(x => `<li>${x}</li>`).join("")}</ul>`; }
-      else if (!raw.trim()) { flush(); i++; }
-      else if (/^status:/i.test(raw)) { i++; }  // already shown as a chip
-      else { para.push(l); i++; }
-    }
-    flush();
-    return `<div class="mdbody">${html}</div>`;
-  }
   function setRTab(which) {
-    for (const [k, btn, sec] of [["hyp", "rtabHyp", "rsecHyp"], ["exp", "rtabExp", "rsecExp"], ["bench", "rtabBench", "rsecBench"]]) {
+    for (const [k, btn, sec] of [["hyp", "rtabHyp", "rsecHyp"], ["exp", "rtabExp", "rsecExp"], ["worlds", "rtabWorlds", "rsecWorlds"], ["bench", "rtabBench", "rsecBench"]]) {
       $(btn).className = k === which ? "on" : ""; $(sec).hidden = k !== which;
     }
     if (which === "bench") loadBench(true);  // always re-fetch on entry
     applyTutorial();
   }
-  $("rtabHyp").onclick = () => setRTab("hyp"); $("rtabExp").onclick = () => setRTab("exp"); $("rtabBench").onclick = () => setRTab("bench");
-  function aggStatus(rows) {
-    const s = rows.filter(r => r.verdict === "supported").length, c = rows.filter(r => r.verdict === "contradicted").length;
-    return s && !c ? "SUPPORTED" : c && !s ? "NOT SUPPORTED" : s && c ? "PARTIALLY SUPPORTED" : "INCONCLUSIVE";
-  }
+  $("rtabHyp").onclick = () => setRTab("hyp"); $("rtabExp").onclick = () => setRTab("exp");
+  $("rtabWorlds").onclick = () => setRTab("worlds"); $("rtabBench").onclick = () => setRTab("bench");
   async function renderResearch() {
     try { hypData = await (await fetch("/hypotheses")).json(); } catch (e) { hypData = hypData || []; }
     try { valData = await (await fetch("/validation")).json(); } catch (e) { valData = valData || null; }
+    if (worldData === null || !worldData.length) {
+      try { const d = await (await fetch("/worlds")).json(); worldData = Array.isArray(d) ? d : []; } catch (e) { worldData = []; }
+    }
+    renderWorlds();
     $("expList").innerHTML = Object.entries(REGISTRY).map(([id, e]) => {
-      const ev = valData && valData.experiments ? valData.experiments[id] : null;
-      const rows = ev && ev.rows ? ev.rows : [];
-      const hasPred = (e.predictions || []).length > 0;
-      const st = rows.length ? aggStatus(rows) : (hasPred ? "INCONCLUSIVE" : null);
-      const chip = !valData ? `<span class="chip">NOT VALIDATED</span>`
-        : st ? `<span class="chip ${VCHIP[st] || ""}" title="${escapeHtml(VMEAN[st] || "")}">${st}</span>`
-             : `<span class="chip">NO PREDICTION</span>`;
-      const preds = hasPred
-        ? (e.predictions || []).map(p => `<p style="margin:2px 0"><strong>${escapeHtml(p.claim)}</strong><br><span class="muted" style="font-size:11.5px">${escapeHtml(predDesc(p))}</span></p>`).join("")
-        : `<p class="muted" style="margin:2px 0">none yet. What this experiment measures is not in the standardized profile, so no automatic check is defined for it</p>`;
-      const evBody = rows.length ? evidenceTables(rows)
-        : `<p class="muted" style="margin:2px 0">${hasPred ? "no full-length runs to evaluate yet" : "define a prediction in code to enable validation"}</p>`;
-      return `<details class="hyp"><summary><strong>${id.replace("exp", "")}</strong> ${escapeHtml(e.title)} <span class="muted">v${e.version}</span> ${chip}` +
-        `<div class="benchhint" style="margin:4px 0 0 18px">${escapeHtml(e.design || e.hypothesis)}</div></summary>` +
-        `<div class="subtile"><h4 class="evhead">Machine-checkable prediction</h4>${preds}</div>` +
-        `<div class="subtile"><h4 class="evhead">Machine evidence</h4>${evBody}</div>` +
-        `<div class="subtile"><h4 class="evhead">Design</h4>` +
-        (e.design ? `<p style="margin:2px 0 8px;max-width:90ch">${escapeHtml(e.design)}</p>` : "") +
-        `<p style="margin:2px 0 8px;max-width:90ch"><span class="muted">Why it's run:</span> ${escapeHtml(e.hypothesis)}</p><div class="kv">` +
+      const hyps = (e.hypotheses || []).join(", ");
+      return `<details class="hyp"><summary><strong>${id.replace("exp", "")}</strong> ${escapeHtml(e.title)} <span class="muted">v${e.version}</span>` +
+        `<div class="benchhint" style="margin:4px 0 0 18px;max-width:90ch">${escapeHtml(e.design || e.hypothesis)}</div></summary>` +
+        `<div class="subtile"><h4 class="evhead">Why it's run</h4>` +
+        `<p style="margin:2px 0;max-width:90ch">${escapeHtml(e.hypothesis)}</p>` +
+        `<p class="muted" style="margin:6px 0 2px">Bears on ${escapeHtml(hyps)}; the verdict and evidence live in the Hypotheses tab.</p></div>` +
+        `<div class="subtile"><h4 class="evhead">Parameters</h4><div class="kv">` +
         Object.entries(e.parameters || {}).map(([k, v]) => `<span class="k">${escapeHtml(k)}</span><span>${escapeHtml(v)}</span>`).join("") +
-        `<span class="k">varies</span><span>${(e.independent || []).map(x => escapeHtml(human(x))).join("<br>")}</span>` +
         `<span class="k">measures</span><span>${(e.dependent || []).map(x => escapeHtml(human(x))).join("<br>")}</span>` +
-        `<span class="k">worlds</span><span>${escapeHtml((e.worlds || []).join(", "))}</span>` +
-        `<span class="k">bears on</span><span>${(e.hypotheses || []).join(", ")}</span></div>` +
-        (e.parameters ? `<p class="benchhint" style="margin:8px 0 0">Short sense-check runs ("quick" mode) scale these lengths and schedules down to about a tenth.</p>` : "") +
+        `<span class="k">worlds</span><span>${escapeHtml((e.worlds || []).join(", "))}</span></div>` +
+        `<p class="benchhint" style="margin:8px 0 0">Short sense-check runs ("quick" mode) scale these lengths and schedules down to about a tenth.</p>` +
         `</div></details>`;
     }).join("");
     $("valStamp").textContent = valData
-      ? `Validation last ran ${new Date(valData.generated * 1000).toLocaleString()}. Every prediction is tested as a paired comparison: the same experiment, world and seeds, with only the thing the prediction names differing. SUPPORTED means the difference sits on the predicted side of zero with its whole 95% confidence interval, across at least ${valData.min_pairs} matched pairs of runs. CONTRADICTED means the interval sits entirely on the other side. INCONCLUSIVE means the interval still includes zero, or there is not enough full-length paired data (short sense-check runs never count). A verdict only speaks for the agents and worlds tested.`
-      : "Validation has not run yet. Each experiment registers predictions that can be checked automatically; validation tests them as paired comparisons with confidence intervals and reports its verdicts here.";
+      ? `Validation last ran ${new Date(valData.generated * 1000).toLocaleString()}. Verdicts are proposals computed from the run logs, and each one speaks only for the agents and worlds it was tested on.`
+      : "Validation has not run yet. Each hypothesis lists the predictions that would test it; verdicts appear here once validation runs.";
     $("hypList").innerHTML = (hypData || []).map(h => {
       const v = valData && valData.hypotheses ? valData.hypotheses[h.id] : null;
       const chip = v ? `<span class="chip ${VCHIP[v.proposed_status] || ""}" title="${escapeHtml(VMEAN[v.proposed_status] || "")}">${escapeHtml(v.proposed_status)}</span>` : `<span class="chip">NOT VALIDATED</span>`;
-      const claim = h.claim ? `<div class="benchhint" style="margin:4px 0 0 18px;max-width:90ch">${escapeHtml(h.claim)}</div>` : "";
-      const meaning = v ? `<div class="benchhint" style="margin:4px 0 0 18px">Verdict so far: ${escapeHtml(VMEAN[v.proposed_status] || "")} (${escapeHtml(v.scope)})</div>` : "";
-      const evBody = v && v.rows && v.rows.length ? evidenceTables(v.rows)
-        : (v ? `<p class="muted" style="margin:2px 0">${v.predicted_by && v.predicted_by.length ? `predictions are registered (${v.predicted_by.join(", ")}) but none of those experiments has full-length runs yet` : "none of this hypothesis's experiments has a machine-checkable prediction yet"}</p>` : `<p class="muted" style="margin:2px 0">validation has not been computed</p>`);
-      return `<details class="hyp"><summary><strong>${escapeHtml(h.id)}</strong> ${escapeHtml(h.title)} ${chip}${claim}${meaning}</summary>` +
-        `<div class="subtile"><h4 class="evhead">Machine evidence</h4>${evBody}</div>` +
-        `<div class="subtile"><h4 class="evhead">Details</h4>${mdHTML(h.body)}</div></details>`;
+      const claim = h.claim ? `<div class="subtile"><h4 class="evhead">The claim</h4><p style="margin:2px 0;max-width:90ch">${escapeHtml(h.claim)}</p></div>` : "";
+      const protocol = `<p style="margin:2px 0;max-width:90ch">Every prediction above is tested as a paired comparison: the same experiment, world and seeds, with only the thing the prediction names differing. A verdict needs at least ${(valData && valData.min_pairs) || 5} matched pairs of full-length runs; short sense-check runs never count. Supported means the whole 95% confidence interval of the difference sits on the predicted side of zero; contradicted means it sits entirely on the other side; inconclusive means it still includes zero, or there is not enough data.</p>` +
+        (v ? `<p style="margin:8px 0 2px;max-width:90ch"><span class="muted">Current verdict:</span> ${escapeHtml(VMEAN[v.proposed_status] || "")} (${escapeHtml(v.scope)}).</p>` : "");
+      return `<details class="hyp"><summary><strong>${escapeHtml(h.id)}</strong> ${escapeHtml(h.title)} ${chip}</summary>` +
+        claim +
+        `<div class="subtile"><h4 class="evhead">Evidence</h4>${hypEvidenceHTML(h.id, v)}</div>` +
+        `<div class="subtile"><h4 class="evhead">How it is validated</h4>${protocol}</div></details>`;
     }).join("") || '<p class="muted">no hypotheses defined yet</p>';
   }
 

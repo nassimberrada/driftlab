@@ -50,6 +50,7 @@ def check_worlds():
     from driftlab.worlds.base import capabilities
     from driftlab.worlds.registry import WORLDS, make_world
     rng = np.random.default_rng(0)
+    snapshot = []
     for name in WORLDS:
         try:
             w = make_world(name, seed=0, T=20)
@@ -67,9 +68,14 @@ def check_worlds():
                 assert "task_done" in priv, "a world reporting task_id must also report task_done"
             assert isinstance(w.summary(), dict), "summary() must return a dict"
             caps = capabilities(w)
+            snapshot.append({"id": name, "system_prompt": w.system_prompt, "capabilities": sorted(caps)})
             ok(f"{name}: protocol + one live step; capabilities: {', '.join(sorted(caps))}")
         except Exception as e:  # noqa: BLE001
             problem(f"world {name}: {e!r}")
+    if snapshot and len(snapshot) == len(WORLDS):
+        # the dashboard's fallback for /worlds when its interpreter can't build worlds live
+        (ROOT / "driftlab" / "viz" / "worlds.json").write_text(json.dumps(snapshot, indent=1))
+        ok("driftlab/viz/worlds.json refreshed (the dashboard's Worlds fallback)")
 
 
 def experiment_modules() -> dict:

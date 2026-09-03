@@ -157,6 +157,20 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(200, _clean_json(path))
         if u.path == "/benchmarks":
             return self._send(200, json.dumps(_benchmarks()))
+        if u.path == "/worlds":
+            try:
+                sys.path.insert(0, str(ROOT))
+                from driftlab.worlds.base import capabilities
+                from driftlab.worlds.registry import WORLDS, make_world
+                out = []
+                for name in WORLDS:
+                    w = make_world(name, seed=0, T=20)
+                    out.append({"id": name, "system_prompt": getattr(w, "system_prompt", ""),
+                                "capabilities": sorted(capabilities(w))})
+                return self._send(200, json.dumps(out))
+            except Exception:  # noqa: BLE001  (e.g. numpy missing in this interpreter)
+                snap = HERE / "worlds.json"  # written by driftlab.doctor, which builds every world
+                return self._send(200, snap.read_text() if snap.exists() else "[]")
         if u.path == "/validation":
             p = ROOT / "runs" / "validation.json"
             return self._send(200, _clean_json(p) if p.exists() else "null")
