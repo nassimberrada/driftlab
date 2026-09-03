@@ -47,6 +47,11 @@
   main[hidden] { display: none !important; }
   #viewRuns { flex: 1; min-height: 0; display: grid; gap: 8px; padding: 8px 10px;
          grid-template-columns: minmax(190px, 1fr) minmax(0, 4fr); }
+  #viewResults { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  #viewResults > .tabbar { margin: 8px 10px 0; flex: none; }
+  #resBench { flex: 1; min-height: 0; overflow: auto; padding: 10px 14px; }
+  #resBench .panel { margin-bottom: 10px; }
+  #resBench[hidden], #viewRuns[hidden] { display: none !important; }
   main.page { flex: 1; min-height: 0; overflow: auto; padding: 10px 14px; }
   main.page .panel { margin-bottom: 10px; }
   .benchhead { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin: 2px 0 10px; }
@@ -226,7 +231,7 @@
 <nav class="topnav">
   <button id="topHome" class="on">Home</button>
   <button id="topResearch">Research</button>
-  <button id="topRuns">Runs</button>
+  <button id="topResults">Results</button>
 </nav>
 
 <!-- HOME: getting started -->
@@ -240,26 +245,17 @@
   <div class="panel"><h2>The tabs</h2>
     <div class="hometabs">
       <div><h3>Research · Hypotheses <button class="linkbtn" data-top="research" data-rtab="hyp">open</button></h3>
-        <p class="hometext">The lab's claims in plain words, each with its status, the verdict the run data supports so far, and
-        the numbers behind it: one row per agent and world, with confidence intervals.</p></div>
+        <p class="hometext">The lab's claims, each with its verdict and the numbers behind it.</p></div>
       <div><h3>Research · Experiments <button class="linkbtn" data-top="research" data-rtab="exp">open</button></h3>
-        <p class="hometext">The registry: what each of the fifteen experiments does and all of its settings. Experiments are
-        protocols; the claims they test, and the verdicts, live under Hypotheses.</p></div>
+        <p class="hometext">What each experiment does, and all of its settings.</p></div>
       <div><h3>Research · Worlds <button class="linkbtn" data-top="research" data-rtab="worlds">open</button></h3>
-        <p class="hometext">The jobs agents can be dropped into: what kinds of change each world supports, which experiments can
-        run on it, and the exact job description the agent receives.</p></div>
-      <div><h3>Research · Benchmarks <button class="linkbtn" data-top="research" data-rtab="bench">open</button></h3>
-        <p class="hometext">How the agents compare: the score matrix (click a cell to open those runs), each agent's score
-        dimensions, and detailed results per experiment. Recomputed whenever an analysis runs; the stamp shows when.</p></div>
-      <div><h3>Runs · Activity <button class="linkbtn" data-top="runs">open</button></h3>
-        <p class="hometext">The selected run as it happens: what the agent sees and answers, its memory as it writes it, and the
-        world changing around it.</p></div>
-      <div><h3>Runs · Performance <button class="linkbtn" data-top="runs">open</button></h3>
-        <p class="hometext">Headline numbers for the selected run, and the reward chart with every change marked and recovery
-        windows shaded.</p></div>
-      <div><h3>Runs · Configuration <button class="linkbtn" data-top="runs">open</button></h3>
-        <p class="hometext">Who played and under what settings: the agent, the world in plain terms, and the experiment's full
-        definition with the verbatim job description.</p></div>
+        <p class="hometext">The jobs agents work, and what can change in each one.</p></div>
+      <div><h3>Research · Agents <button class="linkbtn" data-top="research" data-rtab="agents">open</button></h3>
+        <p class="hometext">Every agent configured or run, and how each one remembers.</p></div>
+      <div><h3>Results · Benchmarks <button class="linkbtn" data-top="results" data-restab="bench">open</button></h3>
+        <p class="hometext">How the agents compare, overall and per experiment.</p></div>
+      <div><h3>Results · Runs <button class="linkbtn" data-top="results" data-restab="runs">open</button></h3>
+        <p class="hometext">Watch or replay any run: what the agent sees, answers and writes down, its numbers, and its settings.</p></div>
     </div>
   </div>
   <div class="panel"><h2>Where things stand</h2>
@@ -309,7 +305,25 @@
     </div>
   </details></div>
 </main>
-<main id="viewRuns" hidden>
+<main id="viewResults" hidden>
+  <nav class="tabbar">
+    <button id="restabBench" class="on">Benchmarks</button>
+    <button id="restabRuns">Runs</button>
+  </nav>
+  <div id="resBench">
+    <div class="benchhead">
+      <label class="muted">world <select id="benchWorld"></select></label>
+      <span class="muted" id="benchStamp"></span>
+    </div>
+    <div class="panel"><h2 id="hMatrix">Driftlab score per agent and experiment</h2>
+      <div class="tablewrap" id="benchMatrix"><p class="muted">no matrix yet</p></div></div>
+    <div class="panel"><h2 id="hDims">Mean score dimensions per agent</h2>
+      <div class="tablewrap" id="benchDims"></div></div>
+    <div class="panel"><h2 id="hGloss">What the metrics mean</h2>
+      <div class="kv" id="glossary" style="max-width:980px"></div></div>
+    <div id="benchExps"></div>
+  </div>
+  <div id="viewRuns" hidden>
   <!-- SIDEBAR: every run seen, live or replayed; click to inspect -->
   <div class="side">
     <div class="panel"><h2 id="hRuns">Runs <span id="dot" class="dot" title="connecting…"></span></h2>
@@ -401,15 +415,16 @@
       </div>
     </section>
   </div>
+  </div>
 </main>
 
-<!-- RESEARCH: hypotheses (with CI-based validation), the registry, and benchmarks -->
+<!-- RESEARCH: hypotheses, the registry, worlds and agents -->
 <main id="viewResearch" class="page" hidden>
   <nav class="tabbar" style="margin:0 0 10px">
     <button id="rtabHyp" class="on">Hypotheses</button>
     <button id="rtabExp">Experiments</button>
     <button id="rtabWorlds">Worlds</button>
-    <button id="rtabBench">Benchmarks</button>
+    <button id="rtabAgents">Agents</button>
   </nav>
   <section id="rsecHyp">
     <div class="panel"><h2 id="hHyp">Hypotheses</h2>
@@ -424,18 +439,9 @@
     <div class="panel"><h2 id="hWorlds">Worlds</h2>
       <div id="worldList"><p class="muted">loading…</p></div></div>
   </section>
-  <section id="rsecBench" hidden>
-    <div class="benchhead">
-      <label class="muted">world <select id="benchWorld"></select></label>
-      <span class="muted" id="benchStamp"></span>
-    </div>
-    <div class="panel"><h2 id="hMatrix">Driftlab score per agent and experiment</h2>
-      <div class="tablewrap" id="benchMatrix"><p class="muted">no matrix yet</p></div></div>
-    <div class="panel"><h2 id="hDims">Mean score dimensions per agent</h2>
-      <div class="tablewrap" id="benchDims"></div></div>
-    <div class="panel"><h2 id="hGloss">What the metrics mean</h2>
-      <div class="kv" id="glossary" style="max-width:980px"></div></div>
-    <div id="benchExps"></div>
+  <section id="rsecAgents" hidden>
+    <div class="panel"><h2 id="hAgents">Agents</h2>
+      <div id="agentList"><p class="muted">loading…</p></div></div>
   </section>
 </main>
 <div class="tooltip" id="tip"></div>
@@ -551,6 +557,7 @@
     hHyp: "The lab's claims, one per entry: the claim in plain words, its current status, the verdict the run data supports so far, and the numbers behind that verdict. A verdict only speaks for the agents and worlds actually tested.",
     hWorldCfg: "The job the agent was doing and the kinds of change this world can throw at it.",
     hWorlds: "The jobs agents can be dropped into. Each entry lists what kinds of change the world supports, which experiments can run on it, and the exact job description the agent receives.",
+    hAgents: "Every agent this lab has configured or run, built from the run records plus agents.json. Each entry says what the agent is, how it remembers, and where it has played.",
     hGloss: "Plain definitions of every number in the tables on this page.",
   };
   function applyTutorial() {  // explanations are always shown, under the values
@@ -700,7 +707,9 @@
     const idx = s.memView === null ? s.memories.length - 1 : s.memView, m = s.memories[idx];
     s.memories.forEach((mm, i) => { const b = document.createElement("button"); b.textContent = `v${i + 1} · step ${mm.t}`; b.className = i === idx ? "on" : "";
       b.onclick = () => { s.memView = i; render(); }; vs.appendChild(b); });
-    $("memMeta").textContent = `${human(m.kind)} · version ${idx + 1} of ${s.memories.length} · ${m.text.length} chars`;
+    const cap = (((s.cell || {}).agent || {}).substrate || {}).budget_chars;
+    $("memMeta").textContent = `${human(m.kind)} · version ${idx + 1} of ${s.memories.length} · ${m.text.length} chars` +
+      (cap ? ` · this experiment caps the notes at ${cap} characters, so they may end mid-sentence by design` : "");
     $("memory").textContent = m.text || "(the agent cleared its notebook; nothing saved at this version)"; $("memory").className = "tall";
   }
 
@@ -885,7 +894,18 @@
 
   // ---- top-level views: Runs / Benchmarks / Research ------------------------------
   let topView = "home", benchData = null, hypData = null;
-  const TOP = { home: ["topHome", "viewHome"], research: ["topResearch", "viewResearch"], runs: ["topRuns", "viewRuns"] };
+  const TOP = { home: ["topHome", "viewHome"], research: ["topResearch", "viewResearch"], results: ["topResults", "viewResults"] };
+  let resTab = "bench";
+  function setResTab(which) {
+    resTab = which;
+    for (const [k, btn, sec] of [["bench", "restabBench", "resBench"], ["runs", "restabRuns", "viewRuns"]]) {
+      $(btn).className = k === which ? "on" : ""; $(sec).hidden = k !== which;
+    }
+    if (which === "bench") loadBench(true);  // always re-fetch on entry
+    if (which === "runs") render();
+    applyTutorial();
+  }
+  $("restabBench").onclick = () => setResTab("bench"); $("restabRuns").onclick = () => setResTab("runs");
   function setTop(v) {
     topView = v;
     for (const [k, [btn, view]] of Object.entries(TOP)) {
@@ -895,7 +915,7 @@
     }
     if (v === "home") renderHome();
     if (v === "research") renderResearch();
-    if (v === "runs") render();
+    if (v === "results") setResTab(resTab);
     applyTutorial();
   }
 
@@ -929,7 +949,11 @@
     }).join("") || `<li style="display:block" class="muted">No conclusive results yet. A finding appears here once validation measures a difference the seeds cannot explain away.</li>`;
   }
   for (const [k, [btn]] of Object.entries(TOP)) { const b = $(btn); if (b) b.onclick = () => setTop(k); }
-  document.querySelectorAll(".linkbtn").forEach(b => b.onclick = () => { setTop(b.dataset.top); if (b.dataset.rtab) setRTab(b.dataset.rtab); });
+  document.querySelectorAll(".linkbtn").forEach(b => b.onclick = () => {
+    setTop(b.dataset.top);
+    if (b.dataset.rtab) setRTab(b.dataset.rtab);
+    if (b.dataset.restab) setResTab(b.dataset.restab);
+  });
 
   async function loadBench(force) {
     if (force || benchData === null) {
@@ -978,7 +1002,7 @@
       if (!(dir in profCache)) {
         profCache[dir] = "pending";
         fetch("/profile?dir=" + encodeURIComponent(dir)).then(r => r.json())
-          .then(p => { profCache[dir] = p; if (!$("rsecBench").hidden) renderBench(); }).catch(() => { profCache[dir] = null; });
+          .then(p => { profCache[dir] = p; if (!$("resBench").hidden) renderBench(); }).catch(() => { profCache[dir] = null; });
       }
       const p = profCache[dir], reg = REGISTRY[exp] || {};
       const div = document.createElement("div"); div.className = "panel";
@@ -996,7 +1020,7 @@
   function drillTo(agent, exp) {
     filter.agent = agent; filter.exp = exp; filter.regime = ""; filter.model = ""; filter.q = "";
     $("runSearch").value = "";
-    setTop("runs");
+    setTop("results"); setResTab("runs");
     $("filterPanel").hidden = false; $("filterBtn").className = "on";
     renderRuns();
     $("fExp").value = exp; $("fAgent").value = agent;
@@ -1025,8 +1049,8 @@
       const used = Object.entries(REGISTRY)
         .filter(([, e]) => (e.worlds || []).some(x => x === w.id || String(x).startsWith("any")))
         .map(([id, e]) => `${id.replace("exp", "")} ${e.title}`);
-      return `<details class="hyp"><summary><strong>${escapeHtml(info[0])}</strong> <span class="muted">${escapeHtml(human(w.id))}</span>` +
-        `<div class="benchhint" style="margin:4px 0 0 18px;max-width:90ch">${escapeHtml(info[1])}</div></summary>` +
+      return `<details class="hyp"><summary><strong>${escapeHtml(info[0])}</strong> <span class="muted">${escapeHtml(human(w.id))}</span></summary>` +
+        (info[1] ? `<div class="subtile"><h4 class="evhead">The job</h4><p style="margin:2px 0;max-width:90ch">${escapeHtml(info[1])}</p></div>` : "") +
         `<div class="subtile"><h4 class="evhead">What can happen here</h4><ul style="margin:4px 0 2px;padding-left:18px;font-size:12.5px">${caps}</ul></div>` +
         `<div class="subtile"><h4 class="evhead">Experiments that can run here</h4><p style="margin:2px 0;max-width:90ch">${used.map(escapeHtml).join(" · ") || "none"}</p></div>` +
         `<div class="subtile"><h4 class="evhead">The job description the agent receives, verbatim</h4><pre style="max-height:240px">${escapeHtml(w.system_prompt || "")}</pre></div></details>`;
@@ -1038,11 +1062,6 @@
     "PARTIALLY SUPPORTED": "predictions that reached a verdict disagree with each other; look at which agents or worlds split",
     "INCONCLUSIVE": "no prediction has reached a verdict yet: either there are not enough full-length runs on matched seeds, or the confidence intervals still include zero",
   };
-  function predDesc(p) {
-    if (p.kind === "reversal") return `How it's checked: rank the agents on ${human(p.field)} under '${human(p.a_regime)}', then again under '${human(p.b_regime)}'. The prediction holds if some pair of agents swaps order between the two conditions, with both 95% confidence intervals clear of zero.`;
-    if (p.direction === "differs") return `How it's checked: compare every pair of agents on ${human(p.field)}, matched run for run on the same seeds. The prediction holds if some pair differs with a 95% confidence interval clear of zero.`;
-    return `How it's checked: for each agent, compare ${human(p.field)} between '${human(p.a)}' and '${human(p.b)}' on the same seeds. The prediction holds if '${human(p.b)}' minus '${human(p.a)}' is ${p.direction === ">" ? "positive" : "negative"} on average, with its 95% confidence interval clear of zero.`;
-  }
   // the numeric evidence view: per prediction, one row per verdict with delta, CI and an interval plot
   const VCOLOR = { supported: "var(--good)", contradicted: "var(--critical)", inconclusive: "var(--text-muted)" };
   function ciBar(delta, ci, span, color) {
@@ -1085,25 +1104,68 @@
         const rs = byClaim.get(p.claim) || [];
         anyRows = anyRows || rs.length > 0;
         html += `<div style="margin:6px 0 14px">` +
-          `<p style="margin:2px 0 4px;max-width:90ch"><strong>${escapeHtml(p.claim)}</strong><br>` +
-          `<span class="muted" style="font-size:11.5px">tested by ${escapeHtml(e.title)} (${id}) · ${escapeHtml(predDesc(p))}</span></p>` +
+          `<p style="margin:2px 0 4px;max-width:90ch"><strong>${escapeHtml(p.claim)}</strong>` +
+          ` <span class="muted" style="font-size:11.5px">· tested by ${escapeHtml(e.title)} (${id})</span></p>` +
           (rs.length ? ciRowsTable(rs) : `<p class="muted" style="margin:2px 0">no full-length runs to evaluate yet</p>`) + `</div>`;
       }
     }
     if (!anyPred) return `<p class="muted" style="margin:2px 0">none of this hypothesis's experiments has registered a testable prediction yet</p>`;
-    if (anyRows) html += `<div class="benchhint" style="margin:2px 0 4px">Hover a row to see how its verdict was reached. In the plot, the dot is the average difference and the whiskers are its 95% confidence interval; the center line is zero. An interval that stays clear of the line is a conclusive verdict.</div>`;
+    if (anyRows) html += `<div class="benchhint" style="margin:2px 0 4px">In the plot: the dot is the average difference, the whiskers its 95% confidence interval, the center line zero. An interval clear of the line is conclusive. Hover a row for its reasoning.</div>`;
     return html;
   }
 
   function setRTab(which) {
-    for (const [k, btn, sec] of [["hyp", "rtabHyp", "rsecHyp"], ["exp", "rtabExp", "rsecExp"], ["worlds", "rtabWorlds", "rsecWorlds"], ["bench", "rtabBench", "rsecBench"]]) {
+    for (const [k, btn, sec] of [["hyp", "rtabHyp", "rsecHyp"], ["exp", "rtabExp", "rsecExp"], ["worlds", "rtabWorlds", "rsecWorlds"], ["agents", "rtabAgents", "rsecAgents"]]) {
       $(btn).className = k === which ? "on" : ""; $(sec).hidden = k !== which;
     }
-    if (which === "bench") loadBench(true);  // always re-fetch on entry
+    if (which === "agents") renderAgents();  // pick up runs finished since the tab was last open
     applyTutorial();
   }
   $("rtabHyp").onclick = () => setRTab("hyp"); $("rtabExp").onclick = () => setRTab("exp");
-  $("rtabWorlds").onclick = () => setRTab("worlds"); $("rtabBench").onclick = () => setRTab("bench");
+  $("rtabWorlds").onclick = () => setRTab("worlds"); $("rtabAgents").onclick = () => setRTab("agents");
+  // ---- agents: everyone configured or seen in a run record, one entry each
+  let agentSpecs = null;  // agents.json, when present
+  function renderAgents() {
+    const el = $("agentList"); if (!el) return;
+    const roster = new Map();
+    diskLogs.forEach(d => {
+      const a = d.agent || {}; if (!a.name) return;
+      const r = roster.get(a.name) || { spec: a, runs: 0, exps: new Set(), worlds: new Set(), cost: 0 };
+      if (d.complete) r.runs += 1;
+      const exp = (d.path.match(/exp\d+/) || [""])[0]; if (exp) r.exps.add(exp);
+      if (d.world) r.worlds.add(d.world);
+      r.cost += d.cost_usd || 0;
+      if (Object.keys(a).length > Object.keys(r.spec).length) r.spec = a;  // keep the richest header seen
+      roster.set(a.name, r);
+    });
+    (agentSpecs || []).forEach(s => {
+      if (!s.name) return;
+      if (!roster.has(s.name)) roster.set(s.name, { spec: s, runs: 0, exps: new Set(), worlds: new Set(), cost: 0 });
+      roster.get(s.name).declared = true;
+    });
+    el.innerHTML = [...roster.entries()].sort((x, y) => y[1].runs - x[1].runs).map(([name, r]) => {
+      const a = r.spec, s = a.substrate || {};
+      const mem = !s.kind ? "" : s.kind === "none" ? "none: every step starts from scratch"
+        : s.kind === "transcript" ? `a transcript of the last ${s.window ?? "?"} steps`
+        : s.kind === "notes" ? `self-written notes${s.budget_chars ? `, capped at ${s.budget_chars} characters` : ""}${s.every ? `, rewritten every ${s.every} steps` : ""}`
+        : s.kind === "skills" ? `extracted procedures${s.every ? `, updated every ${s.every} steps` : ""}` : human(s.kind);
+      const rows = [["kind", human(a.type || "unknown")]];
+      if (a.model) rows.push(["model", a.model]);
+      if (a.harness) rows.push(["harness", a.harness]);
+      if (mem) rows.push(["memory", mem]);
+      if (a.reasoning_effort) rows.push(["reasoning effort", a.reasoning_effort]);
+      if (r.declared) rows.push(["configured in", "agents.json"]);
+      const played = r.runs
+        ? `${r.runs} finished run${r.runs === 1 ? "" : "s"} across ${[...r.exps].sort().join(", ")} on ${[...r.worlds].sort().map(human).join(", ")}` +
+          (r.cost > 0 ? ` · $${r.cost.toFixed(2)} spent` : "")
+        : "no runs yet";
+      return `<details class="hyp"><summary><strong>${escapeHtml(agentLabel(a) || human(name))}</strong> <span class="muted">${escapeHtml(name)}</span></summary>` +
+        `<div class="subtile"><h4 class="evhead">What it is</h4>` +
+        `<p style="margin:2px 0 6px;max-width:90ch">${escapeHtml(AGENT_NOTES[a.type] || "An agent known only from its run records.")}</p>` +
+        `<div class="kv">${rows.map(([k, v]) => `<span class="k">${escapeHtml(k)}</span><span>${escapeHtml(v)}</span>`).join("")}</div></div>` +
+        `<div class="subtile"><h4 class="evhead">Where it has played</h4><p style="margin:2px 0;max-width:90ch">${escapeHtml(played)}</p></div></details>`;
+    }).join("") || '<p class="muted">no agents yet: none declared in agents.json and no run records on disk</p>';
+  }
   async function renderResearch() {
     try { hypData = await (await fetch("/hypotheses")).json(); } catch (e) { hypData = hypData || []; }
     try { valData = await (await fetch("/validation")).json(); } catch (e) { valData = valData || null; }
@@ -1111,10 +1173,14 @@
       try { const d = await (await fetch("/worlds")).json(); worldData = Array.isArray(d) ? d : []; } catch (e) { worldData = []; }
     }
     renderWorlds();
+    if (agentSpecs === null) {
+      try { const d = await (await fetch("/agents")).json(); agentSpecs = Array.isArray(d) ? d : []; } catch (e) { agentSpecs = []; }
+    }
+    renderAgents();
     $("expList").innerHTML = Object.entries(REGISTRY).map(([id, e]) => {
       const hyps = (e.hypotheses || []).join(", ");
-      return `<details class="hyp"><summary><strong>${id.replace("exp", "")}</strong> ${escapeHtml(e.title)} <span class="muted">v${e.version}</span>` +
-        `<div class="benchhint" style="margin:4px 0 0 18px;max-width:90ch">${escapeHtml(e.design || e.hypothesis)}</div></summary>` +
+      return `<details class="hyp"><summary><strong>${id.replace("exp", "")}</strong> ${escapeHtml(e.title)} <span class="muted">v${e.version}</span></summary>` +
+        (e.design ? `<div class="subtile"><h4 class="evhead">What happens</h4><p style="margin:2px 0;max-width:90ch">${escapeHtml(e.design)}</p></div>` : "") +
         `<div class="subtile"><h4 class="evhead">Why it's run</h4>` +
         `<p style="margin:2px 0;max-width:90ch">${escapeHtml(e.hypothesis)}</p>` +
         `<p class="muted" style="margin:6px 0 2px">Bears on ${escapeHtml(hyps)}; the verdict and evidence live in the Hypotheses tab.</p></div>` +
@@ -1132,7 +1198,7 @@
       const v = valData && valData.hypotheses ? valData.hypotheses[h.id] : null;
       const chip = v ? `<span class="chip ${VCHIP[v.proposed_status] || ""}" title="${escapeHtml(VMEAN[v.proposed_status] || "")}">${escapeHtml(v.proposed_status)}</span>` : `<span class="chip">NOT VALIDATED</span>`;
       const claim = h.claim ? `<div class="subtile"><h4 class="evhead">The claim</h4><p style="margin:2px 0;max-width:90ch">${escapeHtml(h.claim)}</p></div>` : "";
-      const protocol = `<p style="margin:2px 0;max-width:90ch">Every prediction above is tested as a paired comparison: the same experiment, world and seeds, with only the thing the prediction names differing. A verdict needs at least ${(valData && valData.min_pairs) || 5} matched pairs of full-length runs; short sense-check runs never count. Supported means the whole 95% confidence interval of the difference sits on the predicted side of zero; contradicted means it sits entirely on the other side; inconclusive means it still includes zero, or there is not enough data.</p>` +
+      const protocol = `<p style="margin:2px 0;max-width:90ch">Each prediction is checked as a paired comparison: the same experiment, world and seeds, with only the thing the prediction names differing. The 95% confidence interval of that difference decides the verdict: entirely on the predicted side of zero is supported; entirely on the other side, contradicted; anything else, inconclusive. A verdict needs at least ${(valData && valData.min_pairs) || 5} matched pairs of full-length runs, and short sense-check runs never count.</p>` +
         (v ? `<p style="margin:8px 0 2px;max-width:90ch"><span class="muted">Current verdict:</span> ${escapeHtml(VMEAN[v.proposed_status] || "")} (${escapeHtml(v.scope)}).</p>` : "");
       return `<details class="hyp"><summary><strong>${escapeHtml(h.id)}</strong> ${escapeHtml(h.title)} ${chip}</summary>` +
         claim +

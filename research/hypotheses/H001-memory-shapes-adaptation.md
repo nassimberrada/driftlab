@@ -1,4 +1,4 @@
-# H001 — Memory architecture sets the terms of adaptation
+# H001 — How an agent remembers decides how it adapts
 
 Status: UNTESTED
 

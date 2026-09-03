@@ -1,4 +1,4 @@
-# H005 — Confidence is a usable drift signal
+# H005 — An agent's confidence is a change detector
 
 Status: UNTESTED
 

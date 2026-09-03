@@ -1,4 +1,4 @@
-# H004 — The environment can be engineered to optimize the agent's learning
+# H004 — The environment can be designed to speed up learning
 
 Status: UNTESTED
 

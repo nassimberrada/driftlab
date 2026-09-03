@@ -171,6 +171,12 @@ class Handler(BaseHTTPRequestHandler):
             except Exception:  # noqa: BLE001  (e.g. numpy missing in this interpreter)
                 snap = HERE / "worlds.json"  # written by driftlab.doctor, which builds every world
                 return self._send(200, snap.read_text() if snap.exists() else "[]")
+        if u.path == "/agents":
+            p = ROOT / "agents.json"
+            try:
+                return self._send(200, _clean_json(p) if p.exists() else "[]")
+            except ValueError:
+                return self._send(200, "[]")
         if u.path == "/validation":
             p = ROOT / "runs" / "validation.json"
             return self._send(200, _clean_json(p) if p.exists() else "null")

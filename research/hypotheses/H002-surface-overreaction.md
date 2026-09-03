@@ -1,4 +1,4 @@
-# H002 — Agents over-react to appearance and under-react to substance
+# H002 — Agents over-react to how things look and under-react to how they work
 
 Status: UNTESTED
 
