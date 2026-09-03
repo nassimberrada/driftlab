@@ -233,12 +233,45 @@
 <main id="viewHome" class="page">
   <div class="panel">
     <h2>Welcome to the driftlab dashboard</h2>
-    <p class="hometext">driftlab puts agents in jobs whose rules keep changing and measures how they cope, against ground truth the
+    <p class="hometext" style="max-width:none">driftlab puts agents in jobs whose rules keep changing and measures how they cope, against ground truth the
     agents never see. Everything here is read from the run logs. You can watch agents work live, replay finished runs, compare
     agents across experiments, and browse the research. Every panel explains itself under its heading.</p>
   </div>
-  <div class="panel"><h2>Core concepts</h2>
+  <div class="panel"><h2>The tabs</h2>
     <div class="hometabs">
+      <div><h3>Research · Hypotheses <button class="linkbtn" data-top="research" data-rtab="hyp">open</button></h3>
+        <p class="hometext">The lab's claims in plain words, each with its status, the verdict the run data supports so far, and
+        the numbers behind it: one row per agent and world, with confidence intervals.</p></div>
+      <div><h3>Research · Experiments <button class="linkbtn" data-top="research" data-rtab="exp">open</button></h3>
+        <p class="hometext">The registry: what each of the fifteen experiments does, all of its settings, and the prediction it
+        registers so results can be checked automatically.</p></div>
+      <div><h3>Research · Benchmarks <button class="linkbtn" data-top="research" data-rtab="bench">open</button></h3>
+        <p class="hometext">How the agents compare: the score matrix (click a cell to open those runs), each agent's score
+        dimensions, and detailed results per experiment. Recomputed whenever an analysis runs; the stamp shows when.</p></div>
+      <div><h3>Runs · Activity <button class="linkbtn" data-top="runs">open</button></h3>
+        <p class="hometext">The selected run as it happens: what the agent sees and answers, its memory as it writes it, and the
+        world changing around it.</p></div>
+      <div><h3>Runs · Performance <button class="linkbtn" data-top="runs">open</button></h3>
+        <p class="hometext">Headline numbers for the selected run, and the reward chart with every change marked and recovery
+        windows shaded.</p></div>
+      <div><h3>Runs · Configuration <button class="linkbtn" data-top="runs">open</button></h3>
+        <p class="hometext">Who played and under what settings: the agent, the world in plain terms, and the experiment's full
+        definition with the verbatim job description.</p></div>
+    </div>
+  </div>
+  <div class="panel"><h2>Where things stand</h2>
+    <div class="tiles">
+      <div class="tile"><div class="k">finished runs</div><div class="v" id="homeRuns">—</div><div class="s">complete episodes on disk, across every experiment and world.</div></div>
+      <div class="tile"><div class="k">experiments with data</div><div class="v" id="homeExps">—</div><div class="s">registered experiments that have at least one run.</div></div>
+      <div class="tile"><div class="k">conclusive verdicts</div><div class="v" id="homeVerdicts">—</div><div class="s">predictions where the data reached a clear answer either way.</div></div>
+      <div class="tile"><div class="k">total LLM spend</div><div class="v" id="homeSpend">—</div><div class="s">summed over every recorded run.</div></div>
+    </div></div>
+  <div class="panel"><h2>Findings so far</h2>
+    <div class="benchhint">Conclusive verdicts from the run data, in plain words. Each one speaks only for the agents and worlds tested.
+      <button class="linkbtn" data-top="research" data-rtab="hyp">see the evidence</button></div>
+    <ul class="fx" id="homeFindings"><li style="display:block" class="muted">loading…</li></ul></div>
+  <div class="panel"><details><summary style="cursor:pointer;font-size:13px;font-weight:600">New here? Start with the core concepts</summary>
+    <div class="hometabs" style="margin-top:10px">
       <div><h3>World</h3>
         <p class="hometext">A job at a made-up company: an intake desk, order-form data entry, an inventory buyer, a developer.
         Hidden, seeded rules decide what counts as correct. The agent is never told it is in an experiment. It just works the job.</p></div>
@@ -271,29 +304,7 @@
         table that grows with every run, contradictions included. Experiments produce numbers; hypotheses are where the numbers
         become knowledge.</p></div>
     </div>
-  </div>
-  <div class="panel"><h2>The tabs</h2>
-    <div class="hometabs">
-      <div><h3>Research · Hypotheses <button class="linkbtn" data-top="research" data-rtab="hyp">open</button></h3>
-        <p class="hometext">The lab's claims in plain words, each with its status, the verdict the run data supports so far, and
-        the numbers behind it: one row per agent and world, with confidence intervals.</p></div>
-      <div><h3>Research · Experiments <button class="linkbtn" data-top="research" data-rtab="exp">open</button></h3>
-        <p class="hometext">The registry: what each of the fifteen experiments does, all of its settings, and the prediction it
-        registers so results can be checked automatically.</p></div>
-      <div><h3>Research · Benchmarks <button class="linkbtn" data-top="research" data-rtab="bench">open</button></h3>
-        <p class="hometext">How the agents compare: the score matrix (click a cell to open those runs), each agent's score
-        dimensions, and detailed results per experiment. Recomputed whenever an analysis runs; the stamp shows when.</p></div>
-      <div><h3>Runs · Activity <button class="linkbtn" data-top="runs">open</button></h3>
-        <p class="hometext">The selected run as it happens: what the agent sees and answers, its memory as it writes it, and the
-        world changing around it.</p></div>
-      <div><h3>Runs · Performance <button class="linkbtn" data-top="runs">open</button></h3>
-        <p class="hometext">Headline numbers for the selected run, and the reward chart with every change marked and recovery
-        windows shaded.</p></div>
-      <div><h3>Runs · Configuration <button class="linkbtn" data-top="runs">open</button></h3>
-        <p class="hometext">Who played and under what settings: the agent, the world in plain terms, and the experiment's full
-        definition with the verbatim job description.</p></div>
-    </div>
-  </div>
+  </details></div>
 </main>
 <main id="viewRuns" hidden>
   <!-- SIDEBAR: every run seen, live or replayed; click to inspect -->
@@ -873,9 +884,40 @@
       if (b) b.className = k === v ? "on" : "";
       if (m) m.hidden = k !== v;
     }
+    if (v === "home") renderHome();
     if (v === "research") renderResearch();
     if (v === "runs") render();
     applyTutorial();
+  }
+
+  // ---- home: where the research program stands, computed from the same data as everything else
+  async function renderHome() {
+    if (!valData) { try { valData = await (await fetch("/validation")).json(); } catch (e) { valData = null; } }
+    const done = diskLogs.filter(d => d.complete);
+    $("homeRuns").textContent = String(done.length);
+    const exps = new Set(diskLogs.map(d => (d.path.match(/exp\d+/) || [""])[0]).filter(Boolean));
+    const total = Object.keys(REGISTRY).length;
+    $("homeExps").textContent = total ? `${exps.size} of ${total}` : String(exps.size);
+    const spend = diskLogs.reduce((a, d) => a + (d.cost_usd || 0), 0);
+    $("homeSpend").textContent = `$${spend.toFixed(2)}`;
+    const rows = [], seen = new Set();
+    for (const h of Object.values((valData || {}).hypotheses || {}))
+      for (const r of h.rows || []) {
+        const key = [r.exp, r.world, r.agent, r.claim].join("|");
+        if (seen.has(key) || (r.verdict !== "supported" && r.verdict !== "contradicted")) continue;
+        seen.add(key); rows.push(r);
+      }
+    $("homeVerdicts").textContent = String(rows.length);
+    const ul = $("homeFindings"); if (!ul) return;
+    ul.innerHTML = rows.map(r => {
+      const title = (REGISTRY[r.exp] || {}).title || r.exp;
+      const who = r.agent && r.agent !== "all pairs" ? ` (${human(r.agent)})` : "";
+      const held = r.verdict === "supported" ? "The data supports it" : "The data points the other way";
+      const num = r.delta != null ? ` The measured difference is ${r.delta >= 0 ? "+" : ""}${r.delta.toFixed(2)}${r.ci ? ` [${r.ci[0].toFixed(2)}, ${r.ci[1].toFixed(2)}]` : ""} over ${r.n} matched runs.` : "";
+      return `<li style="display:block;padding:6px 0"><span class="v-${r.verdict}" style="font-weight:600">${r.verdict.toUpperCase()}</span> · ` +
+        `${escapeHtml(title)}, ${escapeHtml(human(r.world))}${escapeHtml(who)}: ${escapeHtml(r.claim)}. ${held}.${num}` +
+        (r.reason ? `<br><span class="muted" style="font-size:11.5px">${escapeHtml(r.reason)}</span>` : "") + `</li>`;
+    }).join("") || `<li style="display:block" class="muted">No conclusive results yet. A finding appears here once validation measures a difference the seeds cannot explain away.</li>`;
   }
   for (const [k, [btn]] of Object.entries(TOP)) { const b = $(btn); if (b) b.onclick = () => setTop(k); }
   document.querySelectorAll(".linkbtn").forEach(b => b.onclick = () => { setTop(b.dataset.top); if (b.dataset.rtab) setRTab(b.dataset.rtab); });
@@ -1111,6 +1153,7 @@
   // ---- replay from a finished log -------------------------------------------------
   async function refreshRuns() {
     try { diskLogs = await (await fetch("/runs")).json(); } catch (e) { return; }
+    if (topView === "home") renderHome();
     scheduleRender();
   }
   refreshRuns();

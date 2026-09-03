@@ -68,6 +68,7 @@ def _run_entry(p: Path) -> dict:
             entry.update(agent=cell.get("agent") or {}, regime=cell.get("regime"), seed=cell.get("seed"),
                          world=cell.get("world"), steps=len(rewards),
                          mean_reward=(sum(rewards) / len(rewards)) if rewards else None,
+                         cost_usd=sum((c or {}).get("cost_usd", 0.0) for c in (header.get("cost") or {}).values()),
                          complete=bool(len(lines) >= 2 and last_ok))
     except (OSError, json.JSONDecodeError):
         pass
