@@ -39,10 +39,15 @@ def _line(t, observation, action, reward, feedback, obs_chars=120):
 class Transcript(Substrate):
     name = "transcript"
 
-    def __init__(self, window: int = 40):
+    def __init__(self, window: int = 40, wipe_at: int | None = None):
         self.events = deque(maxlen=window)
+        self.wipe_at = wipe_at
 
     def observe(self, t, observation, action, reward, feedback):
+        if self.wipe_at is not None and t == self.wipe_at:
+            self.events.clear()
+            from ..live import LIVE
+            LIVE.event(f"context wiped at step {t}: the transcript is gone", kind="notice")
         self.events.append(_line(t, observation, action, reward, feedback))
 
     def recall(self, observation) -> str:
@@ -63,16 +68,23 @@ class Notes(Substrate):
               "Rewrite the notes to incorporate the new experiences. Keep what is useful for future "
               "decisions; drop or correct anything the evidence now contradicts. Plain text, under 300 words.")
 
-    def __init__(self, every: int = 10, budget_chars: int | None = None, trigger: str = "interval"):
+    def __init__(self, every: int = 10, budget_chars: int | None = None, trigger: str = "interval",
+                 wipe_at: int | None = None):
         """trigger: interval (every `every` steps) | failure (right after a failed step) |
-        both | never (notes are only ever loaded, never rewritten)."""
+        both | never (notes are only ever loaded, never rewritten). wipe_at: step at which
+        raw, unconsolidated history is erased — the written notes survive, which is the point."""
         self.notes = ""
         self.pending = []
         self.every = every
         self.budget_chars = budget_chars
         self.trigger = trigger
+        self.wipe_at = wipe_at
 
     def observe(self, t, observation, action, reward, feedback):
+        if self.wipe_at is not None and t == self.wipe_at:
+            self.pending = []
+            from ..live import LIVE
+            LIVE.event(f"context wiped at step {t}: unconsolidated history is gone, the notes survive", kind="notice")
         self.pending.append(_line(t, observation, action, reward, feedback, obs_chars=300))
 
     def recall(self, observation) -> str:
@@ -114,7 +126,47 @@ class Skills(Notes):
         return f"Your procedures:\n{self.notes}" if self.notes else ""
 
 
+class Beliefs(Notes):
+    name = "beliefs"
+    SYSTEM = ("You maintain a belief file for an agent operating in an environment. Each line is one belief: "
+              "`BELIEF: <what you currently believe> | CONFIDENCE: <low|medium|high> | WOULD CHANGE IF: <evidence>`. "
+              "Update the file from the new experiences: raise or lower confidence with the evidence, rewrite "
+              "beliefs the evidence contradicts, and delete beliefs that no longer apply. Output only belief lines.")
+
+    def recall(self, observation) -> str:
+        return f"Your current beliefs:\n{self.notes}" if self.notes else ""
+
+
+class FastSlow(Substrate):
+    """Two timescales at once: a short raw transcript (fast) plus periodically
+    rewritten notes (slow). The prompt carries both."""
+
+    name = "fastslow"
+
+    def __init__(self, window: int = 10, every: int = 10, budget_chars: int | None = None):
+        self.fast = Transcript(window)
+        self.slow = Notes(every=every, budget_chars=budget_chars)
+
+    def observe(self, t, observation, action, reward, feedback):
+        self.fast.observe(t, observation, action, reward, feedback)
+        self.slow.observe(t, observation, action, reward, feedback)
+
+    def recall(self, observation) -> str:
+        parts = [p for p in (self.slow.recall(observation), self.fast.recall(observation)) if p]
+        return "\n\n".join(parts)
+
+    async def consolidate(self, brain, t, failed: bool = False):
+        await self.slow.consolidate(brain, t, failed)
+
+    def export(self) -> str:
+        return self.slow.export()
+
+    def load(self, text):
+        self.slow.load(text)
+
+
 def make_substrate(spec: dict) -> Substrate:
     kind = spec["kind"]
     kwargs = {k: v for k, v in spec.items() if k not in ("kind", "name")}
-    return {"none": NoMemory, "transcript": Transcript, "notes": Notes, "skills": Skills}[kind](**kwargs)
+    return {"none": NoMemory, "transcript": Transcript, "notes": Notes, "skills": Skills,
+            "beliefs": Beliefs, "fastslow": FastSlow}[kind](**kwargs)

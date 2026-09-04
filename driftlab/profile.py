@@ -55,6 +55,7 @@ METRICS = (  # (field, label, format)
     ("final_accuracy", "final accuracy", "{:.3f}"),
     ("retention", "retention", "{:.3f}"),
     ("stale_rate", "stale-memory rate", "{:.3f}"),
+    ("overupdate_rate", "over-update rate", "{:.3f}"),
     ("interference", "interference", "{:+.3f}"),
     ("calibration_error", "calibration error", "{:.3f}"),
     ("overconfidence", "overconfidence", "{:+.3f}"),
@@ -107,6 +108,25 @@ def _stale_rate(steps, succ, m) -> float:
     return _nanmean([1.0 if steps[i]["action"] == old else 0.0 for i in tail]) if tail else float("nan")
 
 
+def _overupdate_rate(steps) -> float:
+    """The mirror image of stale_rate: after feedback wrongly punishes a correct action
+    (possible only in worlds with misleading feedback), how often does the agent abandon
+    the still-correct behavior at its next encounter with the same task? NaN when no
+    such misleading events occurred — deterministic worlds never measure it."""
+    by_key: dict = {}
+    for i, s in enumerate(steps):
+        k = _key(s)
+        if k and s.get("correct") is not None:
+            by_key.setdefault(k, []).append(i)
+    events = []
+    for idxs in by_key.values():
+        for a, b in zip(idxs, idxs[1:]):
+            sa, sb = steps[a], steps[b]
+            if sa.get("action") == sa["correct"] and sa["reward"] <= 0 and sb.get("correct") == sa["correct"]:
+                events.append(1.0 if sb.get("action") != sb["correct"] else 0.0)
+    return _nanmean(events) if events else float("nan")
+
+
 def _interference(steps, succ, m) -> float:
     """Accuracy delta on UNaffected tasks around the change (negative = collateral damage)."""
     if not m["affected"] or not any(_key(s) for s in steps[:3]):
@@ -141,6 +161,7 @@ def run_profile(header: dict, steps: list[dict]) -> dict:
         "final_reward": _nanmean([s["reward"] for s in tail]),
         "retention": _nanmean([_retention(steps, succ, m) for m in changes]) if succ and changes else float("nan"),
         "stale_rate": _nanmean([_stale_rate(steps, succ, m) for m in changes]) if succ and changes else float("nan"),
+        "overupdate_rate": _overupdate_rate(steps),
         "interference": _nanmean([_interference(steps, succ, m) for m in changes]) if succ and changes else float("nan"),
         "calibration_error": float(np.mean((c - y) ** 2)) if len(conf) >= 5 else float("nan"),
         "overconfidence": float(c.mean() - y.mean()) if len(conf) >= 5 else float("nan"),
@@ -163,10 +184,11 @@ def dimension_scores(p: dict) -> dict:
     cost_score = float("nan") if math.isnan(p["cost_per_success"]) else 1.0 / (1.0 + p["cost_per_success"] / COST_HALF)
     calibration_score = float("nan") if math.isnan(p["calibration_error"]) else 1.0 - min(1.0, p["calibration_error"])
     stale_score = float("nan") if math.isnan(p["stale_rate"]) else 1.0 - p["stale_rate"]
+    overupdate_score = float("nan") if math.isnan(p["overupdate_rate"]) else 1.0 - p["overupdate_rate"]
     return {
         "adaptation": _nanmean([_lag_score(p["detection_lag"], p["n_changes"]), _lag_score(p["recovery_lag"], p["n_changes"])]),
         "knowledge": _nanmean([p["final_accuracy"], p["retention"], interference_score]),
-        "epistemics": _nanmean([calibration_score, stale_score]),
+        "epistemics": _nanmean([calibration_score, stale_score, overupdate_score]),
         "efficiency": _nanmean([1.0 - p["parse_failure_rate"], cost_score]),
     }
 

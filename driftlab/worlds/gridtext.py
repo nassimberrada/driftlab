@@ -64,6 +64,7 @@ class RuleWorld:
     n_types: int = 6
     schedule: object = "jittered"
     mutation_scope: str = "base"     # "base": flip only depth-1 rules | "any"
+    feedback_noise: float = 0.0      # probability that a step's feedback is misleadingly inverted
     ask_confidence: bool = False
     task_fn: object = None           # (t, world) -> task; default: seeded random
     endogenous: bool = False
@@ -86,6 +87,7 @@ class RuleWorld:
     def __post_init__(self):
         self._rng = np.random.default_rng(self.seed)
         self._task_rng = np.random.default_rng(self.seed + 10_000)
+        self._noise_rng = np.random.default_rng(self.seed + 20_000)  # separate stream: noise never shifts tasks or schedules
         self.system_prompt = SYSTEM + (CONFIDENCE_SUFFIX if self.ask_confidence else "")
         self._recent_accepted = deque(maxlen=self.capacity_window)
         self.types = TYPES[: self.n_types]
@@ -307,6 +309,11 @@ class RuleWorld:
             self._unresolved.pop(key_of(self._current), None)
             self._recent_accepted.append(action)
             self._endogenous_check(t)
+        if self.feedback_noise and self._noise_rng.random() < self.feedback_noise:
+            # the world lies about this step's outcome; privileged() still logs the truth
+            reward = 1 - reward
+            msg = ("Accepted: the request was processed successfully." if reward
+                   else f"Rejected: option {action} is not valid for this request.")
         return float(reward), msg
 
     def privileged(self, t: int) -> dict:

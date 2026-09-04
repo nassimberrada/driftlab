@@ -496,6 +496,7 @@
     "final accuracy": "The share of correct actions over the last fifth of the run. This is what the agent ends up knowing. Higher is better.",
     "retention": "Accuracy on the tasks a change affected, measured well after that change. It shows whether the new rule stuck. Higher is better.",
     "stale-memory rate": "How often the agent still gives the old answer after it has already proven it knows the new rule. Lower is better.",
+    "over-update rate": "After feedback wrongly punishes a correct action (only possible in worlds with misleading feedback): how often the agent abandons the still-correct behavior at its next chance. Lower is better.",
     "interference": "How accuracy moved on the tasks a change did not touch. Zero is ideal; below zero means learning one thing damaged another.",
     "calibration error": "The gap between how confident the agent says it is and how often it is actually right. Lower is better.",
     "overconfidence": "Stated confidence minus actual accuracy. Above zero means the agent trusts itself more than its results justify.",

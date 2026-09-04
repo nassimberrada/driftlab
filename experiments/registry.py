@@ -240,6 +240,48 @@ REGISTRY = {
             {"kind": "effect", "field": "recovery_lag", "vary": "regime", "a": "scheduled", "b": "endogenous",
              "direction": ">", "within": "agent",
              "claim": "recovery is slower from self-caused changes than from scheduled ones"}]},
+    "exp16": {
+        "version": 1, "title": "Is a surprise news, or just noise?",
+        "hypothesis": "Agents key their updates to the size of a surprise, not to how the world actually changes: they abandon still-correct behavior when feedback merely lies, and cling to stale behavior when the rules really moved. A longer memory makes them more confidently wrong under change.",
+        "design": "Three regimes make the same kind of surprise mean different things: rules change abruptly at four moments, rules change constantly in small steps, or nothing changes at all and 15% of feedback is misleadingly inverted. The same model plays each regime with different memories, stating a confidence with every action. A learner that reads the dynamics reacts differently to the same surprise in each regime.",
+        "parameters": {
+            "episode length": "120 steps",
+            "regimes": "abrupt (4 changes at 4 moments); gradual (12 changes evenly spread); noisy stable (no changes, 15% of feedback inverted)",
+            "memory arms": "transcript of the last 5 or 120 steps; notes; structured beliefs (belief, confidence, what would change it); fast+slow (a 10-step transcript plus notes)",
+            "confidence": "0 to 100, requested with every action",
+            "new measurement": "over-update rate: after feedback wrongly punishes a correct action, how often the agent abandons the still-correct behavior at the next chance",
+        },
+        "independent": ["how the world changes: abruptly, gradually, or not at all with lying feedback", "how the agent remembers"],
+        "dependent": ["over-update rate under noise", "recovery latency under change", "overconfidence per memory size", "final accuracy"],
+        "drift": ["sudden real changes", "gradual real changes", "none, with misleading feedback"],
+        "worlds": ["the intake desk (rule_world)"], "hypotheses": ["H006", "H001"],
+        "predictions": [
+            {"kind": "reversal", "field": "final_accuracy", "vary": "agent",
+             "a_regime": "noisy_stable", "b_regime": "gradual",
+             "claim": "the short-vs-long memory ranking reverses between the noisy-stable and changing regimes"},
+            {"kind": "effect", "field": "overconfidence", "vary": "agent", "a": "transcript_5", "b": "transcript_120",
+             "direction": ">",
+             "claim": "a longer memory is more confidently wrong: overconfidence is higher with a 120-step transcript than a 5-step one"}]},
+    "exp17": {
+        "version": 1, "title": "What survives when the context dies?",
+        "hypothesis": "Raw transcripts and consolidated notes tie while the context persists, and come apart the moment it is severed. Consolidation's value is not day-to-day performance but survival across context boundaries.",
+        "design": "Halfway through the episode, some agents lose their raw history: a transcript agent loses everything it was carrying, a notes agent loses only what it had not yet consolidated, because the written notes survive. Wiped and unwiped versions of both memories play the same seeded worlds with six real rule changes.",
+        "parameters": {
+            "episode length": "120 steps",
+            "changes": "6 real rule changes, evenly spaced after a 20-step warmup",
+            "the wipe": "at step 60: a transcript agent loses its whole history; a notes agent loses only unconsolidated experiences",
+            "arms": "transcript and notes, each with and without the wipe, on shared seeds",
+        },
+        "independent": ["whether the raw history is wiped mid-run", "how the agent remembers"],
+        "dependent": ["final accuracy", "accuracy in the 10 steps right after the wipe", "recovery latency"],
+        "drift": ["sudden real changes"], "worlds": ["any"], "hypotheses": ["H007", "H001"],
+        "predictions": [
+            {"kind": "effect", "field": "final_accuracy", "vary": "agent",
+             "a": "llm_transcript_wiped", "b": "llm_transcript", "direction": ">",
+             "claim": "wiping the raw history mid-run costs a transcript agent final accuracy"},
+            {"kind": "effect", "field": "final_accuracy", "vary": "agent",
+             "a": "llm_transcript_wiped", "b": "llm_notes_wiped", "direction": ">",
+             "claim": "after a mid-run context wipe, consolidated notes retain more performance than a raw transcript"}]},
 }
 
 
