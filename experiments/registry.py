@@ -282,6 +282,42 @@ REGISTRY = {
             {"kind": "effect", "field": "final_accuracy", "vary": "agent",
              "a": "llm_transcript_wiped", "b": "llm_notes_wiped", "direction": ">",
              "claim": "after a mid-run context wipe, consolidated notes retain more performance than a raw transcript"}]},
+    "exp18": {
+        "version": 1, "title": "Does the chase ever end?",
+        "hypothesis": "Recovery from an aimed change is slower than from a random one, and it does not improve with repetition: the fraud ring always moves to wherever the agent has just become confident, so there is no equilibrium to converge to.",
+        "design": "The claims desk with three sources of change: a fully stable world, tactic shifts on a timer, and tactic shifts driven by the fraud ring's best response to the agent's own approvals. The scheduled and adversarial regimes see a similar number of shifts; only who aims them differs. Recovery is measured per shift, and early shifts are compared with late ones.",
+        "parameters": {
+            "episode length": "150 steps",
+            "conditions": "stable (no shifts); scheduled (4 tactic shifts on a timer); adversarial (the ring shifts whenever it is being caught, mimicking approved traffic)",
+            "the adversary": "reconsiders every 20 claims; moves only when at least half its recent claims were rejected",
+            "agents": "the same LLM with a transcript or with notes",
+        },
+        "independent": ["who aims the change: nobody, a timer, or an adversary reading the agent"],
+        "dependent": ["recovery latency per shift, early vs late", "final accuracy", "how many shifts the adversary makes"],
+        "drift": ["adversarial tactic shifts", "sudden real changes (control)"],
+        "worlds": ["the claims desk (claims_desk)"], "hypotheses": ["H008", "H003"],
+        "predictions": [
+            {"kind": "effect", "field": "recovery_lag", "vary": "regime", "a": "scheduled", "b": "adversarial",
+             "direction": ">", "within": "agent",
+             "claim": "recovery is slower when the shift is aimed at you: adversarial tactic changes take longer to recover from than scheduled ones"}]},
+    "exp19": {
+        "version": 1, "title": "Can an agent learn from a weekly report?",
+        "hypothesis": "With only pooled reports, memory is not an optimization but the precondition for learning at all: a memoryless agent has nothing to connect a report to and stays at chance, while an agent with notes can correlate its own recorded choices with the totals. The gap widens as reports get sparser.",
+        "design": "The campaign desk never scores a single push; results arrive only as a periodic total. The regimes vary how often that report lands (every 5, 10 or 20 pushes) and the agents vary only in memory (none, transcript, notes). Two audience shifts land mid-run, so the agent must re-learn under pooling. The privileged log keeps per-push truth, so analysis scores what the agent never saw.",
+        "parameters": {
+            "episode length": "120 steps",
+            "report cadence": "every 5, 10 or 20 pushes, totals only, no breakdown",
+            "audience shifts": "2, evenly spaced after a 15-step warmup",
+            "agents": "the same LLM with no memory, a 40-step transcript, or notes",
+        },
+        "independent": ["how often the pooled report arrives", "how the agent remembers"],
+        "dependent": ["true engagement (from the privileged per-push log)", "how often the best angle is picked", "final mean reward"],
+        "drift": ["sudden real changes", "self-caused fatigue (off in this experiment)"],
+        "worlds": ["the campaign desk (campaign_desk)"], "hypotheses": ["H001", "H004"],
+        "predictions": [
+            {"kind": "effect", "field": "final_reward", "vary": "agent", "a": "llm_none", "b": "llm_notes",
+             "direction": ">",
+             "claim": "under pooled feedback, notes beat no memory: without a record of your own choices there is nothing to connect a report to"}]},
 }
 
 

@@ -98,7 +98,8 @@ def spaced(n: int, T: int, warmup: int) -> list[int]:
 
 def cli(name: str, description: str, extra=None) -> argparse.Namespace:
     ap = argparse.ArgumentParser(description=description, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--world", default=WORLD, choices=["rule_world", "form_filler", "inventory", "codebase"])
+    ap.add_argument("--world", default=WORLD,
+                    choices=["rule_world", "form_filler", "inventory", "codebase", "claims_desk", "campaign_desk"])
     ap.add_argument("--analyze", action="store_true", help="analyze existing logs instead of running")
     ap.add_argument("--mock", action="store_true", help="reference agents use a credential-free mock brain")
     ap.add_argument("--quick", action="store_true", help="sense-check mode: schedules scaled to a tenth, one seed")

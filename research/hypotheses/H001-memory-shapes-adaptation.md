@@ -25,6 +25,10 @@ recovering from it, and the trade between retention and staleness:
   faster than a fresh agent, even when day-one accuracy collapses (exp14).
 - Under delayed feedback the memory benefit shrinks or reverses (exp09),
   because stale associations get written before outcomes arrive.
+- Under pooled feedback the memory benefit becomes absolute (exp19): when
+  outcomes arrive only as periodic totals, a memoryless agent has nothing to
+  connect a report to and stays at chance; an agent that records its own
+  choices can correlate them with the totals.
 
 ## Evidence
 

@@ -1,12 +1,15 @@
 """World registry: build any world by name, and report what it can do."""
 
 from .base import capabilities
+from .campaign import CampaignWorld
+from .claims import ClaimsWorld
 from .codebase import CodebaseWorld
 from .formfiller import FormWorld
 from .gridtext import RuleWorld
 from .inventory import InventoryWorld
 
-WORLDS = {"rule_world": RuleWorld, "form_filler": FormWorld, "inventory": InventoryWorld, "codebase": CodebaseWorld}
+WORLDS = {"rule_world": RuleWorld, "form_filler": FormWorld, "inventory": InventoryWorld, "codebase": CodebaseWorld,
+          "claims_desk": ClaimsWorld, "campaign_desk": CampaignWorld}
 
 # reasonable per-world defaults for a "standard" episode, used when an experiment does not care
 DEFAULTS = {
@@ -14,6 +17,8 @@ DEFAULTS = {
     "form_filler": {"T": 90, "version_every": 10_000},   # changes are scheduled by scenarios
     "inventory": {"T": 90, "regime": "stationary"},
     "codebase": {"T": 24, "session_length": 10_000},
+    "claims_desk": {"T": 120},
+    "campaign_desk": {"T": 90, "report_every": 10},
 }
 
 

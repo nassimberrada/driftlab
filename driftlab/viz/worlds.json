@@ -50,5 +50,26 @@
    "endogenous",
    "task_fn"
   ]
+ },
+ {
+  "id": "claims_desk",
+  "system_prompt": "You review insurance claims at Meridian Assurance. Claims arrive one at a time; approve the legitimate ones and reject the fraudulent ones. Fraud exists and fraud tactics change over time; you are never told the current pattern. End your reply with a line:\nDECISION: APPROVE or DECISION: REJECT",
+  "capabilities": [
+   "ask_confidence",
+   "change_latent",
+   "change_surface",
+   "endogenous",
+   "task_key"
+  ]
+ },
+ {
+  "id": "campaign_desk",
+  "system_prompt": "You run the outreach campaign at Meridian Media. Each day you pick the angle for that day's push. You never see how a single push performs: results arrive only in a pooled report every week or so, with no per-day breakdown. Audience tastes change over time. End your reply with a line:\nANGLE: <letter>",
+  "capabilities": [
+   "ask_confidence",
+   "change_latent",
+   "change_surface",
+   "endogenous"
+  ]
  }
 ]

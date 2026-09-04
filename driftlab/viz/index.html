@@ -484,6 +484,8 @@
     form_filler: ["Order-form data entry", "The agent copies source records into an order form. A real change renames a field or alters its format or limits, a cosmetic change renames the source columns, and IT sometimes quietly starts accepting a wrong field name the agent keeps typing."],
     inventory: ["Inventory buyer", "The agent orders stock for one product line without seeing true demand. A real change moves the demand rate, a cosmetic change rewords the daily report, and a huge order strains the supplier, which slows deliveries for a while."],
     codebase: ["Platform developer", "The agent implements tickets against a style guide it cannot read. A real change revises the guide, a cosmetic change rewords the ticket template, and the reviewer picks up habits from the agent's recent submissions."],
+    claims_desk: ["Claims desk", "The agent approves or rejects insurance claims while a fraud ring adapts against it: when too many fraudulent claims get caught, the ring re-styles them to mimic the traffic the agent has been approving. The drift aims exactly where the agent is weakest."],
+    campaign_desk: ["Campaign desk", "The agent picks each day's outreach angle but never sees how a single push performs: results arrive only as a pooled report every ten days. Audience tastes shift, and an angle used relentlessly wears out on its own."],
   };
   const AGENT_NOTES = {
     reference: "An LLM agent that lives inside driftlab, with a pluggable memory. When it rewrites its notes, the new version shows on the Activity tab.",
