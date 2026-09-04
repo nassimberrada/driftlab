@@ -22,6 +22,7 @@ class ReferenceLLMAgent:
         self.brain, self.substrate = brain, substrate
         self.system_prompt = ""
         self._last_prompt, self._last_reply, self._t = "", "", 0
+        self.memory_versions: list[dict] = []  # snapshots per consolidation; the runner stores them in the log header
 
     async def start(self, system_prompt: str):
         self.system_prompt = system_prompt
@@ -37,6 +38,9 @@ class ReferenceLLMAgent:
         self.substrate.observe(self._t, self._last_prompt, action.group(2)[:80] if action else self._last_reply[-80:],
                                reward, feedback)
         await self.substrate.consolidate(self.brain, self._t, failed=reward <= 0)
+        snap = self.substrate.export()
+        if snap and (not self.memory_versions or self.memory_versions[-1]["text"] != snap):
+            self.memory_versions.append({"t": self._t, "chars": len(snap), "kind": self.substrate.name, "text": snap})
         self._t += 1
 
 

@@ -38,7 +38,7 @@ probes as a supervisor's question.
    metrics; continuous rewards (costs) are fine, but those metrics will be
    NaN — that is correct, not a bug. Never invent a fake accuracy.
 6. Check: `python -m driftlab.doctor`, then
-   `python -m experiments.exp02_detect_adapt_lag --quick --mock --world <name>`.
+   `python -m experiments.exp02_detect_adapt_lag --smoke --mock --world <name>`.
 
 ## A new experiment
 
@@ -49,7 +49,7 @@ probes appear, what is measured. It never reimplements a world's mechanics.
    `cells(seeds)` (environment cells: regime × seed dicts), `scenario(cell,
    ctx)` (build the world via `world_for` and wire `before_step`/`notice_fn`/
    `after_step`), `REFERENCE_AGENTS`, `analyze(run_dir)` (its bespoke tables —
-   the standardized profile is printed for you). Use `q()` so `--quick` scales
+   the standardized profile is printed for you). Use `q()` so the reduced modes scale
    your schedules; declare needed capabilities via `world_for(..., needs=)`.
 2. Add its entry to `experiments/registry.py`: version (start at 1),
    title, hypothesis, independent/dependent variables, drift types, worlds,
@@ -62,7 +62,7 @@ probes appear, what is measured. It never reimplements a world's mechanics.
 4. **Never mutate a registered experiment after results exist. Bump
    `version` instead**; old verdicts stay interpretable under the version
    they were computed with.
-5. Check: doctor, then `python -m experiments.expNN_<slug> --quick --mock`.
+5. Check: doctor, then `python -m experiments.expNN_<slug> --smoke --mock`.
 
 ## A new hypothesis
 
@@ -113,6 +113,28 @@ evolve freely; the suite does not.
 
 ```bash
 python -m driftlab.doctor                                  # contracts + cross-references
-python -m experiments.exp02_detect_adapt_lag --quick --mock  # the pipeline end to end
+python -m experiments.exp02_detect_adapt_lag --smoke --mock  # the pipeline end to end
 node driftlab/viz/dashboard_check.js driftlab/viz/index.html # if you touched the dashboard
 ```
+
+## Testing a hypothesis
+
+The preferred way to gather verdict evidence is a hypothesis run:
+
+    python -m experiments.run_hypothesis H008 --plan     # what would run
+    python -m experiments.run_hypothesis H008 --model <slug> --resume
+
+It reads the registry, takes every experiment bearing on the hypothesis that
+registers a prediction, and trims each grid to the regimes those predictions
+reference — interpretive-only regimes are skipped. Seeds default to 5 (the
+conclusive-verdict floor; extend to 10 with `--seeds 10 --resume` if the
+interval straddles zero). Logs land in the normal `runs/<exp>/<world>`
+directories and are resume-compatible with full grids, so a later benchmark
+run fills in whatever a hypothesis run skipped; the benchmark matrix marks
+scores computed from such partial grids. Validation refreshes automatically
+when the run completes.
+
+Run modes: `--smoke` scales everything to a tenth as a plumbing check (never
+counts toward profiles or verdicts); `--quick` halves episode lengths and
+shrinks the task space where the world supports it (`COMPACT_WORLDS`), staying
+above the 30-step validity floor — quick runs count.

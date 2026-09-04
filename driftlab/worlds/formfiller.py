@@ -31,7 +31,12 @@ from dataclasses import dataclass, field
 
 import numpy as np
 
-from .base import CONFIDENCE_SUFFIX
+from .base import CONFIDENCE_SUFFIX, flavor_rng, person
+
+# signal-free intake chatter: realistic surface, no information about the schema
+INTAKE_NOTES = ["Customer called to confirm the order details.", "Came in through the partner portal overnight.",
+                "Marked ordinary priority by the intake team.", "Original was handwritten; transcribed by reception.",
+                "Duplicate check already done, this one is new.", "Customer asked for a confirmation email."]
 from .policy import ConditionalPolicy
 
 COUNTRIES = {"France": "FR", "Germany": "DE", "Spain": "ES", "Italy": "IT", "Poland": "PL"}
@@ -242,7 +247,10 @@ class FormWorld:
         prev = ""
         if self.attempt and self.last_errors:
             prev = "\n\nYour previous submission for this record was rejected:\n" + "\n".join(self.last_errors)
-        return (f"Order form (version {self.version}). Fields: {self._fields_text()}.\n"
+        rng = flavor_rng(self.seed, t)
+        intro = (f"Intake batch ORD-{5100 + t}, forwarded by {person(rng)} at the front desk. "
+                 f"\"{rng.choice(INTAKE_NOTES)}\"\n")
+        return (f"{intro}Order form (version {self.version}). Fields: {self._fields_text()}.\n"
                 f"Attempt {self.attempt + 1} of {self.max_attempts}.\n\nSource record:\n"
                 f"{json.dumps(self._visible_record(), indent=2)}{prev}")
 

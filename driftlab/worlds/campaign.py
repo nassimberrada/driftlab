@@ -23,7 +23,12 @@ from dataclasses import dataclass, field
 
 import numpy as np
 
-from .base import CONFIDENCE_SUFFIX
+from .base import CONFIDENCE_SUFFIX, flavor_rng
+
+# signal-free desk chatter: realistic surface, no information about engagement rates
+DESK_NOTES = ["Design refreshed the banner art overnight.", "The send window is 10am as usual.",
+              "Two unsubscribes came in via support, already processed.", "The list grew by a handful of signups.",
+              "No deliverability complaints this morning.", "Legal signed off on all four running angles."]
 
 SYSTEM = ("You run the outreach campaign at Meridian Media. Each day you pick the angle for that day's push. "
           "You never see how a single push performs: results arrive only in a pooled report every week or so, "
@@ -104,7 +109,9 @@ class CampaignWorld:
     def observe(self, t: int) -> str:
         names = ANGLE_NAMES[self.names]
         menu = "  ".join(f"{letter}) {name}" for letter, name in zip(LETTERS, names))
-        return f"Day {t + 1}. Pick today's angle:\n{menu}\nWhich angle do you push today?"
+        note = flavor_rng(self.seed, t).choice(DESK_NOTES)
+        return (f"Day {t + 1}. Morning stand-up note: {note}\n"
+                f"Pick today's angle:\n{menu}\nWhich angle do you push today?")
 
     def parse(self, text: str):
         c = re.search(r"CONFIDENCE:\s*(\d{1,3})", text)

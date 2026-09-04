@@ -299,7 +299,7 @@ def print_profile(prof: dict):
     names = list(agents)
     head = f"{'':<24}" + "".join(f"{n[:15]:>16}" for n in names)
     if prof.get("excluded_quick"):
-        print(f"({prof['excluded_quick']} quick run(s) under {MIN_FULL_STEPS} steps excluded from the aggregates)")
+        print(f"({prof['excluded_quick']} smoke run(s) under {MIN_FULL_STEPS} steps excluded from the aggregates)")
     print("ADAPTATION PROFILE  (mean per agent across runs; — = not measured by this world/experiment)")
     print(head + "\n" + "-" * len(head))
     for f, label, spec in METRICS:

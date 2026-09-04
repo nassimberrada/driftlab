@@ -47,6 +47,21 @@ CAPABILITIES = ("change_latent", "change_surface", "introduce_novelty", "probe",
 CONFIDENCE_SUFFIX = ("\nAlso say how confident you are that this will be accepted, as a percentage, on its own line:\n"
                      "CONFIDENCE: <0-100>")
 
+# Neutral surface flavor, so observations read like real work items instead of feature
+# tuples. Names and chatter NEVER carry signal about any world's hidden state, and are
+# drawn statelessly from (seed, t), so seed-paired runs and resumes stay byte-identical.
+FIRSTS = ["Dana", "Marcus", "Priya", "Jonas", "Aisha", "Tomás", "Ingrid", "Kofi", "Elena", "Sam", "Yuki", "Omar"]
+LASTS = ["Alvarez", "Chen", "Okafor", "Novak", "Berg", "Haddad", "Kim", "Rossi", "Dubois", "Larsen", "Moreau", "Patel"]
+
+
+def flavor_rng(seed: int, t: int):
+    import numpy as np
+    return np.random.default_rng(seed * 7919 + t)
+
+
+def person(rng) -> str:
+    return f"{rng.choice(FIRSTS)} {rng.choice(LASTS)}"
+
 
 def capabilities(world) -> set:
     caps = set()

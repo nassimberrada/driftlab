@@ -96,16 +96,25 @@ def _benchmarks() -> dict:
             prof = json.loads(prof_path.read_text(), parse_constant=lambda c: None)
         except (OSError, ValueError):
             continue
-        w = out.setdefault(world, {"suite": set(), "agents": {}, "generated": 0})
+        w = out.setdefault(world, {"suite": set(), "agents": {}, "generated": 0, "stale": False})
         w["suite"].add(exp)
         w["generated"] = max(w["generated"], prof.get("generated") or 0)
-        # a profile that had to fall back to quick runs (no full-length data) is a sense
+        newest_log = max((f.stat().st_mtime for f in prof_path.parent.glob("*.jsonl")), default=0)
+        if newest_log > prof_path.stat().st_mtime + 1:
+            w["stale"] = True  # runs landed after this profile was computed
+        # a profile that had to fall back to smoke runs (no full-length data) is a sense
         # check, not a measurement: carry the flag so the matrix can say so
-        quick_only = bool(prof.get("runs")) and all((r.get("n_steps") or 0) < 30 for r in prof["runs"])
+        runs_full = [r for r in prof.get("runs", []) if (r.get("n_steps") or 0) >= 30]
+        quick_only = bool(prof.get("runs")) and not runs_full
+        all_regimes = {str(r.get("regime")) for r in runs_full}
         for name, a in (prof.get("agents") or {}).items():
             row = w["agents"].setdefault(name, {"experiments": {}, "spec": {}})
+            mine = {str(r.get("regime")) for r in runs_full if r.get("agent") == name}
             row["experiments"][exp] = {"driftlab_score": a.get("driftlab_score"),
-                                       "dimensions": a.get("dimensions") or {}, "quick": quick_only}
+                                       "dimensions": a.get("dimensions") or {}, "quick": quick_only,
+                                       # a hypothesis run plays only the regimes its predictions need;
+                                       # the score then covers fewer conditions than the full grid
+                                       "partial": bool(mine) and mine < all_regimes}
             if not row["spec"] and a.get("spec"):
                 row["spec"] = a["spec"]
     for w in out.values():
@@ -179,7 +188,12 @@ class Handler(BaseHTTPRequestHandler):
                 return self._send(200, "[]")
         if u.path == "/validation":
             p = ROOT / "runs" / "validation.json"
-            return self._send(200, _clean_json(p) if p.exists() else "null")
+            if not p.exists():
+                return self._send(200, "null")
+            data = json.loads(p.read_text(), parse_constant=lambda c: None)
+            newest = max((f.stat().st_mtime for f in (ROOT / "runs").glob("exp*/*/*.jsonl")), default=0)
+            data["stale"] = bool(newest > (data.get("generated") or 0) + 1)  # runs landed after the last validation
+            return self._send(200, json.dumps(data))
         if u.path == "/hypotheses":
             items = []
             for p in sorted((ROOT / "research" / "hypotheses").glob("H*.md")):

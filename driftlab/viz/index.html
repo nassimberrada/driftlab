@@ -371,8 +371,8 @@
       </div>
       <div class="panel worldp">
         <h2 id="hWorld">The world</h2>
-        <div id="gridPanel" style="display:none"><h3>the whole task space: one cell per kind of request. The letter is the desk that is currently correct</h3><div class="grid" id="grid"></div>
-        <div class="legend" style="margin:6px 0 2px;display:block;font-size:11px">green = last attempt accepted · red = rejected · grey = not tried yet · orange dot = this cell's rule has changed · blue outline = the task in front of the agent now. Columns pair a region with a size (hover a header).</div></div>
+        <div id="gridPanel" style="display:none"><h3>the whole task space: one cell per kind of task. The letter is the currently correct answer</h3><div class="grid" id="grid"></div>
+        <div class="legend" style="margin:6px 0 2px;display:block;font-size:11px">green = last attempt accepted · red = rejected · grey = not tried yet · orange dot = this cell's rule has changed · blue outline = the task in front of the agent now. Hover a column header for what it pairs.</div></div>
         <div id="extraPanel" style="display:none;flex:1;min-height:0"><h3 id="extraTitle">state</h3><div class="chartwrap" style="min-height:70px"><svg class="chart" id="extraChart"></svg></div><div class="legend" id="extraLegend"></div></div>
         <h3>what changed and when, newest first</h3><ul class="log" id="log"></ul>
       </div>
@@ -529,7 +529,8 @@
     else if (ev.kind === "step") { s.steps.push(ev); s.T = ev.T || s.T;
       if (ev.key) { const k = ev.key.join("|"); s.keys.set(k, { reward: ev.reward, t: ev.t, correct: ev.correct }); }
       (ev.changes || ev.mutations || []).forEach(m => (m.affected || []).forEach(a => s.changedKeys.add(a.join("|"))));
-      for (const f of ["stock_end", "true_rate", "lost", "version", "season", "session"]) if (ev[f] !== undefined && ev[f] !== null) (s.extra[f] = s.extra[f] || []).push({ t: ev.t, v: ev[f] }); }
+      for (const f of ["stock_end", "true_rate", "lost", "version", "season", "session"]) if (ev[f] !== undefined && ev[f] !== null) (s.extra[f] = s.extra[f] || []).push({ t: ev.t, v: ev[f] });
+      if (Array.isArray(ev.true_rates)) ev.true_rates.forEach((v, i) => { const k = `rate_${"ABCD"[i] || i}`; (s.extra[k] = s.extra[k] || []).push({ t: ev.t, v: +v }); }); }
     else if (ev.kind === "event") { s.events.push({ t: s.steps.length, kind: ev.event_kind || "event", msg: ev.msg });
       if (ev.memory !== undefined && ev.memory !== null) { s.memory = ev.memory; s.memories.push({ t: s.steps.length, text: ev.memory, kind: ev.memory_kind || "notes" }); s.memView = null; } }
     else if (ev.kind === "metrics") s.metrics = ev;
@@ -554,7 +555,7 @@
     hWorld: "The world's side of the story, including what the agent cannot see. The grid (intake-desk job only) shows the last outcome for every kind of request, and an orange dot means that kind's rule has changed. The list below it shows every change as it happened.",
     hAgent: "The raw exchange: what the agent sees, what it answered, and what it was told back. Everything else on this page is computed from a sequence of these.",
     hMemory: "Whatever the agent wrote down for itself, version by version. An agent that plays through its own command-line tool keeps its memory in its own session, where driftlab cannot look, so an empty panel is expected for those.",
-    hRuns: "Every run on disk, live or finished. Each entry names the agent and shows its average reward per step. The newest run is followed until you click one to pin it. The ▶ button replays a finished run.",
+    hRuns: "Every run on disk, live or finished, grouped by agent and condition; click a group to unfold its seeds (the paired repeats). Each run shows its average reward per step. The newest run is followed until you click one to pin it. The ▶ button replays a finished run.",
     hExp: "What this experiment does, all of its settings, and the exact job description the agent was given at the start of the run.",
     hAgentCfg: "Everything the run's record says about who played. When driftlab enforced these settings, they are facts, not the agent's self-description.",
     hMatrix: "Every agent with analyzed full-length runs. Each cell is that agent's driftlab score on one experiment; darker is higher. Click a cell to open those runs. The score is for ranking; the profiles further down are the real result.",
@@ -760,6 +761,29 @@
       sel.value = [...vals].includes(keep) ? keep : "";
     }
   }
+  const openGroups = new Set();  // group ids the user expanded; the active run's group opens itself
+  function entryMean(e) {
+    return e.s ? (e.s.steps.length ? e.s.steps.reduce((a, b) => a + b.reward, 0) / e.s.steps.length : null) : e.mean;
+  }
+  function entryLi(e, indent) {
+    const li = document.createElement("li"); li.className = e.s && e.s.label === active ? "active" : "";
+    if (indent) li.style.paddingLeft = "22px";
+    const title = (REGISTRY[e.exp] || {}).title || human(e.exp);
+    const sub = [title, e.regime ? human(e.regime) : "", e.seed !== "" ? `seed ${e.seed}` : ""].filter(Boolean).join(" · ");
+    const main = document.createElement("div"); main.className = "rmain";
+    const mean = entryMean(e);
+    const icon = e.s ? (e.s.done ? "✓" : (e.s.steps.length ? "▶" : "…")) : (e.done ? "✓" : "◦");
+    const status = `${icon}${mean != null ? ` ${fmt(mean)} avg` : ""}`;
+    const name = indent ? `seed ${e.seed !== "" ? e.seed : "?"}` : (agentLabel(e.spec) || human(e.agent));
+    main.innerHTML = `<span class="n" title="${escapeHtml(e.label)}${e.model ? " · " + escapeHtml(e.model) : ""}">${escapeHtml(name)}</span>` +
+      `<span class="m" title="✓ finished · ▶ playing · ◦ incomplete log. The number is the run's average reward per step (1.0 = every step correct)">${status}</span>`;
+    if (e.path && (!e.s || e.s.done)) main.appendChild(playButton(e.path));
+    li.appendChild(main);
+    if (!indent) { const subEl = document.createElement("div"); subEl.className = "rsub"; subEl.textContent = sub; li.appendChild(subEl); }
+    li.onclick = e.s ? (() => { active = e.s.label; pinned = true; render(); })
+                     : (() => replayLog(e.path, 0));  // never seen: load it instantly
+    return li;
+  }
   function renderRuns() {
     const ul = $("runs"); ul.innerHTML = "";
     const logByStem = new Map(diskLogs.map(d => [d.label, d]));
@@ -768,23 +792,33 @@
     const diskOnly = diskLogs.filter(d => !seen.has(d.label)).map(d => entryFor(null, d));
     const entries = ingested.concat(diskOnly);
     refreshFilterOptions(entries);
+    // one group per agent x regime x experiment; the seeds inside are the paired repeats
+    const groups = new Map();
     entries.filter(passes).forEach(e => {
-      const li = document.createElement("li"); li.className = e.s && e.s.label === active ? "active" : "";
-      const title = (REGISTRY[e.exp] || {}).title || human(e.exp);
-      const sub = [title, e.regime ? human(e.regime) : "", e.seed !== "" ? `seed ${e.seed}` : ""].filter(Boolean).join(" · ");
-      const main = document.createElement("div"); main.className = "rmain";
-      const mean = e.s ? (e.s.steps.length ? e.s.steps.reduce((a, b) => a + b.reward, 0) / e.s.steps.length : null) : e.mean;
-      const icon = e.s ? (e.s.done ? "✓" : (e.s.steps.length ? "▶" : "…")) : (e.done ? "✓" : "◦");
-      const status = `${icon}${mean != null ? ` ${fmt(mean)} avg` : ""}`;
-      main.innerHTML = `<span class="n" title="${escapeHtml(e.label)}${e.model ? " · " + escapeHtml(e.model) : ""}">${escapeHtml(agentLabel(e.spec) || human(e.agent))}</span>` +
-        `<span class="m" title="✓ finished · ▶ playing · ◦ incomplete log. The number is the run's average reward per step (1.0 = every step correct)">${status}</span>`;
-      if (e.path && (!e.s || e.s.done)) main.appendChild(playButton(e.path));
-      li.appendChild(main);
-      const subEl = document.createElement("div"); subEl.className = "rsub"; subEl.textContent = sub; li.appendChild(subEl);
-      li.onclick = e.s ? (() => { active = e.s.label; pinned = true; render(); })
-                       : (() => replayLog(e.path, 0));  // never seen: load it instantly
-      ul.appendChild(li);
+      const gid = `${e.exp}|${e.agent}|${e.regime}`;
+      if (!groups.has(gid)) groups.set(gid, []);
+      groups.get(gid).push(e);
     });
+    for (const [gid, es] of groups) {
+      if (es.length === 1) { ul.appendChild(entryLi(es[0], false)); continue; }
+      const hasActive = es.some(e => e.s && e.s.label === active);
+      const open = openGroups.has(gid) || hasActive;
+      const e0 = es[0];
+      const title = (REGISTRY[e0.exp] || {}).title || human(e0.exp);
+      const means = es.map(entryMean).filter(v => v != null);
+      const doneN = es.filter(e => e.s ? e.s.done : e.done).length;
+      const li = document.createElement("li");
+      const main = document.createElement("div"); main.className = "rmain";
+      main.innerHTML = `<span class="n" title="${es.length} runs, one per seed">${open ? "▾" : "▸"} ${escapeHtml(agentLabel(e0.spec) || human(e0.agent))}</span>` +
+        `<span class="m" title="finished runs, and the average of their per-run averages">${doneN}/${es.length}${means.length ? ` · ${fmt(means.reduce((a, b) => a + b, 0) / means.length)} avg` : ""}</span>`;
+      li.appendChild(main);
+      const subEl = document.createElement("div"); subEl.className = "rsub";
+      subEl.textContent = [title, e0.regime ? human(e0.regime) : "", `${es.length} seeds`].filter(Boolean).join(" · ");
+      li.appendChild(subEl);
+      li.onclick = () => { openGroups.has(gid) ? openGroups.delete(gid) : openGroups.add(gid); renderRuns(); };
+      ul.appendChild(li);
+      if (open) es.forEach(e => ul.appendChild(entryLi(e, true)));
+    }
   }
   $("runSearch").oninput = ev => { filter.q = (ev.target.value || "").toLowerCase(); renderRuns(); };
   $("filterBtn").onclick = () => { const p = $("filterPanel"); p.hidden = !p.hidden; $("filterBtn").className = p.hidden ? "" : "on"; };
@@ -867,27 +901,35 @@
       b.title = `step ${i + 1}: ${st.action} → ${st.reward > 0 ? "accepted" : "rejected"}`; el.appendChild(b); });
   }
 
-  function drawGrid(s) {
+  function drawGrid(s) {  // any world whose tasks carry a 3-part key: rows = part 1, columns = parts 2 x 3
     const panel = $("gridPanel"); if (!s.keys.size) { panel.style.display = "none"; return; }
+    const parts = [...s.keys.keys()].map(k => k.split("|"));
+    if (!parts.every(p => p.length === 3)) { panel.style.display = "none"; return; }
     panel.style.display = "";
-    const types = [...new Set([...s.keys.keys()].map(k => k.split("|")[0]))], regions = ["north", "south", "east"], sizes = ["small", "large"];
+    const types = [...new Set(parts.map(p => p[0]))];
+    const seconds = [...new Set(parts.map(p => p[1]))].sort(), thirds = [...new Set(parts.map(p => p[2]))].sort();
     const cur = s.steps.length ? (s.steps[s.steps.length - 1].key || []).join("|") : "";
-    let h = `<table><tr><th></th>${regions.map(r => sizes.map(z => `<th class="c" title="${r} · ${z}">${r[0].toUpperCase()}${z[0]}</th>`).join("")).join("")}</tr>`;
+    let h = `<table><tr><th></th>${seconds.map(r => thirds.map(z => `<th class="c" title="${r} · ${z}">${r[0].toUpperCase()}${z[0]}</th>`).join("")).join("")}</tr>`;
     for (const ty of types) { h += `<tr><th>${ty}</th>`;
-      for (const r of regions) for (const z of sizes) { const k = `${ty}|${r}|${z}`, v = s.keys.get(k);
+      for (const r of seconds) for (const z of thirds) { const k = `${ty}|${r}|${z}`, v = s.keys.get(k);
         const cls = "cell" + (v ? (v.reward > 0 ? " good" : " bad") : "") + (k === cur ? " cur" : "") + (s.changedKeys.has(k) ? " changed" : "");
-        h += `<td><div class="${cls}" title="${k.split("|").join(" · ")}${v ? `: last attempt ${v.reward > 0 ? "accepted" : "rejected"} at step ${v.t + 1}; the correct desk is ${v.correct}` : ": not tried yet"}">${v ? v.correct : ""}</div></td>`; }
+        h += `<td><div class="${cls}" title="${k.split("|").join(" · ")}${v ? `: last attempt ${v.reward > 0 ? "accepted" : "rejected"} at step ${v.t + 1}; the correct answer is ${v.correct}` : ": not tried yet"}">${v ? String(v.correct)[0] : ""}</div></td>`; }
       h += `</tr>`; }
     $("grid").innerHTML = h + `</table>`;
   }
 
   function drawExtra(s) {
-    const fields = Object.keys(s.extra).filter(f => ["stock_end", "true_rate", "lost"].includes(f) && s.extra[f].length > 1);
+    const known = ["stock_end", "true_rate", "lost", "rate_A", "rate_B", "rate_C", "rate_D"];
+    const fields = Object.keys(s.extra).filter(f => known.includes(f) && s.extra[f].length > 1);
     const panel = $("extraPanel"); if (!fields.length) { panel.style.display = "none"; return; }
-    panel.style.display = "flex"; $("extraTitle").textContent = "Inventory: stock on hand vs true demand rate";
+    panel.style.display = "flex";
+    $("extraTitle").textContent = fields[0].startsWith("rate_")
+      ? "The hidden engagement rate of each angle (the agent never sees these)"
+      : "Inventory: stock on hand vs true demand rate";
     const svg = $("extraChart"), W = svg.clientWidth || 600, H = svg.clientHeight || 130, m = { l: 34, r: 10, t: 10, b: 22 };
-    const NAMES = { stock_end: "stock on hand", true_rate: "true demand rate", lost: "lost demand" };
-    const series = fields.map((f, i) => ({ f, pts: s.extra[f], color: ["var(--series-1)", "var(--series-2)", "var(--series-3)"][i % 3] }));
+    const NAMES = { stock_end: "stock on hand", true_rate: "true demand rate", lost: "lost demand",
+                    rate_A: "angle A", rate_B: "angle B", rate_C: "angle C", rate_D: "angle D" };
+    const series = fields.map((f, i) => ({ f, pts: s.extra[f], color: ["var(--series-1)", "var(--series-2)", "var(--series-3)", "var(--warning)"][i % 4] }));
     const all = series.flatMap(x => x.pts.map(p => p.v)), lo = Math.min(0, ...all), hi = Math.max(1, ...all), T = Math.max(s.T || 1, s.steps.length);
     const x = t => m.l + (t / (T - 1)) * (W - m.l - m.r), y = v => m.t + (1 - (v - lo) / (hi - lo || 1)) * (H - m.t - m.b);
     let g = `<line x1="${m.l}" x2="${W - m.r}" y1="${y(lo)}" y2="${y(lo)}" stroke="var(--grid)"/><text x="${m.l - 6}" y="${y(hi) + 4}" text-anchor="end">${fmt(hi)}</text><text x="${m.l - 6}" y="${y(lo) + 4}" text-anchor="end">${fmt(lo)}</text>`;
@@ -977,22 +1019,24 @@
     }
     const world = sel.value || worlds[0] || "rule_world";
     const m = (benchData || {})[world];
-    $("benchStamp").textContent = m ? `covers every analyzed run · last recomputed ${new Date(m.generated * 1000).toLocaleString()} · reopen this tab after an analysis to pick up new results`
+    $("benchStamp").textContent = m ? `covers every analyzed run · last recomputed ${new Date(m.generated * 1000).toLocaleString()}` +
+        (m.stale ? " · STALE: runs finished after this was computed — run an analysis to refresh" : "")
                                     : "no profiles computed yet. Run an experiment, or analyze existing runs, then reopen this tab";
     const f = v => (v == null || Number.isNaN(+v)) ? "—" : (+v).toFixed(2);
     if (m) {
       const exps = m.suite;
       const rowName = (a, row) => agentLabel({ name: a, ...(row.spec || {}) }) || human(a);
       const anyQuick = Object.values(m.agents).some(r => Object.values(r.experiments).some(e => e.quick));
+      const anyPartial = Object.values(m.agents).some(r => Object.values(r.experiments).some(e => e.partial));
       $("benchMatrix").innerHTML = `<table class="cohort"><tr><th>agent</th>${exps.map(e => `<th title="${escapeHtml((REGISTRY[e] || {}).title || "")}">${e}</th>`).join("")}<th>mean</th></tr>` +
         Object.entries(m.agents).map(([a, row]) =>
           `<tr><td style="text-align:left" title="${escapeHtml(a)}">${escapeHtml(rowName(a, row))}</td>` + exps.map(e => {
             const cell = row.experiments[e], sc = cell ? cell.driftlab_score : null;
             const tint = sc != null && !Number.isNaN(+sc) ? ` style="background:color-mix(in srgb, var(--series-3) ${Math.round(sc * 35)}%, transparent)"` : "";
-            const q = cell && cell.quick;
-            return `<td class="cell-drill" data-exp="${e}" data-agent="${escapeHtml(a)}"${tint} title="${q ? "short sense-check runs only, not comparable to full-length scores. " : ""}open these runs">${f(sc)}${q ? '<span class="muted">*</span>' : ""}</td>`;
+            const q = cell && cell.quick, pt = cell && cell.partial;
+            return `<td class="cell-drill" data-exp="${e}" data-agent="${escapeHtml(a)}"${tint} title="${q ? "smoke runs only, not comparable to full-length scores. " : ""}${pt ? "covers only the conditions a hypothesis run needed. " : ""}open these runs">${f(sc)}${q ? '<span class="muted">*</span>' : ""}${pt ? '<span class="muted">°</span>' : ""}</td>`;
           }).join("") + `<td class="score"${row.quick_only ? ' title="quick-mode runs only"' : ""}>${f(row.mean_score)}${row.quick_only ? '<span class="muted">*</span>' : ""}</td></tr>`).join("") + `</table>` +
-        (anyQuick ? `<div class="benchhint" style="margin-top:4px">* from short sense-check runs. These verify the plumbing and are not comparable to full-length scores.</div>` : "");
+        ((anyQuick || anyPartial) ? `<div class="benchhint" style="margin-top:4px">${anyQuick ? "* from smoke runs, which verify the plumbing and are not comparable to full-length scores. " : ""}${anyPartial ? "° from a hypothesis run: valid full-length episodes, but covering only the conditions that hypothesis's predictions needed — a later full grid fills the rest." : ""}</div>` : "");
       document.querySelectorAll("#benchMatrix td.cell-drill").forEach(td => td.onclick = () => drillTo(td.dataset.agent, td.dataset.exp));
       const dims = ["adaptation", "knowledge", "epistemics", "efficiency"];
       $("benchDims").innerHTML = `<table class="cohort"><tr><th>agent</th>${dims.map(d => `<th>${d}</th>`).join("")}</tr>` +
@@ -1194,12 +1238,13 @@
         Object.entries(e.parameters || {}).map(([k, v]) => `<span class="k">${escapeHtml(k)}</span><span>${escapeHtml(v)}</span>`).join("") +
         `<span class="k">measures</span><span>${(e.dependent || []).map(x => escapeHtml(human(x))).join("<br>")}</span>` +
         `<span class="k">worlds</span><span>${escapeHtml((e.worlds || []).join(", "))}</span></div>` +
-        `<p class="benchhint" style="margin:8px 0 0">Short sense-check runs ("quick" mode) scale these lengths and schedules down to about a tenth.</p>` +
+        `<p class="benchhint" style="margin:8px 0 0">Smoke runs scale these lengths to a tenth as plumbing checks and never count; quick runs halve them, staying valid, with a smaller task space where the world supports it.</p>` +
         `</div></details>`;
     }).join("");
     $("valStamp").textContent = valData
-      ? `Validation last ran ${new Date(valData.generated * 1000).toLocaleString()}. Verdicts are proposals computed from the run logs, and each one speaks only for the agents and worlds it was tested on.`
-      : "Validation has not run yet. Each hypothesis lists the predictions that would test it; verdicts appear here once validation runs.";
+      ? `Validation last ran ${new Date(valData.generated * 1000).toLocaleString()}. Verdicts are proposals computed from the run logs, and each one speaks only for the agents and worlds it was tested on.` +
+        (valData.stale ? " STALE: runs finished after this was computed; it refreshes automatically when an experiment completes, or run experiments.validate." : "")
+      : "Validation has not run yet. It runs automatically when an experiment completes; verdicts appear here.";
     $("hypList").innerHTML = (hypData || []).map(h => {
       const v = valData && valData.hypotheses ? valData.hypotheses[h.id] : null;
       const chip = v ? `<span class="chip ${VCHIP[v.proposed_status] || ""}" title="${escapeHtml(VMEAN[v.proposed_status] || "")}">${escapeHtml(v.proposed_status)}</span>` : `<span class="chip">NOT VALIDATED</span>`;
@@ -1253,11 +1298,11 @@
       (st.changes || st.mutations || []).forEach(mu => ingest({ run: label, kind: "event", event_kind: "world_change", msg: mu.desc || `rule flip ${JSON.stringify(mu.key)} ${mu.old} → ${mu.new} (affects ${(mu.affected || []).length} keys)` }));
       if (st.notice) ingest({ run: label, kind: "event", event_kind: "notice", msg: "notice shown: " + st.notice });
       while (memVersions.length && memVersions[0].t <= st.t) { const v = memVersions.shift();
-        ingest({ run: label, kind: "event", event_kind: "memory", msg: `notebook updated (${v.chars} chars)`, memory: v.text, memory_kind: "notebook" }); }
+        ingest({ run: label, kind: "event", event_kind: "memory", msg: `memory updated (${v.chars} chars)`, memory: v.text, memory_kind: v.kind || "notebook" }); }
       ingest({ run: label, kind: "step", t: st.t, T: data.steps.length, ...st });
       if (delay) { scheduleRender(); await new Promise(res => setTimeout(res, delay)); }
     }
-    memVersions.forEach(v => ingest({ run: label, kind: "event", event_kind: "memory", msg: `notebook updated (${v.chars} chars)`, memory: v.text, memory_kind: "notebook" }));
+    memVersions.forEach(v => ingest({ run: label, kind: "event", event_kind: "memory", msg: `memory updated (${v.chars} chars)`, memory: v.text, memory_kind: v.kind || "notebook" }));
     ingest({ run: label, kind: "run_end", steps: data.steps.length });
     replaying = false; render();
   }

@@ -40,7 +40,13 @@ from dataclasses import dataclass, field
 
 import numpy as np
 
-from .base import CONFIDENCE_SUFFIX
+from .base import CONFIDENCE_SUFFIX, flavor_rng, person
+
+# signal-free ticket chatter: realistic surface, no information about the style guide
+TICKET_NOTES = ["Needed for the reporting pipeline.", "Blocks a downstream cleanup ticket.",
+                "Nice-to-have for the ops dashboard.", "Follow-up from last week's incident review.",
+                "Requested by the data team.", "Small one, should be quick."]
+PRIORITIES = ["P2", "P3", "P3", "P4"]
 from .policy import ConditionalPolicy
 
 HELPERS = '''
@@ -245,7 +251,9 @@ class CodebaseWorld:
         templates = [f"Ticket #{1000 + self._ticket}: implement `{SIGNATURES[name]}`. {spec}",
                      f"[TASK-{1000 + self._ticket}] New helper needed: `{SIGNATURES[name]}`\nAcceptance: {spec}",
                      f"Hey, can you add `{SIGNATURES[name]}`? Should {spec[0].lower() + spec[1:]}"]
-        text = templates[self.template]
+        rng = flavor_rng(self.seed, t)
+        text = (f"(reported by {person(rng)} · {rng.choice(PRIORITIES)} · \"{rng.choice(TICKET_NOTES)}\")\n"
+                + templates[self.template])
         if self._round and self._last_fb:
             text += (f"\n\nReview round {self._round + 1} of {self.review_rounds} for this ticket. "
                      f"Your last submission was not merged:\n{self._last_fb}")

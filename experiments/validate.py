@@ -144,7 +144,7 @@ def run_validation(targets: set | None, min_pairs: int) -> dict:
             for pred in preds:
                 verdicts = evaluate_prediction(pred, rows, min_pairs) if rows else \
                     [{"agent": "—", "delta": None, "ci": None, "n": 0, "verdict": "inconclusive",
-                      "reason": f"no full-length runs in runs/{exp}/{wdir.name} (quick-mode runs, under {MIN_STEPS} steps, are excluded)"}]
+                      "reason": f"no full-length runs in runs/{exp}/{wdir.name} (smoke runs, under {MIN_STEPS} steps, never count)"}]
                 for v in verdicts:
                     rows_out.append({"exp": exp, "version": entry["version"], "world": wdir.name,
                                      "claim": pred["claim"], **v})

@@ -26,7 +26,14 @@ from dataclasses import dataclass, field
 
 import numpy as np
 
-from .base import CONFIDENCE_SUFFIX
+from .base import CONFIDENCE_SUFFIX, flavor_rng, person
+
+# signal-free requester chatter: realistic surface, no information about the hidden rules
+CHATTER = ["Hoping this can go out before end of day.", "Same as the ones I sent last month, I think.",
+           "Our client has been asking about this twice already.", "No rush, but please confirm receipt.",
+           "Flagging that the paperwork was scanned, not typed.", "Let me know if anything is missing.",
+           "This one came in through the regional office.", "Second attempt, the first form bounced."]
+DEPTS = ["Client Services", "Regional Ops", "Partner Accounts", "Field Sales", "Finance Desk"]
 
 TYPES = ["invoice", "refund", "shipment", "claim", "renewal", "transfer", "audit", "onboarding", "cancellation"]
 REGIONS = ["north", "south", "east"]
@@ -284,7 +291,10 @@ class RuleWorld:
     # ---- World protocol ------------------------------------------------------------
     def observe(self, t: int) -> str:
         self._current = self.task_fn(t, self) if self.task_fn else self.task(t)
-        return f"{self.render(self._current)}\n{self.options_text()}\nWhich option do you choose?"
+        rng = flavor_rng(self.seed, t)
+        intro = (f"Ticket REQ-{2400 + t} · submitted by {person(rng)} ({rng.choice(DEPTS)}). "
+                 f"Note from the requester: \"{rng.choice(CHATTER)}\"")
+        return f"{intro}\n{self.render(self._current)}\n{self.options_text()}\nWhich option do you choose?"
 
     def parse(self, text: str):
         c = re.search(r"CONFIDENCE:\s*(\d{1,3})", text)

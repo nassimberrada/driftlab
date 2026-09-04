@@ -27,7 +27,7 @@ from dataclasses import dataclass, field
 
 import numpy as np
 
-from .base import CONFIDENCE_SUFFIX
+from .base import CONFIDENCE_SUFFIX, flavor_rng, person
 
 SYSTEM = ("You review insurance claims at Meridian Assurance. Claims arrive one at a time; approve the legitimate "
           "ones and reject the fraudulent ones. Fraud exists and fraud tactics change over time; you are never told "
@@ -37,9 +37,24 @@ TYPES = ["auto", "home", "health", "travel", "gadget"]
 CHANNELS = ["online", "phone", "paper"]
 AMOUNTS = ["small", "large"]
 ATTRS = {"type": TYPES, "channel": CHANNELS, "amount": AMOUNTS}
-TEMPLATES = ["Claim {n}: a {amount} {type} claim, filed via {channel}.",
-             "Claim {n}: {type} policy, {amount} payout requested, submitted through the {channel} channel.",
-             "Claim {n} ({channel} filing): {type}, {amount} amount."]
+# narrative incident lines per claim type; the {} takes a seeded detail. Signal-free by
+# construction: fraud is decided by the attribute signature, never by the story.
+INCIDENTS = {
+    "auto": ["Rear-ended at a stoplight on {}; bumper and sensor damage.", "Windscreen cracked by road debris on {}."],
+    "home": ["Burst pipe in the utility room on {}; water damage to flooring.", "Storm took several roof tiles on {}."],
+    "health": ["Outpatient treatment on {} following a fall.", "Physiotherapy sessions after an injury on {}."],
+    "travel": ["Trip cancelled on {} after an airline schedule change.", "Checked luggage lost on the {} connection."],
+    "gadget": ["Phone screen shattered on {}; repair quote attached.", "Laptop stopped charging on {}; assessed as liquid damage."],
+}
+DAYS = ["Mar 3", "Mar 14", "Apr 2", "Apr 19", "May 7", "May 26", "Jun 11", "Jun 30", "Jul 8", "Jul 22"]
+CHANNEL_PHRASE = {"online": "submitted through the customer portal (online)",
+                  "phone": "taken down by the call center (phone)",
+                  "paper": "received by post and scanned (paper)"}
+TEMPLATES = [  # {header} carries the narrative; the explicit category line keeps the features unambiguous
+    "{header}\n{incident}\nFiling: {channel_phrase}. Requested payout: ${figure:,} ({amount} band).\n"
+    "Category: {type} · Channel: {channel} · Amount: {amount}",
+    "{header}\n{incident}\nCame in {channel_phrase}; claimed amount ${figure:,}, {amount} band.\n"
+    "Category: {type} · Channel: {channel} · Amount: {amount}"]
 
 
 def key_of(claim: dict) -> tuple:
@@ -50,6 +65,7 @@ def key_of(claim: dict) -> tuple:
 class ClaimsWorld:
     seed: int
     T: int = 120
+    n_types: int = 5                 # reduced modes shrink this for denser task encounters
     fraud_share: float = 0.4
     adapt_every: int = 20            # how often the ring reconsiders its tactics
     adapt_window: int = 20           # how much recent traffic it watches
@@ -64,6 +80,8 @@ class ClaimsWorld:
     def __post_init__(self):
         self.rng = np.random.default_rng(self.seed)
         self.system_prompt = SYSTEM + (CONFIDENCE_SUFFIX if self.ask_confidence else "")
+        self.types = TYPES[: self.n_types]
+        self.attrs = {"type": self.types, "channel": CHANNELS, "amount": AMOUNTS}
         self.signature = self._random_signature()
         self.template = 0
         self.recent: list = []       # (claim, action, is_fraud) the ring can observe
@@ -75,8 +93,8 @@ class ClaimsWorld:
     # ---- fraud machinery ------------------------------------------------------------
     def _random_signature(self, avoid: dict | None = None) -> dict:
         while True:
-            attrs = list(self.rng.choice(list(ATTRS), size=2, replace=False))
-            sig = {a: str(self.rng.choice(ATTRS[a])) for a in sorted(attrs)}
+            attrs = list(self.rng.choice(list(self.attrs), size=2, replace=False))
+            sig = {a: str(self.rng.choice(self.attrs[a])) for a in sorted(attrs)}
             if sig != (avoid or {}):
                 return sig
 
@@ -87,7 +105,7 @@ class ClaimsWorld:
     def _draw_claim(self) -> dict:
         fraud = bool(self.rng.random() < self.fraud_share)
         while True:
-            claim = {a: str(self.rng.choice(vals)) for a, vals in ATTRS.items()}
+            claim = {a: str(self.rng.choice(vals)) for a, vals in self.attrs.items()}
             if fraud:
                 claim.update(self.signature)
                 return claim
@@ -95,7 +113,7 @@ class ClaimsWorld:
                 return claim         # legitimate claims never fully match the signature
 
     def _affected(self, *sigs) -> list:
-        combos = itertools.product(TYPES, CHANNELS, AMOUNTS)
+        combos = itertools.product(self.types, CHANNELS, AMOUNTS)
         return [list(k) for k in combos
                 if any(all(dict(zip(("type", "channel", "amount"), k)).get(a) == v for a, v in s.items()) for s in sigs)]
 
@@ -122,7 +140,7 @@ class ClaimsWorld:
         approved = [r[0] for r in window if r[1] == "APPROVE" and not r[2]]
         if approved:
             mimic = approved[int(self.rng.integers(len(approved)))]
-            attrs = list(self.rng.choice(list(ATTRS), size=2, replace=False))
+            attrs = list(self.rng.choice(list(self.attrs), size=2, replace=False))
             new = {a: mimic[a] for a in sorted(attrs)}
             why = "they are mimicking the traffic you approve"
         else:
@@ -149,7 +167,14 @@ class ClaimsWorld:
     def observe(self, t: int) -> str:
         self._current = self._draw_claim()
         self._n += 1
-        text = TEMPLATES[self.template].format(n=self._n, **self._current)
+        rng = flavor_rng(self.seed, t)
+        figure = int(rng.integers(120, 950)) if self._current["amount"] == "small" else int(rng.integers(3800, 24000))
+        header = (f"Claim CLM-{7000 + self._n} — claimant {person(rng)}, "
+                  f"policy MA-{int(rng.integers(10_000, 99_999))}, {self._current['type']} cover.")
+        incident = str(rng.choice(INCIDENTS[self._current["type"]])).format(rng.choice(DAYS))
+        text = TEMPLATES[self.template].format(header=header, incident=incident, figure=figure,
+                                               channel_phrase=CHANNEL_PHRASE[self._current["channel"]],
+                                               **self._current)
         return f"{text}\nDo you approve or reject this claim?"
 
     def parse(self, text: str):

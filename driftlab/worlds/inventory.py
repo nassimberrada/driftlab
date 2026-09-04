@@ -25,7 +25,12 @@ from dataclasses import dataclass, field
 import numpy as np
 from scipy.stats import poisson
 
-from .base import CONFIDENCE_SUFFIX
+from .base import CONFIDENCE_SUFFIX, flavor_rng
+
+# signal-free warehouse chatter: realistic surface, no information about demand
+OPS_NOTES = ["The warehouse team rotated the racking over the weekend.", "Forklift certification day on Thursday.",
+             "The morning count matched the system, no adjustments.", "Carrier pickup moved to 3pm this week.",
+             "New temp started in receiving today.", "Cycle count scheduled for the end of the month."]
 
 SYSTEM_TMPL = ("You are the buyer for one product line at Meridian Retail. Each morning you see stock on hand, orders "
                "in transit and yesterday's sales, and place today's order (it arrives in {lead} days unless the report "
@@ -125,8 +130,10 @@ class InventoryWorld:
         sales = "n/a" if not last else (f"{last['sales']} {u} (sold out)" if last["lost"] > 0 else f"{last['sales']} {u}")
         recent = ", ".join(str(h["sales"]) for h in self.history[-14:]) or "none yet"
         lead_note = f" Current supplier lead time: {len(self.pipeline)} days." if len(self.pipeline) != self.base_lead else ""
+        note = flavor_rng(self.seed, t).choice(OPS_NOTES)
         return (f"Day {t + 1}. Stock on hand: {self.stock} {u}. Arriving over the next {len(self.pipeline)} days: {self.pipeline}."
-                f"{lead_note}\nYesterday's sales: {sales}. Sales over the last 14 days: {recent}.\nHow many {u} do you order today?")
+                f"{lead_note}\nYesterday's sales: {sales}. Sales over the last 14 days: {recent}.\n"
+                f"Ops note: {note}\nHow many {u} do you order today?")
 
     def parse(self, text: str):
         c = re.search(r"CONFIDENCE:\s*(\d{1,3})", text)

@@ -321,6 +321,20 @@ REGISTRY = {
 }
 
 
+def regimes_needed(entry: dict) -> set | None:
+    """The regimes this experiment's registered predictions actually reference — the
+    minimal grid a hypothesis run has to play. None means the full grid is required
+    (no prediction pins a regime). Predictions that vary the agent rather than the
+    regime ride along on whatever cells the pinned predictions produce."""
+    pinned = set()
+    for p in entry.get("predictions", []):
+        if p["kind"] == "reversal":
+            pinned |= {p["a_regime"], p["b_regime"]}
+        elif p.get("vary") == "regime":
+            pinned |= {p["a"], p["b"]}
+    return pinned or None
+
+
 def hypothesis_status(hid: str) -> str:
     for p in HYPOTHESES_DIR.glob(f"{hid}-*.md"):
         for line in p.read_text().splitlines():

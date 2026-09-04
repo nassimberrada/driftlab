@@ -87,6 +87,9 @@ async def run_cells(cells: list[dict], scenario_factory, agent_factory, out_dir:
                 before = LEDGER.snapshot()
             t0 = time.time()
             header_extra, records = await run(scenario, agent)
+            versions = getattr(agent, "memory_versions", None)
+            if versions:  # persisted so a replayed run can show what the agent wrote itself
+                header_extra["memory_versions"] = versions
             async with lock:
                 cost = CostLedger.diff(LEDGER.snapshot(), before)
             spent = sum(d["cost_usd"] for d in cost.values())

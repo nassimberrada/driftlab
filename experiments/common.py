@@ -28,16 +28,27 @@ sys.path.insert(0, str(ROOT))
 DEFAULT_SEEDS = 3
 
 # Read at import time because experiments define schedules as module constants.
-QUICK = ("--quick" in sys.argv) or bool(_os.environ.get("DRIFTLAB_QUICK"))
-QUICK_FACTOR = float(_os.environ.get("DRIFTLAB_QUICK_FACTOR", "0.1"))
+# Two reduced modes, with different contracts:
+#   --smoke  a tenth of everything, 1 seed: a plumbing check. Under 30 steps, so these
+#            runs are excluded from profiles and can never produce a verdict.
+#   --quick  half of everything, and a smaller task space where the world supports it:
+#            shorter but still valid. Runs stay above the 30-step floor and count.
+SMOKE = ("--smoke" in sys.argv) or bool(_os.environ.get("DRIFTLAB_SMOKE"))
+QUICK = (not SMOKE) and (("--quick" in sys.argv) or bool(_os.environ.get("DRIFTLAB_QUICK")))
+QUICK_FACTOR = float(_os.environ.get("DRIFTLAB_QUICK_FACTOR", "0.1" if SMOKE else ("0.5" if QUICK else "1")))
+MODE = "smoke" if SMOKE else ("quick" if QUICK else "full")
 WORLD = _os.environ.get("DRIFTLAB_WORLD", "rule_world")
 if "--world" in sys.argv:
     WORLD = sys.argv[sys.argv.index("--world") + 1]
 
+# reduced-mode task spaces: denser encounters per task, so shorter episodes keep their
+# measurement power (each key is revisited about as often as in a full-length episode)
+COMPACT_WORLDS = {"rule_world": {"n_types": 4}, "claims_desk": {"n_types": 3}}
+
 
 def q(n: int, minimum: int = 2) -> int:
-    """Scale a step count for quick mode (identity otherwise)."""
-    return max(minimum, round(n * QUICK_FACTOR)) if QUICK else n
+    """Scale a step count for the reduced modes (identity in full mode)."""
+    return max(minimum, round(n * QUICK_FACTOR)) if MODE != "full" else n
 
 
 def qlist(xs: list) -> list:
@@ -47,10 +58,14 @@ def qlist(xs: list) -> list:
 # ---- worlds -------------------------------------------------------------------------
 
 def world_for(cell: dict, T: int, needs: tuple = (), **kw):
-    """Build the cell's world (cell['world'] or the CLI's --world) and check capabilities."""
+    """Build the cell's world (cell['world'] or the CLI's --world) and check capabilities.
+    Reduced modes shrink the task space where the world supports it (COMPACT_WORLDS)."""
     from driftlab.worlds.base import require
     from driftlab.worlds.registry import make_world
-    w = make_world(cell.get("world", WORLD), cell["seed"], T=T, **kw)
+    name = cell.get("world", WORLD)
+    if MODE != "full":
+        kw = {**COMPACT_WORLDS.get(name, {}), **kw}
+    w = make_world(name, cell["seed"], T=T, **kw)
     if needs:
         require(w, *needs)
     return w
@@ -102,7 +117,8 @@ def cli(name: str, description: str, extra=None) -> argparse.Namespace:
                     choices=["rule_world", "form_filler", "inventory", "codebase", "claims_desk", "campaign_desk"])
     ap.add_argument("--analyze", action="store_true", help="analyze existing logs instead of running")
     ap.add_argument("--mock", action="store_true", help="reference agents use a credential-free mock brain")
-    ap.add_argument("--quick", action="store_true", help="sense-check mode: schedules scaled to a tenth, one seed")
+    ap.add_argument("--smoke", action="store_true", help="plumbing check: everything scaled to a tenth, one seed; never counts")
+    ap.add_argument("--quick", action="store_true", help="half-length but valid: episodes stay above the 30-step floor and count")
     ap.add_argument("--seeds", type=int, default=None)
     ap.add_argument("--model", default=None, help="override the reference agents' model id (default gpt-5-mini)")
     ap.add_argument("--effort", default=None, help="reasoning effort for reasoning models")
@@ -120,7 +136,6 @@ def cli(name: str, description: str, extra=None) -> argparse.Namespace:
     if extra:
         extra(ap)
     args = ap.parse_args()
-    args.out = args.out or _os.path.relpath(ROOT / "runs" / name / args.world)  # relative: keeps printed paths portable
     if args.budget_usd is not None:
         from driftlab.agents.brain import LEDGER
         LEDGER.budget_usd = args.budget_usd
@@ -162,6 +177,32 @@ def resolve_agents(args, reference_agents: list[dict]) -> list[dict]:
     return specs
 
 
+def refresh_validation():
+    """Recompute runs/validation.json so verdicts never lag the data (runs after every
+    experiment completes or is re-analyzed — never mid-collection, to avoid peeking)."""
+    try:
+        from experiments.validate import run_validation
+        result = run_validation(None, 5)
+        out = ROOT / "runs" / "validation.json"
+        out.parent.mkdir(exist_ok=True)
+        out.write_text(json.dumps(result, indent=2, default=lambda o: None))
+        print("validation refreshed -> runs/validation.json")
+    except Exception as e:  # noqa: BLE001  (a broken validator should never block a run)
+        print(f"(validation refresh skipped: {e})")
+
+
+def out_dir(name: str, world: str, cells) -> str:
+    """Logs live under runs/<exp>/<world>. Cells may pin their own world (claims_desk,
+    campaign_desk experiments); when they all agree, that world names the directory."""
+    try:
+        worlds = {c.get("world", world) for c in cells(1)}
+        if len(worlds) == 1:
+            world = worlds.pop()
+    except Exception:  # noqa: BLE001  (fall back to the CLI world)
+        pass
+    return _os.path.relpath(ROOT / "runs" / name / world)  # relative: keeps printed paths portable
+
+
 def run_experiment(name, doc, cells, scenario, reference_agents, analyze, config=None, extra_args=None):
     from driftlab.agents.reference import make_agent
     from driftlab.runner import expand, run_cells
@@ -169,6 +210,7 @@ def run_experiment(name, doc, cells, scenario, reference_agents, analyze, config
     from driftlab.profile import report
 
     args = cli(name, doc, extra_args)
+    args.out = args.out or out_dir(name, args.world, cells)
     if args.analyze:
         import contextlib
         import io
@@ -180,13 +222,14 @@ def run_experiment(name, doc, cells, scenario, reference_agents, analyze, config
             report(args.out)
         LIVE.analysis(name, buf.getvalue())  # so the dashboard picks up refreshed tables too
         print(buf.getvalue())
+        refresh_validation()
         return
-    env = [{"world": args.world, **c} for c in cells(args.seeds or (1 if QUICK else DEFAULT_SEEDS))]  # a cell may pin its own world
+    env = [{"world": args.world, **c} for c in cells(args.seeds or (1 if SMOKE else DEFAULT_SEEDS))]  # a cell may pin its own world
     grid = expand(env, resolve_agents(args, reference_agents))
     from experiments.registry import REGISTRY
     factory = lambda cell, scen, ctx: make_agent(cell["agent"], cell, scen, ctx)  # noqa: E731
     asyncio.run(run_cells(grid, scenario, factory, args.out, args.concurrency,
-                          config={**(config or {}), "quick": QUICK, "world": args.world,
+                          config={**(config or {}), "mode": MODE, "quick": SMOKE, "world": args.world,
                                   "registry": REGISTRY.get(name)}, resume=args.resume))
     import contextlib
     import io
@@ -198,6 +241,7 @@ def run_experiment(name, doc, cells, scenario, reference_agents, analyze, config
         report(args.out)
     LIVE.analysis(name, buf.getvalue())
     print(buf.getvalue())
+    refresh_validation()
     print(f"done -> {args.out}   (dashboard: python -m driftlab.viz.server)")
 
 
