@@ -463,16 +463,19 @@
     if (!a || !a.name) return "";
     const s = a.substrate || {};
     if (a.type === "tabular" || a.name === "tabular") return "tabular baseline";
-    if (a.type === "reference") {
+    if (a.type === "reference") {  // model first, then the route, then the memory
       const mem = s.kind === "none" ? "no memory"
         : s.kind === "transcript" ? `transcript${s.window ? ` (last ${s.window} steps)` : ""}`
         : s.kind === "notes" ? `notes${s.budget_chars ? ` (max ${s.budget_chars} chars)` : ""}`
-        : s.kind === "skills" ? "skills" : human(s.kind || a.name);
-      return a.model ? `${mem} · ${a.model.split("/").pop()}` : mem;
+        : s.kind === "skills" ? "skills"
+        : s.kind === "beliefs" ? "beliefs"
+        : s.kind === "fastslow" ? "fast+slow memory" : human(s.kind || "");
+      const route = `api${a.reasoning_effort ? ` (${a.reasoning_effort})` : ""}`;
+      return [a.model ? a.model.split("/").pop() : human(a.name), route, mem].filter(Boolean).join(" · ");
     }
     if (a.type === "harness_cli" || a.type === "harness") {
       const base = a.harness || human(a.name);
-      return a.model ? `${base} · ${a.model}` : base;
+      return a.model ? `${a.model} · ${base}` : base;
     }
     return human(a.name) + (a.model ? ` · ${a.model}` : "");
   }
