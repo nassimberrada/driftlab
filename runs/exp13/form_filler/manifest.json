@@ -1,0 +1,223 @@
+{
+  "runs": [
+    {
+      "run": "llm_notes__fixed__seed3",
+      "path": "runs/exp13/form_filler/llm_notes__fixed__seed3.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 418,
+          "cache_hits": 1,
+          "input_tokens": 240852,
+          "cached_tokens": 1403,
+          "output_tokens": 130607,
+          "reasoning_tokens": 101892,
+          "cost_usd": 0.20464626000000005,
+          "cache_saved_usd": 0.000176
+        }
+      },
+      "wall_s": 347.18295097351074
+    },
+    {
+      "run": "llm_notes__fixed__seed1",
+      "path": "runs/exp13/form_filler/llm_notes__fixed__seed1.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 440,
+          "cache_hits": 12,
+          "input_tokens": 253802,
+          "cached_tokens": 1403,
+          "output_tokens": 137735,
+          "reasoning_tokens": 107743,
+          "cost_usd": 0.21578986000000006,
+          "cache_saved_usd": 0.0034898000000000004
+        }
+      },
+      "wall_s": 362.74782514572144
+    },
+    {
+      "run": "llm_notes__adaptive__seed0",
+      "path": "runs/exp13/form_filler/llm_notes__adaptive__seed0.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 486,
+          "cache_hits": 23,
+          "input_tokens": 282151,
+          "cached_tokens": 1403,
+          "output_tokens": 153435,
+          "reasoning_tokens": 120108,
+          "cost_usd": 0.24029966000000005,
+          "cache_saved_usd": 0.0061856
+        }
+      },
+      "wall_s": 401.47281312942505
+    },
+    {
+      "run": "llm_notes__fixed__seed2",
+      "path": "runs/exp13/form_filler/llm_notes__fixed__seed2.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 501,
+          "cache_hits": 34,
+          "input_tokens": 291067,
+          "cached_tokens": 1403,
+          "output_tokens": 157620,
+          "reasoning_tokens": 123437,
+          "cost_usd": 0.24710486000000007,
+          "cache_saved_usd": 0.009205
+        }
+      },
+      "wall_s": 412.3336892127991
+    },
+    {
+      "run": "llm_notes__fixed__seed0",
+      "path": "runs/exp13/form_filler/llm_notes__fixed__seed0.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 543,
+          "cache_hits": 45,
+          "input_tokens": 314322,
+          "cached_tokens": 1403,
+          "output_tokens": 170014,
+          "reasoning_tokens": 133489,
+          "cost_usd": 0.26662866000000013,
+          "cache_saved_usd": 0.011882
+        }
+      },
+      "wall_s": 449.68532848358154
+    },
+    {
+      "run": "llm_notes__fixed__seed4",
+      "path": "runs/exp13/form_filler/llm_notes__fixed__seed4.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 584,
+          "cache_hits": 45,
+          "input_tokens": 342197,
+          "cached_tokens": 1403,
+          "output_tokens": 183059,
+          "reasoning_tokens": 143292,
+          "cost_usd": 0.28785766000000024,
+          "cache_saved_usd": 0.011882
+        }
+      },
+      "wall_s": 487.3149778842926
+    },
+    {
+      "run": "llm_notes__adaptive__seed1",
+      "path": "runs/exp13/form_filler/llm_notes__adaptive__seed1.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 301,
+          "cache_hits": 44,
+          "input_tokens": 190361,
+          "cached_tokens": 0,
+          "output_tokens": 96659,
+          "reasoning_tokens": 76043,
+          "cost_usd": 0.1540630000000003,
+          "cache_saved_usd": 0.011706
+        }
+      },
+      "wall_s": 305.7575423717499
+    },
+    {
+      "run": "llm_notes__adaptive__seed2",
+      "path": "runs/exp13/form_filler/llm_notes__adaptive__seed2.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 328,
+          "cache_hits": 33,
+          "input_tokens": 212277,
+          "cached_tokens": 0,
+          "output_tokens": 104513,
+          "reasoning_tokens": 81198,
+          "cost_usd": 0.16787100000000016,
+          "cache_saved_usd": 0.008392199999999999
+        }
+      },
+      "wall_s": 363.8114068508148
+    },
+    {
+      "run": "llm_notes__adaptive__seed4",
+      "path": "runs/exp13/form_filler/llm_notes__adaptive__seed4.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 272,
+          "cache_hits": 11,
+          "input_tokens": 177726,
+          "cached_tokens": 0,
+          "output_tokens": 86663,
+          "reasoning_tokens": 67300,
+          "cost_usd": 0.13954080000000016,
+          "cache_saved_usd": 0.0026770000000000006
+        }
+      },
+      "wall_s": 325.1385979652405
+    },
+    {
+      "run": "llm_notes__adaptive__seed3",
+      "path": "runs/exp13/form_filler/llm_notes__adaptive__seed3.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 289,
+          "cache_hits": 22,
+          "input_tokens": 187858,
+          "cached_tokens": 0,
+          "output_tokens": 91358,
+          "reasoning_tokens": 71083,
+          "cost_usd": 0.14720120000000017,
+          "cache_saved_usd": 0.0056964
+        }
+      },
+      "wall_s": 340.60308861732483
+    }
+  ],
+  "grid_costs": [],
+  "config": {
+    "mode": "quick",
+    "quick": false,
+    "world": "form_filler",
+    "hypothesis_run": "H004",
+    "registry": {
+      "version": 1,
+      "title": "Should changes wait for the learner?",
+      "hypothesis": "A learner ends up better when each change waits until it has recovered from the last one, even with the same total number of changes.",
+      "design": "Six changes, three timings: evenly spaced regardless of the learner; adaptive, where the next change waits for the learner's performance to recover; and adversarial, where the next change lands the moment it recovers.",
+      "parameters": {
+        "episode length": "150 steps",
+        "changes": "6 per run",
+        "adaptive rule": "the next change waits until rolling reward is back to 70% of its best, and at least 10 steps have passed",
+        "adversarial rule": "the same recovery test, but with a minimum gap of only 3 steps",
+        "agent": "an LLM with notes"
+      },
+      "independent": [
+        "when changes are allowed to land: on a timer, after recovery, or right at recovery"
+      ],
+      "dependent": [
+        "final accuracy",
+        "dip and recovery per change"
+      ],
+      "drift": [
+        "sudden real changes, timed to the learner"
+      ],
+      "worlds": [
+        "any"
+      ],
+      "hypotheses": [
+        "H004"
+      ],
+      "predictions": [
+        {
+          "kind": "effect",
+          "field": "final_accuracy",
+          "vary": "regime",
+          "a": "fixed",
+          "b": "adaptive",
+          "direction": ">",
+          "within": "agent",
+          "claim": "adaptive pacing ends with higher accuracy than fixed pacing, same number of changes"
+        }
+      ]
+    }
+  },
+  "unpriced_models": []
+}

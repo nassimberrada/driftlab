@@ -1,0 +1,353 @@
+{
+  "schema": 1,
+  "run_dir": "runs/exp13/form_filler",
+  "generated": 1788628246.3516543,
+  "world": "form_filler",
+  "agents": {
+    "llm_notes": {
+      "n_runs": 10,
+      "spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "notes",
+          "every": 10
+        }
+      },
+      "metrics": {
+        "detection_lag": NaN,
+        "recovery_lag": 4.0,
+        "final_accuracy": 0.09,
+        "retention": 0.05909090909090908,
+        "stale_rate": NaN,
+        "overupdate_rate": NaN,
+        "interference": NaN,
+        "calibration_error": NaN,
+        "overconfidence": NaN,
+        "parse_failure_rate": 0.0,
+        "cost_per_success": 0.09123137416666673,
+        "final_reward": -0.092,
+        "n_changes": 3.8,
+        "cost_usd": 2.0710029600000013
+      },
+      "dimensions": {
+        "adaptation": 0.2777777777777778,
+        "knowledge": 0.07454545454545454,
+        "epistemics": NaN,
+        "efficiency": 0.5493918021083862
+      },
+      "driftlab_score": 0.3005716781438728
+    }
+  },
+  "excluded_quick": 0,
+  "effects": {
+    "field": "final_accuracy",
+    "agent": [],
+    "regime": [
+      {
+        "agent": "llm_notes",
+        "vary": "regime",
+        "a": "adaptive",
+        "b": "fixed",
+        "delta": -0.18,
+        "ci": [
+          -0.36,
+          -0.02
+        ],
+        "n": 5
+      }
+    ]
+  },
+  "runs": [
+    {
+      "agent": "llm_notes",
+      "regime": "adaptive",
+      "seed": 0,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "notes",
+          "every": 10
+        }
+      },
+      "world": "form_filler",
+      "n_steps": 26,
+      "n_changes": 1,
+      "detection_lag": NaN,
+      "recovery_lag": NaN,
+      "final_accuracy": 0.0,
+      "final_reward": -0.2,
+      "retention": 0.0,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.24029966000000005,
+      "cost_per_success": 0.12014983000000003
+    },
+    {
+      "agent": "llm_notes",
+      "regime": "adaptive",
+      "seed": 1,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "notes",
+          "every": 10
+        }
+      },
+      "world": "form_filler",
+      "n_steps": 28,
+      "n_changes": 5,
+      "detection_lag": NaN,
+      "recovery_lag": 4.0,
+      "final_accuracy": 0.5,
+      "final_reward": 0.4,
+      "retention": 0.3818181818181818,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.1540630000000003,
+      "cost_per_success": 0.01283858333333336
+    },
+    {
+      "agent": "llm_notes",
+      "regime": "adaptive",
+      "seed": 2,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "notes",
+          "every": 10
+        }
+      },
+      "world": "form_filler",
+      "n_steps": 29,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 4.0,
+      "final_accuracy": 0.3,
+      "final_reward": 0.16,
+      "retention": 0.09090909090909091,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.16787100000000016,
+      "cost_per_success": 0.01865233333333335
+    },
+    {
+      "agent": "llm_notes",
+      "regime": "adaptive",
+      "seed": 3,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "notes",
+          "every": 10
+        }
+      },
+      "world": "form_filler",
+      "n_steps": 26,
+      "n_changes": 0,
+      "detection_lag": NaN,
+      "recovery_lag": NaN,
+      "final_accuracy": 0.0,
+      "final_reward": -0.2,
+      "retention": NaN,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.14720120000000017,
+      "cost_per_success": 0.14720120000000017
+    },
+    {
+      "agent": "llm_notes",
+      "regime": "adaptive",
+      "seed": 4,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "notes",
+          "every": 10
+        }
+      },
+      "world": "form_filler",
+      "n_steps": 27,
+      "n_changes": 0,
+      "detection_lag": NaN,
+      "recovery_lag": NaN,
+      "final_accuracy": 0.1,
+      "final_reward": -0.08,
+      "retention": NaN,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.13954080000000016,
+      "cost_per_success": 0.03488520000000004
+    },
+    {
+      "agent": "llm_notes",
+      "regime": "fixed",
+      "seed": 0,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "notes",
+          "every": 10
+        }
+      },
+      "world": "form_filler",
+      "n_steps": 26,
+      "n_changes": 6,
+      "detection_lag": NaN,
+      "recovery_lag": 4.0,
+      "final_accuracy": 0.0,
+      "final_reward": -0.2,
+      "retention": 0.0,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.26662866000000013,
+      "cost_per_success": 0.13331433000000006
+    },
+    {
+      "agent": "llm_notes",
+      "regime": "fixed",
+      "seed": 1,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "notes",
+          "every": 10
+        }
+      },
+      "world": "form_filler",
+      "n_steps": 26,
+      "n_changes": 6,
+      "detection_lag": NaN,
+      "recovery_lag": 4.0,
+      "final_accuracy": 0.0,
+      "final_reward": -0.2,
+      "retention": 0.0,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.21578986000000006,
+      "cost_per_success": 0.21578986000000006
+    },
+    {
+      "agent": "llm_notes",
+      "regime": "fixed",
+      "seed": 2,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "notes",
+          "every": 10
+        }
+      },
+      "world": "form_filler",
+      "n_steps": 26,
+      "n_changes": 6,
+      "detection_lag": NaN,
+      "recovery_lag": 4.0,
+      "final_accuracy": 0.0,
+      "final_reward": -0.2,
+      "retention": 0.0,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.24710486000000007,
+      "cost_per_success": 0.08236828666666669
+    },
+    {
+      "agent": "llm_notes",
+      "regime": "fixed",
+      "seed": 3,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "notes",
+          "every": 10
+        }
+      },
+      "world": "form_filler",
+      "n_steps": 27,
+      "n_changes": 6,
+      "detection_lag": NaN,
+      "recovery_lag": 4.0,
+      "final_accuracy": 0.0,
+      "final_reward": -0.2,
+      "retention": 0.0,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.20464626000000005,
+      "cost_per_success": 0.05116156500000001
+    },
+    {
+      "agent": "llm_notes",
+      "regime": "fixed",
+      "seed": 4,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "notes",
+          "every": 10
+        }
+      },
+      "world": "form_filler",
+      "n_steps": 26,
+      "n_changes": 6,
+      "detection_lag": NaN,
+      "recovery_lag": 4.0,
+      "final_accuracy": 0.0,
+      "final_reward": -0.2,
+      "retention": 0.0,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.28785766000000024,
+      "cost_per_success": 0.09595255333333341
+    }
+  ]
+}

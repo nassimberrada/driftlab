@@ -1,0 +1,820 @@
+{
+  "runs": [
+    {
+      "run": "llm_none__report_5__seed1",
+      "path": "runs/exp19/campaign_desk/llm_none__report_5__seed1.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 324,
+          "cache_hits": 4,
+          "input_tokens": 246336,
+          "cached_tokens": 0,
+          "output_tokens": 31721,
+          "reasoning_tokens": 17288,
+          "cost_usd": 0.08733240000000009,
+          "cache_saved_usd": 0.00046539999999999776
+        }
+      },
+      "wall_s": 144.9321370124817
+    },
+    {
+      "run": "llm_notes__report_5__seed0",
+      "path": "runs/exp19/campaign_desk/llm_notes__report_5__seed0.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 328,
+          "cache_hits": 5,
+          "input_tokens": 254527,
+          "cached_tokens": 0,
+          "output_tokens": 32365,
+          "reasoning_tokens": 17532,
+          "cost_usd": 0.08974340000000003,
+          "cache_saved_usd": 0.0006062000000000012
+        }
+      },
+      "wall_s": 146.06515407562256
+    },
+    {
+      "run": "llm_none__report_5__seed0",
+      "path": "runs/exp19/campaign_desk/llm_none__report_5__seed0.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 334,
+          "cache_hits": 6,
+          "input_tokens": 261825,
+          "cached_tokens": 0,
+          "output_tokens": 32853,
+          "reasoning_tokens": 17839,
+          "cost_usd": 0.0917886,
+          "cache_saved_usd": 0.0007470000000000046
+        }
+      },
+      "wall_s": 148.5876133441925
+    },
+    {
+      "run": "llm_transcript__report_5__seed1",
+      "path": "runs/exp19/campaign_desk/llm_transcript__report_5__seed1.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 388,
+          "cache_hits": 18,
+          "input_tokens": 333028,
+          "cached_tokens": 0,
+          "output_tokens": 38892,
+          "reasoning_tokens": 21239,
+          "cost_usd": 0.11327600000000038,
+          "cache_saved_usd": 0.0020778000000000185
+        }
+      },
+      "wall_s": 174.30333995819092
+    },
+    {
+      "run": "llm_transcript__report_5__seed0",
+      "path": "runs/exp19/campaign_desk/llm_transcript__report_5__seed0.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 400,
+          "cache_hits": 18,
+          "input_tokens": 343416,
+          "cached_tokens": 0,
+          "output_tokens": 39882,
+          "reasoning_tokens": 21735,
+          "cost_usd": 0.11654160000000036,
+          "cache_saved_usd": 0.0020778000000000185
+        }
+      },
+      "wall_s": 178.92000651359558
+    },
+    {
+      "run": "llm_notes__report_5__seed1",
+      "path": "runs/exp19/campaign_desk/llm_notes__report_5__seed1.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 427,
+          "cache_hits": 22,
+          "input_tokens": 354890,
+          "cached_tokens": 0,
+          "output_tokens": 42510,
+          "reasoning_tokens": 23051,
+          "cost_usd": 0.12199000000000071,
+          "cache_saved_usd": 0.0025218000000000185
+        }
+      },
+      "wall_s": 189.93396186828613
+    },
+    {
+      "run": "llm_none__report_5__seed2",
+      "path": "runs/exp19/campaign_desk/llm_none__report_5__seed2.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 238,
+          "cache_hits": 54,
+          "input_tokens": 216225,
+          "cached_tokens": 0,
+          "output_tokens": 25751,
+          "reasoning_tokens": 13987,
+          "cost_usd": 0.07414620000000038,
+          "cache_saved_usd": 0.006585400000000012
+        }
+      },
+      "wall_s": 109.85928750038147
+    },
+    {
+      "run": "llm_none__report_5__seed3",
+      "path": "runs/exp19/campaign_desk/llm_none__report_5__seed3.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 194,
+          "cache_hits": 51,
+          "input_tokens": 151936,
+          "cached_tokens": 0,
+          "output_tokens": 20921,
+          "reasoning_tokens": 11251,
+          "cost_usd": 0.055492399999999775,
+          "cache_saved_usd": 0.006348799999999974
+        }
+      },
+      "wall_s": 90.80139827728271
+    },
+    {
+      "run": "llm_transcript__report_5__seed2",
+      "path": "runs/exp19/campaign_desk/llm_transcript__report_5__seed2.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 356,
+          "cache_hits": 94,
+          "input_tokens": 368408,
+          "cached_tokens": 0,
+          "output_tokens": 39169,
+          "reasoning_tokens": 21257,
+          "cost_usd": 0.1206843999999998,
+          "cache_saved_usd": 0.011548399999999986
+        }
+      },
+      "wall_s": 165.975177526474
+    },
+    {
+      "run": "llm_none__report_5__seed4",
+      "path": "runs/exp19/campaign_desk/llm_none__report_5__seed4.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 128,
+          "cache_hits": 52,
+          "input_tokens": 166311,
+          "cached_tokens": 0,
+          "output_tokens": 14728,
+          "reasoning_tokens": 7890,
+          "cost_usd": 0.05093579999999909,
+          "cache_saved_usd": 0.006519599999999973
+        }
+      },
+      "wall_s": 59.73947715759277
+    },
+    {
+      "run": "llm_none__report_10__seed0",
+      "path": "runs/exp19/campaign_desk/llm_none__report_10__seed0.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 0,
+          "cache_hits": 60,
+          "input_tokens": 0,
+          "cached_tokens": 0,
+          "output_tokens": 0,
+          "reasoning_tokens": 0,
+          "cost_usd": 0.0,
+          "cache_saved_usd": 0.007227400000000009
+        }
+      },
+      "wall_s": 0.05284714698791504
+    },
+    {
+      "run": "llm_notes__report_5__seed2",
+      "path": "runs/exp19/campaign_desk/llm_notes__report_5__seed2.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 367,
+          "cache_hits": 166,
+          "input_tokens": 381147,
+          "cached_tokens": 0,
+          "output_tokens": 41160,
+          "reasoning_tokens": 22076,
+          "cost_usd": 0.12562139999999977,
+          "cache_saved_usd": 0.02032159999999999
+        }
+      },
+      "wall_s": 171.25773930549622
+    },
+    {
+      "run": "llm_transcript__report_5__seed3",
+      "path": "runs/exp19/campaign_desk/llm_transcript__report_5__seed3.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 356,
+          "cache_hits": 164,
+          "input_tokens": 365079,
+          "cached_tokens": 0,
+          "output_tokens": 40323,
+          "reasoning_tokens": 21521,
+          "cost_usd": 0.12140339999999983,
+          "cache_saved_usd": 0.02021299999999998
+        }
+      },
+      "wall_s": 167.19305109977722
+    },
+    {
+      "run": "llm_none__report_10__seed1",
+      "path": "runs/exp19/campaign_desk/llm_none__report_10__seed1.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 0,
+          "cache_hits": 60,
+          "input_tokens": 0,
+          "cached_tokens": 0,
+          "output_tokens": 0,
+          "reasoning_tokens": 0,
+          "cost_usd": 0.0,
+          "cache_saved_usd": 0.007683999999999996
+        }
+      },
+      "wall_s": 0.04597592353820801
+    },
+    {
+      "run": "llm_notes__report_5__seed3",
+      "path": "runs/exp19/campaign_desk/llm_notes__report_5__seed3.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 372,
+          "cache_hits": 221,
+          "input_tokens": 390968,
+          "cached_tokens": 0,
+          "output_tokens": 43261,
+          "reasoning_tokens": 23271,
+          "cost_usd": 0.13010679999999908,
+          "cache_saved_usd": 0.02754879999999997
+        }
+      },
+      "wall_s": 176.84138345718384
+    },
+    {
+      "run": "llm_transcript__report_5__seed4",
+      "path": "runs/exp19/campaign_desk/llm_transcript__report_5__seed4.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 402,
+          "cache_hits": 184,
+          "input_tokens": 533879,
+          "cached_tokens": 0,
+          "output_tokens": 45458,
+          "reasoning_tokens": 23590,
+          "cost_usd": 0.16132539999999973,
+          "cache_saved_usd": 0.022936399999999996
+        }
+      },
+      "wall_s": 183.5614366531372
+    },
+    {
+      "run": "llm_none__report_10__seed2",
+      "path": "runs/exp19/campaign_desk/llm_none__report_10__seed2.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 0,
+          "cache_hits": 60,
+          "input_tokens": 0,
+          "cached_tokens": 0,
+          "output_tokens": 0,
+          "reasoning_tokens": 0,
+          "cost_usd": 0.0,
+          "cache_saved_usd": 0.007422200000000018
+        }
+      },
+      "wall_s": 0.0424344539642334
+    },
+    {
+      "run": "llm_notes__report_5__seed4",
+      "path": "runs/exp19/campaign_desk/llm_notes__report_5__seed4.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 329,
+          "cache_hits": 216,
+          "input_tokens": 437225,
+          "cached_tokens": 0,
+          "output_tokens": 37733,
+          "reasoning_tokens": 19265,
+          "cost_usd": 0.13272460000000041,
+          "cache_saved_usd": 0.026900800000000016
+        }
+      },
+      "wall_s": 149.96435451507568
+    },
+    {
+      "run": "llm_notes__report_10__seed0",
+      "path": "runs/exp19/campaign_desk/llm_notes__report_10__seed0.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 333,
+          "cache_hits": 153,
+          "input_tokens": 449805,
+          "cached_tokens": 0,
+          "output_tokens": 37968,
+          "reasoning_tokens": 19455,
+          "cost_usd": 0.13552260000000071,
+          "cache_saved_usd": 0.019167000000000003
+        }
+      },
+      "wall_s": 152.32746028900146
+    },
+    {
+      "run": "llm_none__report_10__seed3",
+      "path": "runs/exp19/campaign_desk/llm_none__report_10__seed3.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 0,
+          "cache_hits": 60,
+          "input_tokens": 0,
+          "cached_tokens": 0,
+          "output_tokens": 0,
+          "reasoning_tokens": 0,
+          "cost_usd": 0.0,
+          "cache_saved_usd": 0.0072894000000000014
+        }
+      },
+      "wall_s": 0.06082797050476074
+    },
+    {
+      "run": "llm_transcript__report_10__seed0",
+      "path": "runs/exp19/campaign_desk/llm_transcript__report_10__seed0.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 346,
+          "cache_hits": 217,
+          "input_tokens": 470122,
+          "cached_tokens": 0,
+          "output_tokens": 39940,
+          "reasoning_tokens": 20288,
+          "cost_usd": 0.14195240000000076,
+          "cache_saved_usd": 0.02693480000000001
+        }
+      },
+      "wall_s": 157.6458215713501
+    },
+    {
+      "run": "llm_transcript__report_10__seed1",
+      "path": "runs/exp19/campaign_desk/llm_transcript__report_10__seed1.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 336,
+          "cache_hits": 155,
+          "input_tokens": 449929,
+          "cached_tokens": 0,
+          "output_tokens": 37071,
+          "reasoning_tokens": 18576,
+          "cost_usd": 0.13447100000000023,
+          "cache_saved_usd": 0.01886339999999999
+        }
+      },
+      "wall_s": 149.28270840644836
+    },
+    {
+      "run": "llm_none__report_10__seed4",
+      "path": "runs/exp19/campaign_desk/llm_none__report_10__seed4.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 0,
+          "cache_hits": 60,
+          "input_tokens": 0,
+          "cached_tokens": 0,
+          "output_tokens": 0,
+          "reasoning_tokens": 0,
+          "cost_usd": 0.0,
+          "cache_saved_usd": 0.007608999999999977
+        }
+      },
+      "wall_s": 0.05455923080444336
+    },
+    {
+      "run": "llm_notes__report_10__seed1",
+      "path": "runs/exp19/campaign_desk/llm_notes__report_10__seed1.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 318,
+          "cache_hits": 216,
+          "input_tokens": 433415,
+          "cached_tokens": 0,
+          "output_tokens": 34980,
+          "reasoning_tokens": 17056,
+          "cost_usd": 0.12865900000000074,
+          "cache_saved_usd": 0.026608399999999963
+        }
+      },
+      "wall_s": 141.20266699790955
+    },
+    {
+      "run": "llm_transcript__report_10__seed2",
+      "path": "runs/exp19/campaign_desk/llm_transcript__report_10__seed2.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 340,
+          "cache_hits": 156,
+          "input_tokens": 457342,
+          "cached_tokens": 0,
+          "output_tokens": 38478,
+          "reasoning_tokens": 18744,
+          "cost_usd": 0.13764200000000115,
+          "cache_saved_usd": 0.01912719999999994
+        }
+      },
+      "wall_s": 153.3014371395111
+    },
+    {
+      "run": "llm_none__report_20__seed0",
+      "path": "runs/exp19/campaign_desk/llm_none__report_20__seed0.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 0,
+          "cache_hits": 60,
+          "input_tokens": 0,
+          "cached_tokens": 0,
+          "output_tokens": 0,
+          "reasoning_tokens": 0,
+          "cost_usd": 0.0,
+          "cache_saved_usd": 0.007227400000000023
+        }
+      },
+      "wall_s": 0.04801440238952637
+    },
+    {
+      "run": "llm_notes__report_10__seed2",
+      "path": "runs/exp19/campaign_desk/llm_notes__report_10__seed2.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 363,
+          "cache_hits": 219,
+          "input_tokens": 492717,
+          "cached_tokens": 0,
+          "output_tokens": 40710,
+          "reasoning_tokens": 20043,
+          "cost_usd": 0.14739540000000062,
+          "cache_saved_usd": 0.02691999999999993
+        }
+      },
+      "wall_s": 163.99956512451172
+    },
+    {
+      "run": "llm_notes__report_10__seed3",
+      "path": "runs/exp19/campaign_desk/llm_notes__report_10__seed3.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 354,
+          "cache_hits": 157,
+          "input_tokens": 476291,
+          "cached_tokens": 0,
+          "output_tokens": 39569,
+          "reasoning_tokens": 19388,
+          "cost_usd": 0.14274100000000067,
+          "cache_saved_usd": 0.019464999999999885
+        }
+      },
+      "wall_s": 159.91055583953857
+    },
+    {
+      "run": "llm_none__report_20__seed1",
+      "path": "runs/exp19/campaign_desk/llm_none__report_20__seed1.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 0,
+          "cache_hits": 60,
+          "input_tokens": 0,
+          "cached_tokens": 0,
+          "output_tokens": 0,
+          "reasoning_tokens": 0,
+          "cost_usd": 0.0,
+          "cache_saved_usd": 0.007684000000000052
+        }
+      },
+      "wall_s": 0.06547069549560547
+    },
+    {
+      "run": "llm_transcript__report_10__seed3",
+      "path": "runs/exp19/campaign_desk/llm_transcript__report_10__seed3.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 358,
+          "cache_hits": 224,
+          "input_tokens": 486130,
+          "cached_tokens": 0,
+          "output_tokens": 39908,
+          "reasoning_tokens": 19554,
+          "cost_usd": 0.14511560000000046,
+          "cache_saved_usd": 0.02808279999999995
+        }
+      },
+      "wall_s": 160.93766140937805
+    },
+    {
+      "run": "llm_notes__report_10__seed4",
+      "path": "runs/exp19/campaign_desk/llm_notes__report_10__seed4.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 290,
+          "cache_hits": 160,
+          "input_tokens": 417094,
+          "cached_tokens": 0,
+          "output_tokens": 33072,
+          "reasoning_tokens": 16389,
+          "cost_usd": 0.12310519999999991,
+          "cache_saved_usd": 0.020221199999999995
+        }
+      },
+      "wall_s": 131.8189926147461
+    },
+    {
+      "run": "llm_none__report_20__seed2",
+      "path": "runs/exp19/campaign_desk/llm_none__report_20__seed2.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 0,
+          "cache_hits": 60,
+          "input_tokens": 0,
+          "cached_tokens": 0,
+          "output_tokens": 0,
+          "reasoning_tokens": 0,
+          "cost_usd": 0.0,
+          "cache_saved_usd": 0.007422199999999934
+        }
+      },
+      "wall_s": 0.06577587127685547
+    },
+    {
+      "run": "llm_transcript__report_10__seed4",
+      "path": "runs/exp19/campaign_desk/llm_transcript__report_10__seed4.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 337,
+          "cache_hits": 227,
+          "input_tokens": 463846,
+          "cached_tokens": 0,
+          "output_tokens": 38871,
+          "reasoning_tokens": 19403,
+          "cost_usd": 0.1394143999999995,
+          "cache_saved_usd": 0.02872239999999994
+        }
+      },
+      "wall_s": 154.43898510932922
+    },
+    {
+      "run": "llm_transcript__report_20__seed0",
+      "path": "runs/exp19/campaign_desk/llm_transcript__report_20__seed0.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 351,
+          "cache_hits": 165,
+          "input_tokens": 509435,
+          "cached_tokens": 0,
+          "output_tokens": 39766,
+          "reasoning_tokens": 20374,
+          "cost_usd": 0.1496061999999989,
+          "cache_saved_usd": 0.021209999999999923
+        }
+      },
+      "wall_s": 158.48291754722595
+    },
+    {
+      "run": "llm_none__report_20__seed3",
+      "path": "runs/exp19/campaign_desk/llm_none__report_20__seed3.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 0,
+          "cache_hits": 60,
+          "input_tokens": 0,
+          "cached_tokens": 0,
+          "output_tokens": 0,
+          "reasoning_tokens": 0,
+          "cost_usd": 0.0,
+          "cache_saved_usd": 0.0072894000000000014
+        }
+      },
+      "wall_s": 0.04946613311767578
+    },
+    {
+      "run": "llm_transcript__report_20__seed1",
+      "path": "runs/exp19/campaign_desk/llm_transcript__report_20__seed1.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 287,
+          "cache_hits": 155,
+          "input_tokens": 413963,
+          "cached_tokens": 0,
+          "output_tokens": 31960,
+          "reasoning_tokens": 16424,
+          "cost_usd": 0.12114459999999894,
+          "cache_saved_usd": 0.019481399999999927
+        }
+      },
+      "wall_s": 129.21894598007202
+    },
+    {
+      "run": "llm_notes__report_20__seed0",
+      "path": "runs/exp19/campaign_desk/llm_notes__report_20__seed0.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 326,
+          "cache_hits": 235,
+          "input_tokens": 461958,
+          "cached_tokens": 0,
+          "output_tokens": 36459,
+          "reasoning_tokens": 18315,
+          "cost_usd": 0.13614239999999933,
+          "cache_saved_usd": 0.029493199999999914
+        }
+      },
+      "wall_s": 146.23238396644592
+    },
+    {
+      "run": "llm_none__report_20__seed4",
+      "path": "runs/exp19/campaign_desk/llm_none__report_20__seed4.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 0,
+          "cache_hits": 60,
+          "input_tokens": 0,
+          "cached_tokens": 0,
+          "output_tokens": 0,
+          "reasoning_tokens": 0,
+          "cost_usd": 0.0,
+          "cache_saved_usd": 0.007609000000000032
+        }
+      },
+      "wall_s": 0.0726766586303711
+    },
+    {
+      "run": "llm_notes__report_20__seed1",
+      "path": "runs/exp19/campaign_desk/llm_notes__report_20__seed1.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 333,
+          "cache_hits": 225,
+          "input_tokens": 460938,
+          "cached_tokens": 0,
+          "output_tokens": 36952,
+          "reasoning_tokens": 18690,
+          "cost_usd": 0.1365299999999996,
+          "cache_saved_usd": 0.02823439999999991
+        }
+      },
+      "wall_s": 152.17601776123047
+    },
+    {
+      "run": "llm_transcript__report_20__seed2",
+      "path": "runs/exp19/campaign_desk/llm_transcript__report_20__seed2.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 336,
+          "cache_hits": 165,
+          "input_tokens": 464115,
+          "cached_tokens": 0,
+          "output_tokens": 37380,
+          "reasoning_tokens": 18923,
+          "cost_usd": 0.1376790000000001,
+          "cache_saved_usd": 0.0207532
+        }
+      },
+      "wall_s": 153.68483567237854
+    },
+    {
+      "run": "llm_notes__report_20__seed2",
+      "path": "runs/exp19/campaign_desk/llm_notes__report_20__seed2.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 385,
+          "cache_hits": 160,
+          "input_tokens": 507252,
+          "cached_tokens": 0,
+          "output_tokens": 44077,
+          "reasoning_tokens": 21952,
+          "cost_usd": 0.15434279999999978,
+          "cache_saved_usd": 0.01990599999999998
+        }
+      },
+      "wall_s": 183.90783429145813
+    },
+    {
+      "run": "llm_transcript__report_20__seed3",
+      "path": "runs/exp19/campaign_desk/llm_transcript__report_20__seed3.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 258,
+          "cache_hits": 90,
+          "input_tokens": 357236,
+          "cached_tokens": 0,
+          "output_tokens": 30300,
+          "reasoning_tokens": 14394,
+          "cost_usd": 0.10780719999999944,
+          "cache_saved_usd": 0.011436399999999985
+        }
+      },
+      "wall_s": 153.60104489326477
+    },
+    {
+      "run": "llm_transcript__report_20__seed4",
+      "path": "runs/exp19/campaign_desk/llm_transcript__report_20__seed4.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 236,
+          "cache_hits": 15,
+          "input_tokens": 335658,
+          "cached_tokens": 0,
+          "output_tokens": 27927,
+          "reasoning_tokens": 13485,
+          "cost_usd": 0.10064399999999929,
+          "cache_saved_usd": 0.0019979999999999998
+        }
+      },
+      "wall_s": 146.31308150291443
+    },
+    {
+      "run": "llm_notes__report_20__seed3",
+      "path": "runs/exp19/campaign_desk/llm_notes__report_20__seed3.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 264,
+          "cache_hits": 85,
+          "input_tokens": 363784,
+          "cached_tokens": 0,
+          "output_tokens": 31579,
+          "reasoning_tokens": 15061,
+          "cost_usd": 0.11065159999999952,
+          "cache_saved_usd": 0.010712600000000017
+        }
+      },
+      "wall_s": 161.1157512664795
+    },
+    {
+      "run": "llm_notes__report_20__seed4",
+      "path": "runs/exp19/campaign_desk/llm_notes__report_20__seed4.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 221,
+          "cache_hits": 10,
+          "input_tokens": 317109,
+          "cached_tokens": 0,
+          "output_tokens": 27774,
+          "reasoning_tokens": 13344,
+          "cost_usd": 0.09675059999999891,
+          "cache_saved_usd": 0.0012334000000000234
+        }
+      },
+      "wall_s": 155.67833948135376
+    }
+  ],
+  "grid_costs": [],
+  "config": {
+    "mode": "quick",
+    "quick": false,
+    "world": "form_filler",
+    "hypothesis_run": "H001",
+    "registry": {
+      "version": 1,
+      "title": "Can an agent learn from a weekly report?",
+      "hypothesis": "With only pooled reports, memory is not an optimization but the precondition for learning at all: a memoryless agent has nothing to connect a report to and stays at chance, while an agent with notes can correlate its own recorded choices with the totals. The gap widens as reports get sparser.",
+      "design": "The campaign desk never scores a single push; results arrive only as a periodic total. The regimes vary how often that report lands (every 5, 10 or 20 pushes) and the agents vary only in memory (none, transcript, notes). Two audience shifts land mid-run, so the agent must re-learn under pooling. The privileged log keeps per-push truth, so analysis scores what the agent never saw.",
+      "parameters": {
+        "episode length": "120 steps",
+        "report cadence": "every 5, 10 or 20 pushes, totals only, no breakdown",
+        "audience shifts": "2, evenly spaced after a 15-step warmup",
+        "agents": "the same LLM with no memory, a 40-step transcript, or notes"
+      },
+      "independent": [
+        "how often the pooled report arrives",
+        "how the agent remembers"
+      ],
+      "dependent": [
+        "true engagement (from the privileged per-push log)",
+        "how often the best angle is picked",
+        "final mean reward"
+      ],
+      "drift": [
+        "sudden real changes",
+        "self-caused fatigue (off in this experiment)"
+      ],
+      "worlds": [
+        "the campaign desk (campaign_desk)"
+      ],
+      "hypotheses": [
+        "H001",
+        "H004"
+      ],
+      "predictions": [
+        {
+          "kind": "effect",
+          "field": "final_reward",
+          "vary": "agent",
+          "a": "llm_none",
+          "b": "llm_notes",
+          "direction": ">",
+          "claim": "under pooled feedback, notes beat no memory: without a record of your own choices there is nothing to connect a report to"
+        }
+      ]
+    }
+  },
+  "unpriced_models": []
+}

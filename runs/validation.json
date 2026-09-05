@@ -1,0 +1,841 @@
+{
+  "generated": 1788630708.345466,
+  "min_pairs": 5,
+  "min_steps": 30,
+  "hypotheses": {
+    "H004": {
+      "rows": [
+        {
+          "exp": "exp09",
+          "version": 1,
+          "world": "form_filler",
+          "claim": "accuracy is lower with feedback delayed 6 steps than with immediate feedback, in a changing world",
+          "agent": "llm_transcript",
+          "delta": null,
+          "ci": null,
+          "n": 0,
+          "verdict": "inconclusive",
+          "reason": "this agent has no runs matched across 'changing_delay0' and 'changing_delay6' on the same seeds"
+        },
+        {
+          "exp": "exp13",
+          "version": 1,
+          "world": "form_filler",
+          "claim": "adaptive pacing ends with higher accuracy than fixed pacing, same number of changes",
+          "agent": "\u2014",
+          "delta": null,
+          "ci": null,
+          "n": 0,
+          "verdict": "inconclusive",
+          "reason": "no full-length runs in runs/exp13/form_filler (smoke runs, under 30 steps, never count)"
+        },
+        {
+          "exp": "exp19",
+          "version": 1,
+          "world": "campaign_desk",
+          "claim": "under pooled feedback, notes beat no memory: without a record of your own choices there is nothing to connect a report to",
+          "agent": "llm_notes vs llm_none",
+          "delta": 0.010000000000000002,
+          "ci": [
+            -0.017222222222222226,
+            0.03668055555555548
+          ],
+          "n": 15,
+          "verdict": "inconclusive",
+          "reason": "the 95% CI includes zero: 15 pairs cannot separate 'llm_notes' from 'llm_none' on final_reward"
+        }
+      ],
+      "predicted_by": [
+        "exp09",
+        "exp13",
+        "exp19"
+      ],
+      "proposed_status": "INCONCLUSIVE",
+      "scope": "0 supported, 0 contradicted, 3 inconclusive"
+    },
+    "H001": {
+      "rows": [
+        {
+          "exp": "exp02",
+          "version": 1,
+          "world": "form_filler",
+          "claim": "recovery lag differs between memory architectures on the same seeds",
+          "agent": "\u2014",
+          "delta": null,
+          "ci": null,
+          "n": 0,
+          "verdict": "inconclusive",
+          "reason": "no full-length runs in runs/exp02/form_filler (smoke runs, under 30 steps, never count)"
+        },
+        {
+          "exp": "exp02",
+          "version": 1,
+          "world": "rule_world",
+          "claim": "recovery lag differs between memory architectures on the same seeds",
+          "agent": "all pairs",
+          "delta": null,
+          "ci": null,
+          "n": 0,
+          "verdict": "inconclusive",
+          "reason": "no two agents share 5+ seed-matched runs here, so no pair can be compared"
+        },
+        {
+          "exp": "exp05",
+          "version": 1,
+          "world": "form_filler",
+          "claim": "the retention-setting ranking reverses between zero drift and high drift",
+          "agent": "all pairs",
+          "delta": null,
+          "ci": null,
+          "n": 0,
+          "verdict": "inconclusive",
+          "reason": "no agent pair has 5+ matched runs in both 'drift_none' and 'drift_high'"
+        },
+        {
+          "exp": "exp09",
+          "version": 1,
+          "world": "form_filler",
+          "claim": "accuracy is lower with feedback delayed 6 steps than with immediate feedback, in a changing world",
+          "agent": "llm_transcript",
+          "delta": null,
+          "ci": null,
+          "n": 0,
+          "verdict": "inconclusive",
+          "reason": "this agent has no runs matched across 'changing_delay0' and 'changing_delay6' on the same seeds"
+        },
+        {
+          "exp": "exp16",
+          "version": 1,
+          "world": "rule_world",
+          "claim": "the short-vs-long memory ranking reverses between the noisy-stable and changing regimes",
+          "agent": "all pairs",
+          "delta": null,
+          "ci": null,
+          "n": 5,
+          "verdict": "contradicted",
+          "reason": "agent pairs are measurable in both 'noisy_stable' and 'gradual', and none reverses sign"
+        },
+        {
+          "exp": "exp16",
+          "version": 1,
+          "world": "rule_world",
+          "claim": "a longer memory is more confidently wrong: overconfidence is higher with a 120-step transcript than a 5-step one",
+          "agent": "transcript_120 vs transcript_5",
+          "delta": -0.03845,
+          "ci": [
+            -0.07566708333333325,
+            -0.00954916666666673
+          ],
+          "n": 10,
+          "verdict": "contradicted",
+          "reason": "the 95% CI is entirely on the other side of zero: the data points the opposite way"
+        },
+        {
+          "exp": "exp17",
+          "version": 1,
+          "world": "form_filler",
+          "claim": "wiping the raw history mid-run costs a transcript agent final accuracy",
+          "agent": "\u2014",
+          "delta": null,
+          "ci": null,
+          "n": 0,
+          "verdict": "inconclusive",
+          "reason": "no full-length runs in runs/exp17/form_filler (smoke runs, under 30 steps, never count)"
+        },
+        {
+          "exp": "exp17",
+          "version": 1,
+          "world": "form_filler",
+          "claim": "after a mid-run context wipe, consolidated notes retain more performance than a raw transcript",
+          "agent": "\u2014",
+          "delta": null,
+          "ci": null,
+          "n": 0,
+          "verdict": "inconclusive",
+          "reason": "no full-length runs in runs/exp17/form_filler (smoke runs, under 30 steps, never count)"
+        },
+        {
+          "exp": "exp17",
+          "version": 1,
+          "world": "rule_world",
+          "claim": "wiping the raw history mid-run costs a transcript agent final accuracy",
+          "agent": "llm_transcript vs llm_transcript_wiped",
+          "delta": -0.016666666666666673,
+          "ci": [
+            -0.1166666666666667,
+            0.11666666666666665
+          ],
+          "n": 5,
+          "verdict": "inconclusive",
+          "reason": "the 95% CI includes zero: 5 pairs cannot separate 'llm_transcript' from 'llm_transcript_wiped' on final_accuracy"
+        },
+        {
+          "exp": "exp17",
+          "version": 1,
+          "world": "rule_world",
+          "claim": "after a mid-run context wipe, consolidated notes retain more performance than a raw transcript",
+          "agent": "llm_notes_wiped vs llm_transcript_wiped",
+          "delta": 0.18333333333333335,
+          "ci": [
+            -0.05,
+            0.4
+          ],
+          "n": 5,
+          "verdict": "inconclusive",
+          "reason": "the 95% CI includes zero: 5 pairs cannot separate 'llm_notes_wiped' from 'llm_transcript_wiped' on final_accuracy"
+        },
+        {
+          "exp": "exp19",
+          "version": 1,
+          "world": "campaign_desk",
+          "claim": "under pooled feedback, notes beat no memory: without a record of your own choices there is nothing to connect a report to",
+          "agent": "llm_notes vs llm_none",
+          "delta": 0.010000000000000002,
+          "ci": [
+            -0.017222222222222226,
+            0.03668055555555548
+          ],
+          "n": 15,
+          "verdict": "inconclusive",
+          "reason": "the 95% CI includes zero: 15 pairs cannot separate 'llm_notes' from 'llm_none' on final_reward"
+        }
+      ],
+      "predicted_by": [
+        "exp02",
+        "exp05",
+        "exp09",
+        "exp16",
+        "exp17",
+        "exp19"
+      ],
+      "proposed_status": "NOT SUPPORTED",
+      "scope": "0 supported, 2 contradicted, 9 inconclusive \u00b7 agents: all pairs, transcript_120 vs transcript_5 \u00b7 worlds: rule_world"
+    },
+    "H003": {
+      "rows": [
+        {
+          "exp": "exp15",
+          "version": 1,
+          "world": "rule_world",
+          "claim": "recovery is slower from self-caused changes than from scheduled ones",
+          "agent": "llm_notes",
+          "delta": -0.055555555555555504,
+          "ci": [
+            -1.6666666666666667,
+            2.5
+          ],
+          "n": 3,
+          "verdict": "inconclusive",
+          "reason": "only 3 matched pairs; 5 needed before a verdict is allowed"
+        },
+        {
+          "exp": "exp15",
+          "version": 1,
+          "world": "rule_world",
+          "claim": "recovery is slower from self-caused changes than from scheduled ones",
+          "agent": "llm_transcript",
+          "delta": null,
+          "ci": null,
+          "n": 0,
+          "verdict": "inconclusive",
+          "reason": "this agent has no runs matched across 'scheduled' and 'endogenous' on the same seeds"
+        },
+        {
+          "exp": "exp18",
+          "version": 1,
+          "world": "claims_desk",
+          "claim": "recovery is slower when the shift is aimed at you: adversarial tactic changes take longer to recover from than scheduled ones",
+          "agent": "g56luna_api_low_notes",
+          "delta": 2.166666666666667,
+          "ci": [
+            0.19791666666667804,
+            4.25
+          ],
+          "n": 5,
+          "verdict": "supported",
+          "reason": "the 95% CI of recovery_lag(adversarial) \u2212 recovery_lag(scheduled) is entirely above zero across 5 seed-matched pairs"
+        },
+        {
+          "exp": "exp18",
+          "version": 1,
+          "world": "claims_desk",
+          "claim": "recovery is slower when the shift is aimed at you: adversarial tactic changes take longer to recover from than scheduled ones",
+          "agent": "llm_notes",
+          "delta": 0.5166666666666667,
+          "ci": [
+            -1.6,
+            2.635416666666667
+          ],
+          "n": 5,
+          "verdict": "inconclusive",
+          "reason": "the 95% CI includes zero: 5 pairs cannot separate 'adversarial' from 'scheduled' on recovery_lag"
+        },
+        {
+          "exp": "exp18",
+          "version": 1,
+          "world": "claims_desk",
+          "claim": "recovery is slower when the shift is aimed at you: adversarial tactic changes take longer to recover from than scheduled ones",
+          "agent": "llm_transcript",
+          "delta": 2.1166666666666667,
+          "ci": [
+            -0.9333333333333332,
+            6.5
+          ],
+          "n": 5,
+          "verdict": "inconclusive",
+          "reason": "the 95% CI includes zero: 5 pairs cannot separate 'adversarial' from 'scheduled' on recovery_lag"
+        }
+      ],
+      "predicted_by": [
+        "exp15",
+        "exp18"
+      ],
+      "proposed_status": "SUPPORTED",
+      "scope": "1 supported, 0 contradicted, 4 inconclusive \u00b7 agents: g56luna_api_low_notes \u00b7 worlds: claims_desk"
+    },
+    "H002": {
+      "rows": [
+        {
+          "exp": "exp04",
+          "version": 1,
+          "world": "claims_desk",
+          "claim": "accuracy is lower under cosmetic-only change than under no change (over-reaction)",
+          "agent": "llm_notes",
+          "delta": -1.1102230246251566e-17,
+          "ci": [
+            -0.15,
+            0.1833333333333333
+          ],
+          "n": 5,
+          "verdict": "inconclusive",
+          "reason": "the 95% CI includes zero: 5 pairs cannot separate 'surface' from 'none' on final_accuracy"
+        },
+        {
+          "exp": "exp04",
+          "version": 1,
+          "world": "claims_desk",
+          "claim": "accuracy is lower under cosmetic-only change than under no change (over-reaction)",
+          "agent": "llm_transcript",
+          "delta": 0.06666666666666668,
+          "ci": [
+            0.016666666666666673,
+            0.11666666666666667
+          ],
+          "n": 5,
+          "verdict": "contradicted",
+          "reason": "the 95% CI is entirely on the other side of zero: the data points the opposite way"
+        }
+      ],
+      "predicted_by": [
+        "exp04"
+      ],
+      "proposed_status": "NOT SUPPORTED",
+      "scope": "0 supported, 1 contradicted, 1 inconclusive \u00b7 agents: llm_transcript \u00b7 worlds: claims_desk"
+    },
+    "H005": {
+      "rows": [],
+      "predicted_by": [],
+      "proposed_status": "INCONCLUSIVE",
+      "scope": "0 supported, 0 contradicted, 0 inconclusive"
+    },
+    "H006": {
+      "rows": [
+        {
+          "exp": "exp16",
+          "version": 1,
+          "world": "rule_world",
+          "claim": "the short-vs-long memory ranking reverses between the noisy-stable and changing regimes",
+          "agent": "all pairs",
+          "delta": null,
+          "ci": null,
+          "n": 5,
+          "verdict": "contradicted",
+          "reason": "agent pairs are measurable in both 'noisy_stable' and 'gradual', and none reverses sign"
+        },
+        {
+          "exp": "exp16",
+          "version": 1,
+          "world": "rule_world",
+          "claim": "a longer memory is more confidently wrong: overconfidence is higher with a 120-step transcript than a 5-step one",
+          "agent": "transcript_120 vs transcript_5",
+          "delta": -0.03845,
+          "ci": [
+            -0.07566708333333325,
+            -0.00954916666666673
+          ],
+          "n": 10,
+          "verdict": "contradicted",
+          "reason": "the 95% CI is entirely on the other side of zero: the data points the opposite way"
+        }
+      ],
+      "predicted_by": [
+        "exp16"
+      ],
+      "proposed_status": "NOT SUPPORTED",
+      "scope": "0 supported, 2 contradicted, 0 inconclusive \u00b7 agents: all pairs, transcript_120 vs transcript_5 \u00b7 worlds: rule_world"
+    },
+    "H007": {
+      "rows": [
+        {
+          "exp": "exp17",
+          "version": 1,
+          "world": "form_filler",
+          "claim": "wiping the raw history mid-run costs a transcript agent final accuracy",
+          "agent": "\u2014",
+          "delta": null,
+          "ci": null,
+          "n": 0,
+          "verdict": "inconclusive",
+          "reason": "no full-length runs in runs/exp17/form_filler (smoke runs, under 30 steps, never count)"
+        },
+        {
+          "exp": "exp17",
+          "version": 1,
+          "world": "form_filler",
+          "claim": "after a mid-run context wipe, consolidated notes retain more performance than a raw transcript",
+          "agent": "\u2014",
+          "delta": null,
+          "ci": null,
+          "n": 0,
+          "verdict": "inconclusive",
+          "reason": "no full-length runs in runs/exp17/form_filler (smoke runs, under 30 steps, never count)"
+        },
+        {
+          "exp": "exp17",
+          "version": 1,
+          "world": "rule_world",
+          "claim": "wiping the raw history mid-run costs a transcript agent final accuracy",
+          "agent": "llm_transcript vs llm_transcript_wiped",
+          "delta": -0.016666666666666673,
+          "ci": [
+            -0.1166666666666667,
+            0.11666666666666665
+          ],
+          "n": 5,
+          "verdict": "inconclusive",
+          "reason": "the 95% CI includes zero: 5 pairs cannot separate 'llm_transcript' from 'llm_transcript_wiped' on final_accuracy"
+        },
+        {
+          "exp": "exp17",
+          "version": 1,
+          "world": "rule_world",
+          "claim": "after a mid-run context wipe, consolidated notes retain more performance than a raw transcript",
+          "agent": "llm_notes_wiped vs llm_transcript_wiped",
+          "delta": 0.18333333333333335,
+          "ci": [
+            -0.05,
+            0.4
+          ],
+          "n": 5,
+          "verdict": "inconclusive",
+          "reason": "the 95% CI includes zero: 5 pairs cannot separate 'llm_notes_wiped' from 'llm_transcript_wiped' on final_accuracy"
+        }
+      ],
+      "predicted_by": [
+        "exp17"
+      ],
+      "proposed_status": "INCONCLUSIVE",
+      "scope": "0 supported, 0 contradicted, 4 inconclusive"
+    },
+    "H008": {
+      "rows": [
+        {
+          "exp": "exp18",
+          "version": 1,
+          "world": "claims_desk",
+          "claim": "recovery is slower when the shift is aimed at you: adversarial tactic changes take longer to recover from than scheduled ones",
+          "agent": "g56luna_api_low_notes",
+          "delta": 2.166666666666667,
+          "ci": [
+            0.19791666666667804,
+            4.25
+          ],
+          "n": 5,
+          "verdict": "supported",
+          "reason": "the 95% CI of recovery_lag(adversarial) \u2212 recovery_lag(scheduled) is entirely above zero across 5 seed-matched pairs"
+        },
+        {
+          "exp": "exp18",
+          "version": 1,
+          "world": "claims_desk",
+          "claim": "recovery is slower when the shift is aimed at you: adversarial tactic changes take longer to recover from than scheduled ones",
+          "agent": "llm_notes",
+          "delta": 0.5166666666666667,
+          "ci": [
+            -1.6,
+            2.635416666666667
+          ],
+          "n": 5,
+          "verdict": "inconclusive",
+          "reason": "the 95% CI includes zero: 5 pairs cannot separate 'adversarial' from 'scheduled' on recovery_lag"
+        },
+        {
+          "exp": "exp18",
+          "version": 1,
+          "world": "claims_desk",
+          "claim": "recovery is slower when the shift is aimed at you: adversarial tactic changes take longer to recover from than scheduled ones",
+          "agent": "llm_transcript",
+          "delta": 2.1166666666666667,
+          "ci": [
+            -0.9333333333333332,
+            6.5
+          ],
+          "n": 5,
+          "verdict": "inconclusive",
+          "reason": "the 95% CI includes zero: 5 pairs cannot separate 'adversarial' from 'scheduled' on recovery_lag"
+        }
+      ],
+      "predicted_by": [
+        "exp18"
+      ],
+      "proposed_status": "SUPPORTED",
+      "scope": "1 supported, 0 contradicted, 2 inconclusive \u00b7 agents: g56luna_api_low_notes \u00b7 worlds: claims_desk"
+    }
+  },
+  "experiments": {
+    "exp01": {
+      "predictions": 0,
+      "rows": []
+    },
+    "exp02": {
+      "predictions": 1,
+      "rows": [
+        {
+          "exp": "exp02",
+          "version": 1,
+          "world": "form_filler",
+          "claim": "recovery lag differs between memory architectures on the same seeds",
+          "agent": "\u2014",
+          "delta": null,
+          "ci": null,
+          "n": 0,
+          "verdict": "inconclusive",
+          "reason": "no full-length runs in runs/exp02/form_filler (smoke runs, under 30 steps, never count)"
+        },
+        {
+          "exp": "exp02",
+          "version": 1,
+          "world": "rule_world",
+          "claim": "recovery lag differs between memory architectures on the same seeds",
+          "agent": "all pairs",
+          "delta": null,
+          "ci": null,
+          "n": 0,
+          "verdict": "inconclusive",
+          "reason": "no two agents share 5+ seed-matched runs here, so no pair can be compared"
+        }
+      ]
+    },
+    "exp03": {
+      "predictions": 0,
+      "rows": []
+    },
+    "exp04": {
+      "predictions": 1,
+      "rows": [
+        {
+          "exp": "exp04",
+          "version": 1,
+          "world": "claims_desk",
+          "claim": "accuracy is lower under cosmetic-only change than under no change (over-reaction)",
+          "agent": "llm_notes",
+          "delta": -1.1102230246251566e-17,
+          "ci": [
+            -0.15,
+            0.1833333333333333
+          ],
+          "n": 5,
+          "verdict": "inconclusive",
+          "reason": "the 95% CI includes zero: 5 pairs cannot separate 'surface' from 'none' on final_accuracy"
+        },
+        {
+          "exp": "exp04",
+          "version": 1,
+          "world": "claims_desk",
+          "claim": "accuracy is lower under cosmetic-only change than under no change (over-reaction)",
+          "agent": "llm_transcript",
+          "delta": 0.06666666666666668,
+          "ci": [
+            0.016666666666666673,
+            0.11666666666666667
+          ],
+          "n": 5,
+          "verdict": "contradicted",
+          "reason": "the 95% CI is entirely on the other side of zero: the data points the opposite way"
+        }
+      ]
+    },
+    "exp05": {
+      "predictions": 1,
+      "rows": [
+        {
+          "exp": "exp05",
+          "version": 1,
+          "world": "form_filler",
+          "claim": "the retention-setting ranking reverses between zero drift and high drift",
+          "agent": "all pairs",
+          "delta": null,
+          "ci": null,
+          "n": 0,
+          "verdict": "inconclusive",
+          "reason": "no agent pair has 5+ matched runs in both 'drift_none' and 'drift_high'"
+        }
+      ]
+    },
+    "exp06": {
+      "predictions": 0,
+      "rows": []
+    },
+    "exp07": {
+      "predictions": 0,
+      "rows": []
+    },
+    "exp08": {
+      "predictions": 0,
+      "rows": []
+    },
+    "exp09": {
+      "predictions": 1,
+      "rows": [
+        {
+          "exp": "exp09",
+          "version": 1,
+          "world": "form_filler",
+          "claim": "accuracy is lower with feedback delayed 6 steps than with immediate feedback, in a changing world",
+          "agent": "llm_transcript",
+          "delta": null,
+          "ci": null,
+          "n": 0,
+          "verdict": "inconclusive",
+          "reason": "this agent has no runs matched across 'changing_delay0' and 'changing_delay6' on the same seeds"
+        }
+      ]
+    },
+    "exp10": {
+      "predictions": 0,
+      "rows": []
+    },
+    "exp11": {
+      "predictions": 0,
+      "rows": []
+    },
+    "exp12": {
+      "predictions": 0,
+      "rows": []
+    },
+    "exp13": {
+      "predictions": 1,
+      "rows": [
+        {
+          "exp": "exp13",
+          "version": 1,
+          "world": "form_filler",
+          "claim": "adaptive pacing ends with higher accuracy than fixed pacing, same number of changes",
+          "agent": "\u2014",
+          "delta": null,
+          "ci": null,
+          "n": 0,
+          "verdict": "inconclusive",
+          "reason": "no full-length runs in runs/exp13/form_filler (smoke runs, under 30 steps, never count)"
+        }
+      ]
+    },
+    "exp14": {
+      "predictions": 0,
+      "rows": []
+    },
+    "exp15": {
+      "predictions": 1,
+      "rows": [
+        {
+          "exp": "exp15",
+          "version": 1,
+          "world": "rule_world",
+          "claim": "recovery is slower from self-caused changes than from scheduled ones",
+          "agent": "llm_notes",
+          "delta": -0.055555555555555504,
+          "ci": [
+            -1.6666666666666667,
+            2.5
+          ],
+          "n": 3,
+          "verdict": "inconclusive",
+          "reason": "only 3 matched pairs; 5 needed before a verdict is allowed"
+        },
+        {
+          "exp": "exp15",
+          "version": 1,
+          "world": "rule_world",
+          "claim": "recovery is slower from self-caused changes than from scheduled ones",
+          "agent": "llm_transcript",
+          "delta": null,
+          "ci": null,
+          "n": 0,
+          "verdict": "inconclusive",
+          "reason": "this agent has no runs matched across 'scheduled' and 'endogenous' on the same seeds"
+        }
+      ]
+    },
+    "exp16": {
+      "predictions": 2,
+      "rows": [
+        {
+          "exp": "exp16",
+          "version": 1,
+          "world": "rule_world",
+          "claim": "the short-vs-long memory ranking reverses between the noisy-stable and changing regimes",
+          "agent": "all pairs",
+          "delta": null,
+          "ci": null,
+          "n": 5,
+          "verdict": "contradicted",
+          "reason": "agent pairs are measurable in both 'noisy_stable' and 'gradual', and none reverses sign"
+        },
+        {
+          "exp": "exp16",
+          "version": 1,
+          "world": "rule_world",
+          "claim": "a longer memory is more confidently wrong: overconfidence is higher with a 120-step transcript than a 5-step one",
+          "agent": "transcript_120 vs transcript_5",
+          "delta": -0.03845,
+          "ci": [
+            -0.07566708333333325,
+            -0.00954916666666673
+          ],
+          "n": 10,
+          "verdict": "contradicted",
+          "reason": "the 95% CI is entirely on the other side of zero: the data points the opposite way"
+        }
+      ]
+    },
+    "exp17": {
+      "predictions": 2,
+      "rows": [
+        {
+          "exp": "exp17",
+          "version": 1,
+          "world": "form_filler",
+          "claim": "wiping the raw history mid-run costs a transcript agent final accuracy",
+          "agent": "\u2014",
+          "delta": null,
+          "ci": null,
+          "n": 0,
+          "verdict": "inconclusive",
+          "reason": "no full-length runs in runs/exp17/form_filler (smoke runs, under 30 steps, never count)"
+        },
+        {
+          "exp": "exp17",
+          "version": 1,
+          "world": "form_filler",
+          "claim": "after a mid-run context wipe, consolidated notes retain more performance than a raw transcript",
+          "agent": "\u2014",
+          "delta": null,
+          "ci": null,
+          "n": 0,
+          "verdict": "inconclusive",
+          "reason": "no full-length runs in runs/exp17/form_filler (smoke runs, under 30 steps, never count)"
+        },
+        {
+          "exp": "exp17",
+          "version": 1,
+          "world": "rule_world",
+          "claim": "wiping the raw history mid-run costs a transcript agent final accuracy",
+          "agent": "llm_transcript vs llm_transcript_wiped",
+          "delta": -0.016666666666666673,
+          "ci": [
+            -0.1166666666666667,
+            0.11666666666666665
+          ],
+          "n": 5,
+          "verdict": "inconclusive",
+          "reason": "the 95% CI includes zero: 5 pairs cannot separate 'llm_transcript' from 'llm_transcript_wiped' on final_accuracy"
+        },
+        {
+          "exp": "exp17",
+          "version": 1,
+          "world": "rule_world",
+          "claim": "after a mid-run context wipe, consolidated notes retain more performance than a raw transcript",
+          "agent": "llm_notes_wiped vs llm_transcript_wiped",
+          "delta": 0.18333333333333335,
+          "ci": [
+            -0.05,
+            0.4
+          ],
+          "n": 5,
+          "verdict": "inconclusive",
+          "reason": "the 95% CI includes zero: 5 pairs cannot separate 'llm_notes_wiped' from 'llm_transcript_wiped' on final_accuracy"
+        }
+      ]
+    },
+    "exp18": {
+      "predictions": 1,
+      "rows": [
+        {
+          "exp": "exp18",
+          "version": 1,
+          "world": "claims_desk",
+          "claim": "recovery is slower when the shift is aimed at you: adversarial tactic changes take longer to recover from than scheduled ones",
+          "agent": "g56luna_api_low_notes",
+          "delta": 2.166666666666667,
+          "ci": [
+            0.19791666666667804,
+            4.25
+          ],
+          "n": 5,
+          "verdict": "supported",
+          "reason": "the 95% CI of recovery_lag(adversarial) \u2212 recovery_lag(scheduled) is entirely above zero across 5 seed-matched pairs"
+        },
+        {
+          "exp": "exp18",
+          "version": 1,
+          "world": "claims_desk",
+          "claim": "recovery is slower when the shift is aimed at you: adversarial tactic changes take longer to recover from than scheduled ones",
+          "agent": "llm_notes",
+          "delta": 0.5166666666666667,
+          "ci": [
+            -1.6,
+            2.635416666666667
+          ],
+          "n": 5,
+          "verdict": "inconclusive",
+          "reason": "the 95% CI includes zero: 5 pairs cannot separate 'adversarial' from 'scheduled' on recovery_lag"
+        },
+        {
+          "exp": "exp18",
+          "version": 1,
+          "world": "claims_desk",
+          "claim": "recovery is slower when the shift is aimed at you: adversarial tactic changes take longer to recover from than scheduled ones",
+          "agent": "llm_transcript",
+          "delta": 2.1166666666666667,
+          "ci": [
+            -0.9333333333333332,
+            6.5
+          ],
+          "n": 5,
+          "verdict": "inconclusive",
+          "reason": "the 95% CI includes zero: 5 pairs cannot separate 'adversarial' from 'scheduled' on recovery_lag"
+        }
+      ]
+    },
+    "exp19": {
+      "predictions": 1,
+      "rows": [
+        {
+          "exp": "exp19",
+          "version": 1,
+          "world": "campaign_desk",
+          "claim": "under pooled feedback, notes beat no memory: without a record of your own choices there is nothing to connect a report to",
+          "agent": "llm_notes vs llm_none",
+          "delta": 0.010000000000000002,
+          "ci": [
+            -0.017222222222222226,
+            0.03668055555555548
+          ],
+          "n": 15,
+          "verdict": "inconclusive",
+          "reason": "the 95% CI includes zero: 15 pairs cannot separate 'llm_notes' from 'llm_none' on final_reward"
+        }
+      ]
+    }
+  }
+}

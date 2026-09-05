@@ -1,0 +1,393 @@
+{
+  "runs": [
+    {
+      "run": "llm_notes__scheduled__seed1",
+      "path": "runs/exp15/rule_world/llm_notes__scheduled__seed1.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 369,
+          "cache_hits": 0,
+          "input_tokens": 320767,
+          "cached_tokens": 0,
+          "output_tokens": 68953,
+          "reasoning_tokens": 58338,
+          "cost_usd": 0.14689699999999992,
+          "cache_saved_usd": 0
+        }
+      },
+      "wall_s": 224.81713724136353
+    },
+    {
+      "run": "llm_notes__scheduled__seed2",
+      "path": "runs/exp15/rule_world/llm_notes__scheduled__seed2.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 384,
+          "cache_hits": 0,
+          "input_tokens": 338332,
+          "cached_tokens": 0,
+          "output_tokens": 71300,
+          "reasoning_tokens": 60114,
+          "cost_usd": 0.15322639999999998,
+          "cache_saved_usd": 0
+        }
+      },
+      "wall_s": 230.86532163619995
+    },
+    {
+      "run": "llm_notes__scheduled__seed0",
+      "path": "runs/exp15/rule_world/llm_notes__scheduled__seed0.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 451,
+          "cache_hits": 1,
+          "input_tokens": 426288,
+          "cached_tokens": 0,
+          "output_tokens": 83059,
+          "reasoning_tokens": 70356,
+          "cost_usd": 0.18492839999999994,
+          "cache_saved_usd": 9.28e-05
+        }
+      },
+      "wall_s": 269.8397274017334
+    },
+    {
+      "run": "llm_transcript__scheduled__seed1",
+      "path": "runs/exp15/rule_world/llm_transcript__scheduled__seed1.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 531,
+          "cache_hits": 1,
+          "input_tokens": 540845,
+          "cached_tokens": 0,
+          "output_tokens": 99875,
+          "reasoning_tokens": 85228,
+          "cost_usd": 0.22801899999999986,
+          "cache_saved_usd": 9.28e-05
+        }
+      },
+      "wall_s": 324.84861636161804
+    },
+    {
+      "run": "llm_transcript__scheduled__seed2",
+      "path": "runs/exp15/rule_world/llm_transcript__scheduled__seed2.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 534,
+          "cache_hits": 2,
+          "input_tokens": 544843,
+          "cached_tokens": 0,
+          "output_tokens": 100447,
+          "reasoning_tokens": 85724,
+          "cost_usd": 0.22950499999999985,
+          "cache_saved_usd": 0.000194
+        }
+      },
+      "wall_s": 326.3204491138458
+    },
+    {
+      "run": "llm_transcript__scheduled__seed0",
+      "path": "runs/exp15/rule_world/llm_transcript__scheduled__seed0.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 636,
+          "cache_hits": 3,
+          "input_tokens": 656281,
+          "cached_tokens": 0,
+          "output_tokens": 118987,
+          "reasoning_tokens": 102154,
+          "cost_usd": 0.27404059999999986,
+          "cache_saved_usd": 0.0003698
+        }
+      },
+      "wall_s": 390.1166067123413
+    },
+    {
+      "run": "llm_notes__scheduled__seed3",
+      "path": "runs/exp15/rule_world/llm_notes__scheduled__seed3.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 400,
+          "cache_hits": 24,
+          "input_tokens": 495274,
+          "cached_tokens": 0,
+          "output_tokens": 74700,
+          "reasoning_tokens": 64039,
+          "cost_usd": 0.18869480000000033,
+          "cache_saved_usd": 0.0042347999999999995
+        }
+      },
+      "wall_s": 247.07147932052612
+    },
+    {
+      "run": "llm_notes__scheduled__seed4",
+      "path": "runs/exp15/rule_world/llm_notes__scheduled__seed4.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 309,
+          "cache_hits": 53,
+          "input_tokens": 372964,
+          "cached_tokens": 0,
+          "output_tokens": 58550,
+          "reasoning_tokens": 49216,
+          "cost_usd": 0.14485280000000017,
+          "cache_saved_usd": 0.0185262
+        }
+      },
+      "wall_s": 189.21293663978577
+    },
+    {
+      "run": "llm_transcript__scheduled__seed3",
+      "path": "runs/exp15/rule_world/llm_transcript__scheduled__seed3.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 507,
+          "cache_hits": 97,
+          "input_tokens": 648692,
+          "cached_tokens": 0,
+          "output_tokens": 96849,
+          "reasoning_tokens": 82737,
+          "cost_usd": 0.2459572000000003,
+          "cache_saved_usd": 0.0271198
+        }
+      },
+      "wall_s": 313.14633345603943
+    },
+    {
+      "run": "llm_notes__endogenous__seed0",
+      "path": "runs/exp15/rule_world/llm_notes__endogenous__seed0.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 319,
+          "cache_hits": 136,
+          "input_tokens": 439222,
+          "cached_tokens": 0,
+          "output_tokens": 65703,
+          "reasoning_tokens": 55193,
+          "cost_usd": 0.1666880000000001,
+          "cache_saved_usd": 0.050031399999999976
+        }
+      },
+      "wall_s": 206.09948110580444
+    },
+    {
+      "run": "llm_transcript__scheduled__seed4",
+      "path": "runs/exp15/rule_world/llm_transcript__scheduled__seed4.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 524,
+          "cache_hits": 159,
+          "input_tokens": 700422,
+          "cached_tokens": 0,
+          "output_tokens": 105275,
+          "reasoning_tokens": 90220,
+          "cost_usd": 0.2664144,
+          "cache_saved_usd": 0.0536396
+        }
+      },
+      "wall_s": 336.3293342590332
+    },
+    {
+      "run": "llm_notes__endogenous__seed1",
+      "path": "runs/exp15/rule_world/llm_notes__endogenous__seed1.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 170,
+          "cache_hits": 124,
+          "input_tokens": 263202,
+          "cached_tokens": 0,
+          "output_tokens": 38276,
+          "reasoning_tokens": 33303,
+          "cost_usd": 0.09857159999999998,
+          "cache_saved_usd": 0.041580599999999995
+        }
+      },
+      "wall_s": 116.61186790466309
+    },
+    {
+      "run": "llm_transcript__endogenous__seed2",
+      "path": "runs/exp15/rule_world/llm_transcript__endogenous__seed2.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 212,
+          "cache_hits": 102,
+          "input_tokens": 327043,
+          "cached_tokens": 0,
+          "output_tokens": 47056,
+          "reasoning_tokens": 41065,
+          "cost_usd": 0.12187579999999992,
+          "cache_saved_usd": 0.036309999999999995
+        }
+      },
+      "wall_s": 151.54168581962585
+    },
+    {
+      "run": "llm_transcript__endogenous__seed1",
+      "path": "runs/exp15/rule_world/llm_transcript__endogenous__seed1.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 314,
+          "cache_hits": 203,
+          "input_tokens": 478001,
+          "cached_tokens": 0,
+          "output_tokens": 68720,
+          "reasoning_tokens": 59749,
+          "cost_usd": 0.17806419999999973,
+          "cache_saved_usd": 0.06994120000000002
+        }
+      },
+      "wall_s": 218.63360261917114
+    },
+    {
+      "run": "llm_transcript__endogenous__seed0",
+      "path": "runs/exp15/rule_world/llm_transcript__endogenous__seed0.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 572,
+          "cache_hits": 257,
+          "input_tokens": 777622,
+          "cached_tokens": 0,
+          "output_tokens": 116320,
+          "reasoning_tokens": 99801,
+          "cost_usd": 0.2951084000000004,
+          "cache_saved_usd": 0.07930960000000005
+        }
+      },
+      "wall_s": 375.70592737197876
+    },
+    {
+      "run": "llm_notes__endogenous__seed2",
+      "path": "runs/exp15/rule_world/llm_notes__endogenous__seed2.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 245,
+          "cache_hits": 120,
+          "input_tokens": 317168,
+          "cached_tokens": 0,
+          "output_tokens": 47703,
+          "reasoning_tokens": 40324,
+          "cost_usd": 0.12067720000000043,
+          "cache_saved_usd": 0.02910240000000007
+        }
+      },
+      "wall_s": 175.91797161102295
+    },
+    {
+      "run": "llm_notes__endogenous__seed4",
+      "path": "runs/exp15/rule_world/llm_notes__endogenous__seed4.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 159,
+          "cache_hits": 32,
+          "input_tokens": 174810,
+          "cached_tokens": 0,
+          "output_tokens": 26641,
+          "reasoning_tokens": 20560,
+          "cost_usd": 0.06693120000000052,
+          "cache_saved_usd": 0.0053276000000000295
+        }
+      },
+      "wall_s": 121.2884452342987
+    },
+    {
+      "run": "llm_notes__endogenous__seed3",
+      "path": "runs/exp15/rule_world/llm_notes__endogenous__seed3.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 277,
+          "cache_hits": 81,
+          "input_tokens": 359391,
+          "cached_tokens": 0,
+          "output_tokens": 50488,
+          "reasoning_tokens": 41710,
+          "cost_usd": 0.13246380000000085,
+          "cache_saved_usd": 0.019304000000000057
+        }
+      },
+      "wall_s": 225.69722819328308
+    },
+    {
+      "run": "llm_transcript__endogenous__seed3",
+      "path": "runs/exp15/rule_world/llm_transcript__endogenous__seed3.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 335,
+          "cache_hits": 99,
+          "input_tokens": 465352,
+          "cached_tokens": 0,
+          "output_tokens": 64680,
+          "reasoning_tokens": 54476,
+          "cost_usd": 0.1706864000000008,
+          "cache_saved_usd": 0.02577120000000005
+        }
+      },
+      "wall_s": 305.8134517669678
+    },
+    {
+      "run": "llm_transcript__endogenous__seed4",
+      "path": "runs/exp15/rule_world/llm_transcript__endogenous__seed4.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 223,
+          "cache_hits": 60,
+          "input_tokens": 297966,
+          "cached_tokens": 0,
+          "output_tokens": 40468,
+          "reasoning_tokens": 33214,
+          "cost_usd": 0.10815480000000055,
+          "cache_saved_usd": 0.016073800000000055
+        }
+      },
+      "wall_s": 226.98820614814758
+    }
+  ],
+  "grid_costs": [],
+  "config": {
+    "mode": "quick",
+    "quick": false,
+    "world": "rule_world",
+    "hypothesis_run": "H003",
+    "registry": {
+      "version": 1,
+      "title": "Can an agent see the change it causes?",
+      "hypothesis": "Changes the agent caused itself are the slowest to recover from, because nothing announces them. An agent that spots the pattern can also stop causing them.",
+      "design": "Nothing is scheduled by the experimenter. One condition keeps the world fully stable; one changes it on a timer as a control; and in the third, the world changes only in reaction to the agent's own behavior, such as overloading a desk until it sheds work.",
+      "parameters": {
+        "episode length": "150 steps",
+        "conditions": "stable (no changes); scheduled (4 timer changes after a 20-step warmup); self-caused (changes only when the agent triggers them)",
+        "triggers by world": "intake desk: an overloaded desk sheds work; inventory: big orders strain the supplier; coding: the reviewer copies the agent's habits; forms: IT adds an alias for a field name the agent keeps typing",
+        "agents": "the same LLM with a transcript or with notes"
+      },
+      "independent": [
+        "where changes come from: nowhere, a timer, or the agent itself"
+      ],
+      "dependent": [
+        "recovery latency by change source",
+        "how many self-caused changes happen over the run"
+      ],
+      "drift": [
+        "self-caused changes",
+        "sudden real changes (control)"
+      ],
+      "worlds": [
+        "any"
+      ],
+      "hypotheses": [
+        "H003"
+      ],
+      "predictions": [
+        {
+          "kind": "effect",
+          "field": "recovery_lag",
+          "vary": "regime",
+          "a": "scheduled",
+          "b": "endogenous",
+          "direction": ">",
+          "within": "agent",
+          "claim": "recovery is slower from self-caused changes than from scheduled ones"
+        }
+      ]
+    }
+  },
+  "unpriced_models": []
+}

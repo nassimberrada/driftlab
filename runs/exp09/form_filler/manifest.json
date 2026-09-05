@@ -1,0 +1,394 @@
+{
+  "runs": [
+    {
+      "run": "llm_notes__changing_delay0__seed1",
+      "path": "runs/exp09/form_filler/llm_notes__changing_delay0__seed1.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 318,
+          "cache_hits": 0,
+          "input_tokens": 376587,
+          "cached_tokens": 0,
+          "output_tokens": 80766,
+          "reasoning_tokens": 61853,
+          "cost_usd": 0.17223659999999985,
+          "cache_saved_usd": 0.0
+        }
+      },
+      "wall_s": 239.5940363407135
+    },
+    {
+      "run": "llm_notes__changing_delay0__seed2",
+      "path": "runs/exp09/form_filler/llm_notes__changing_delay0__seed2.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 363,
+          "cache_hits": 0,
+          "input_tokens": 460373,
+          "cached_tokens": 0,
+          "output_tokens": 92590,
+          "reasoning_tokens": 71120,
+          "cost_usd": 0.20318259999999977,
+          "cache_saved_usd": 0.0
+        }
+      },
+      "wall_s": 275.8661742210388
+    },
+    {
+      "run": "llm_transcript__changing_delay0__seed1",
+      "path": "runs/exp09/form_filler/llm_transcript__changing_delay0__seed1.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 367,
+          "cache_hits": 1,
+          "input_tokens": 470927,
+          "cached_tokens": 0,
+          "output_tokens": 93359,
+          "reasoning_tokens": 71708,
+          "cost_usd": 0.20621619999999985,
+          "cache_saved_usd": 0.00011740000000000361
+        }
+      },
+      "wall_s": 279.5392243862152
+    },
+    {
+      "run": "llm_transcript__changing_delay0__seed2",
+      "path": "runs/exp09/form_filler/llm_transcript__changing_delay0__seed2.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 374,
+          "cache_hits": 1,
+          "input_tokens": 479646,
+          "cached_tokens": 0,
+          "output_tokens": 94609,
+          "reasoning_tokens": 72643,
+          "cost_usd": 0.20945999999999987,
+          "cache_saved_usd": 0.00011740000000000361
+        }
+      },
+      "wall_s": 282.99618124961853
+    },
+    {
+      "run": "llm_notes__changing_delay0__seed0",
+      "path": "runs/exp09/form_filler/llm_notes__changing_delay0__seed0.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 376,
+          "cache_hits": 2,
+          "input_tokens": 481592,
+          "cached_tokens": 0,
+          "output_tokens": 95168,
+          "reasoning_tokens": 72855,
+          "cost_usd": 0.21051999999999982,
+          "cache_saved_usd": 0.00027240000000000597
+        }
+      },
+      "wall_s": 284.8864848613739
+    },
+    {
+      "run": "llm_transcript__changing_delay0__seed0",
+      "path": "runs/exp09/form_filler/llm_transcript__changing_delay0__seed0.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 474,
+          "cache_hits": 9,
+          "input_tokens": 599592,
+          "cached_tokens": 0,
+          "output_tokens": 122142,
+          "reasoning_tokens": 94709,
+          "cost_usd": 0.26648879999999986,
+          "cache_saved_usd": 0.002836200000000025
+        }
+      },
+      "wall_s": 366.731214761734
+    },
+    {
+      "run": "llm_transcript__changing_delay0__seed3",
+      "path": "runs/exp09/form_filler/llm_transcript__changing_delay0__seed3.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 369,
+          "cache_hits": 19,
+          "input_tokens": 600049,
+          "cached_tokens": 0,
+          "output_tokens": 121146,
+          "reasoning_tokens": 99502,
+          "cost_usd": 0.265385,
+          "cache_saved_usd": 0.006384200000000048
+        }
+      },
+      "wall_s": 339.7405378818512
+    },
+    {
+      "run": "llm_transcript__changing_delay6__seed0",
+      "path": "runs/exp09/form_filler/llm_transcript__changing_delay6__seed0.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 341,
+          "cache_hits": 24,
+          "input_tokens": 547408,
+          "cached_tokens": 0,
+          "output_tokens": 116446,
+          "reasoning_tokens": 96809,
+          "cost_usd": 0.24921680000000002,
+          "cache_saved_usd": 0.008313600000000032
+        }
+      },
+      "wall_s": 322.1925492286682
+    },
+    {
+      "run": "llm_notes__changing_delay0__seed4",
+      "path": "runs/exp09/form_filler/llm_notes__changing_delay0__seed4.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 361,
+          "cache_hits": 35,
+          "input_tokens": 566499,
+          "cached_tokens": 0,
+          "output_tokens": 122018,
+          "reasoning_tokens": 100893,
+          "cost_usd": 0.2597214,
+          "cache_saved_usd": 0.011334200000000044
+        }
+      },
+      "wall_s": 336.76481008529663
+    },
+    {
+      "run": "llm_transcript__changing_delay0__seed4",
+      "path": "runs/exp09/form_filler/llm_transcript__changing_delay0__seed4.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 381,
+          "cache_hits": 42,
+          "input_tokens": 590090,
+          "cached_tokens": 0,
+          "output_tokens": 127943,
+          "reasoning_tokens": 105707,
+          "cost_usd": 0.27154960000000006,
+          "cache_saved_usd": 0.01316360000000008
+        }
+      },
+      "wall_s": 351.275089263916
+    },
+    {
+      "run": "llm_notes__changing_delay0__seed3",
+      "path": "runs/exp09/form_filler/llm_notes__changing_delay0__seed3.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 388,
+          "cache_hits": 53,
+          "input_tokens": 603693,
+          "cached_tokens": 0,
+          "output_tokens": 129885,
+          "reasoning_tokens": 106864,
+          "cost_usd": 0.2766006000000002,
+          "cache_saved_usd": 0.01569300000000011
+        }
+      },
+      "wall_s": 358.5292475223541
+    },
+    {
+      "run": "llm_notes__changing_delay6__seed0",
+      "path": "runs/exp09/form_filler/llm_notes__changing_delay6__seed0.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 329,
+          "cache_hits": 51,
+          "input_tokens": 505081,
+          "cached_tokens": 0,
+          "output_tokens": 115566,
+          "reasoning_tokens": 95231,
+          "cost_usd": 0.23969540000000011,
+          "cache_saved_usd": 0.014264600000000072
+        }
+      },
+      "wall_s": 310.43973326683044
+    },
+    {
+      "run": "llm_notes__changing_delay6__seed1",
+      "path": "runs/exp09/form_filler/llm_notes__changing_delay6__seed1.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 300,
+          "cache_hits": 44,
+          "input_tokens": 424625,
+          "cached_tokens": 0,
+          "output_tokens": 96257,
+          "reasoning_tokens": 77291,
+          "cost_usd": 0.20043340000000076,
+          "cache_saved_usd": 0.010575200000000048
+        }
+      },
+      "wall_s": 257.7091956138611
+    },
+    {
+      "run": "llm_transcript__changing_delay6__seed2",
+      "path": "runs/exp09/form_filler/llm_transcript__changing_delay6__seed2.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 293,
+          "cache_hits": 41,
+          "input_tokens": 432978,
+          "cached_tokens": 0,
+          "output_tokens": 94710,
+          "reasoning_tokens": 76387,
+          "cost_usd": 0.20024760000000075,
+          "cache_saved_usd": 0.009231600000000034
+        }
+      },
+      "wall_s": 253.07327342033386
+    },
+    {
+      "run": "llm_notes__changing_delay6__seed2",
+      "path": "runs/exp09/form_filler/llm_notes__changing_delay6__seed2.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 283,
+          "cache_hits": 44,
+          "input_tokens": 427956,
+          "cached_tokens": 0,
+          "output_tokens": 91090,
+          "reasoning_tokens": 73125,
+          "cost_usd": 0.19489920000000072,
+          "cache_saved_usd": 0.009476999999999985
+        }
+      },
+      "wall_s": 245.26639246940613
+    },
+    {
+      "run": "llm_transcript__changing_delay6__seed3",
+      "path": "runs/exp09/form_filler/llm_transcript__changing_delay6__seed3.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 312,
+          "cache_hits": 34,
+          "input_tokens": 484585,
+          "cached_tokens": 0,
+          "output_tokens": 99665,
+          "reasoning_tokens": 80325,
+          "cost_usd": 0.2165149999999999,
+          "cache_saved_usd": 0.00706499999999996
+        }
+      },
+      "wall_s": 272.5171709060669
+    },
+    {
+      "run": "llm_transcript__changing_delay6__seed1",
+      "path": "runs/exp09/form_filler/llm_transcript__changing_delay6__seed1.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 386,
+          "cache_hits": 68,
+          "input_tokens": 586058,
+          "cached_tokens": 0,
+          "output_tokens": 123120,
+          "reasoning_tokens": 99395,
+          "cost_usd": 0.2649556000000002,
+          "cache_saved_usd": 0.01637380000000002
+        }
+      },
+      "wall_s": 338.56676411628723
+    },
+    {
+      "run": "llm_notes__changing_delay6__seed3",
+      "path": "runs/exp09/form_filler/llm_notes__changing_delay6__seed3.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 310,
+          "cache_hits": 27,
+          "input_tokens": 501237,
+          "cached_tokens": 0,
+          "output_tokens": 100355,
+          "reasoning_tokens": 81095,
+          "cost_usd": 0.2206733999999999,
+          "cache_saved_usd": 0.005657199999999973
+        }
+      },
+      "wall_s": 311.18556547164917
+    },
+    {
+      "run": "llm_transcript__changing_delay6__seed4",
+      "path": "runs/exp09/form_filler/llm_transcript__changing_delay6__seed4.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 32,
+          "cache_hits": 89,
+          "input_tokens": 74087,
+          "cached_tokens": 3695,
+          "output_tokens": 10055,
+          "reasoning_tokens": 7971,
+          "cost_usd": 0.026218300000000003,
+          "cache_saved_usd": 0.049044600000000015
+        }
+      },
+      "wall_s": 87.01399779319763
+    },
+    {
+      "run": "llm_notes__changing_delay6__seed4",
+      "path": "runs/exp09/form_filler/llm_notes__changing_delay6__seed4.jsonl",
+      "cost": {
+        "openai/gpt-5.6-luna": {
+          "calls": 37,
+          "cache_hits": 45,
+          "input_tokens": 78313,
+          "cached_tokens": 3695,
+          "output_tokens": 11637,
+          "reasoning_tokens": 9000,
+          "cost_usd": 0.028961900000000006,
+          "cache_saved_usd": 0.02044200000000001
+        }
+      },
+      "wall_s": 107.02797436714172
+    }
+  ],
+  "grid_costs": [],
+  "config": {
+    "mode": "quick",
+    "quick": false,
+    "world": "form_filler",
+    "hypothesis_run": "H001",
+    "registry": {
+      "version": 1,
+      "title": "How much does late feedback still teach?",
+      "hypothesis": "The later feedback arrives, the less it teaches. How much less depends on whether the agent can still connect the outcome to the action that caused it.",
+      "design": "The outcome of each action arrives 0, 1, 3 or 6 steps late, in a world that never changes and in one that changes six times. Everything else is identical.",
+      "parameters": {
+        "episode length": "120 steps",
+        "delays": "0, 1, 3 or 6 steps",
+        "world conditions": "stable (no changes) and changing (6 changes after a 20-step warmup)",
+        "agents": "the same LLM with a transcript or with notes"
+      },
+      "independent": [
+        "how late feedback arrives (0, 1, 3 or 6 steps)",
+        "a stable vs a changing world"
+      ],
+      "dependent": [
+        "accuracy and recovery per delay"
+      ],
+      "drift": [
+        "none",
+        "sudden real changes"
+      ],
+      "worlds": [
+        "any"
+      ],
+      "hypotheses": [
+        "H004",
+        "H001"
+      ],
+      "predictions": [
+        {
+          "kind": "effect",
+          "field": "final_accuracy",
+          "vary": "regime",
+          "a": "changing_delay0",
+          "b": "changing_delay6",
+          "direction": "<",
+          "within": "agent",
+          "claim": "accuracy is lower with feedback delayed 6 steps than with immediate feedback, in a changing world"
+        }
+      ]
+    }
+  },
+  "unpriced_models": []
+}

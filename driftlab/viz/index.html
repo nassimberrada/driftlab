@@ -690,11 +690,14 @@
       [...groupByModel(Object.entries(p.agents).map(([name, a]) => ({ name, a, spec: { name, ...(a.spec || {}) } }))).entries()]
         .map(([model, items]) =>
           (items.length > 1 ? `<tr class="mgroup"><td colspan="99">${escapeHtml(model)}</td></tr>` : "") +
-          items.map(it =>
-            `<tr><td style="text-align:left;${items.length > 1 ? "padding-left:20px" : ""}" title="${escapeHtml(it.name)}">` +
-            `${escapeHtml(items.length > 1 ? (configLabel(it.spec) || human(it.name)) : (agentLabel(it.spec) || human(it.name)))}</td>` +
+          items.map(it => {
+            const cfg = configLabel(it.spec) || human(it.name);
+            const dup = items.length > 1 && items.filter(x => (configLabel(x.spec) || human(x.name)) === cfg).length > 1;
+            return `<tr><td style="text-align:left;${items.length > 1 ? "padding-left:20px" : ""}" title="${escapeHtml(it.name)}">` +
+            `${escapeHtml(items.length > 1 ? cfg : (agentLabel(it.spec) || human(it.name)))}${dup ? ` <span class="muted">(${escapeHtml(it.name)})</span>` : ""}</td>` +
             dims.map(d => `<td>${f(it.a.dimensions[d])}</td>`).join("") +
-            `<td class="score">${f(it.a.driftlab_score)}</td></tr>`).join("")).join("") + `</table></div>`;
+            `<td class="score">${f(it.a.driftlab_score)}</td></tr>`;
+          }).join("")).join("") + `</table></div>`;
     const fx = (p.effects?.agent || []).concat(p.effects?.regime || []);
     if (fx.length) {
       html += `<h3>Paired effects on ${escapeHtml(human(p.effects.field))}</h3>` +
@@ -1074,14 +1077,18 @@
       const anyPartial = Object.values(m.agents).some(r => Object.values(r.experiments).some(e => e.partial));
       // rows grouped by base model: one header per model, one row per configuration under it
       const groups = groupByModel(Object.entries(m.agents).map(([a, row]) => ({ a, row, spec: { name: a, ...(row.spec || {}) } })));
-      const nameCell = it => {
-        const solo = groups.get(baseModel(it.spec)).length === 1;
-        const label = solo ? agentLabel(it.spec) : (configLabel(it.spec) || human(it.a));
-        return `<td style="text-align:left;${solo ? "" : "padding-left:20px"}" title="${escapeHtml(it.a)}">${escapeHtml(label)}</td>`;
+      const nameCell = (it, items) => {
+        const solo = items.length === 1;
+        const cfg = configLabel(it.spec) || human(it.a);
+        const label = solo ? agentLabel(it.spec) : cfg;
+        // two distinct agents can share one configuration (e.g. a roster agent and an
+        // experiment arm on the same model); the raw name disambiguates them
+        const dup = !solo && items.filter(x => (configLabel(x.spec) || human(x.a)) === cfg).length > 1;
+        return `<td style="text-align:left;${solo ? "" : "padding-left:20px"}" title="${escapeHtml(it.a)}">${escapeHtml(label)}${dup ? ` <span class="muted">(${escapeHtml(it.a)})</span>` : ""}</td>`;
       };
       const bodyRows = cellsFn => [...groups.entries()].map(([model, items]) =>
         (items.length > 1 ? `<tr class="mgroup"><td colspan="99">${escapeHtml(model)}</td></tr>` : "") +
-        items.map(it => `<tr>${nameCell(it)}${cellsFn(it)}</tr>`).join("")).join("");
+        items.map(it => `<tr>${nameCell(it, items)}${cellsFn(it)}</tr>`).join("")).join("");
       $("benchMatrix").innerHTML = `<table class="cohort"><tr><th>agent</th>${exps.map(e => `<th title="${escapeHtml((REGISTRY[e] || {}).title || "")}">${e}</th>`).join("")}<th>mean</th></tr>` +
         bodyRows(it => exps.map(e => {
             const cell = it.row.experiments[e], sc = cell ? cell.driftlab_score : null;

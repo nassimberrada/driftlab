@@ -1,0 +1,1550 @@
+{
+  "schema": 1,
+  "run_dir": "runs/exp19/campaign_desk",
+  "generated": 1788628247.4402568,
+  "world": "campaign_desk",
+  "agents": {
+    "llm_none": {
+      "n_runs": 15,
+      "spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "none"
+        }
+      },
+      "metrics": {
+        "detection_lag": NaN,
+        "recovery_lag": 6.5,
+        "final_accuracy": 0.24444444444444446,
+        "retention": 0.2027777777777778,
+        "stale_rate": NaN,
+        "overupdate_rate": NaN,
+        "interference": NaN,
+        "calibration_error": NaN,
+        "overconfidence": NaN,
+        "parse_failure_rate": 0.0,
+        "cost_per_success": 0.003841321839893847,
+        "final_reward": 0.13333333333333333,
+        "n_changes": 2.0,
+        "cost_usd": 0.35969539999999933
+      },
+      "dimensions": {
+        "adaptation": 0.2173913043478261,
+        "knowledge": 0.22361111111111115,
+        "epistemics": NaN,
+        "efficiency": 0.8612371750210199
+      },
+      "driftlab_score": 0.434079863493319
+    },
+    "llm_notes": {
+      "n_runs": 15,
+      "spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "notes",
+          "every": 10
+        }
+      },
+      "metrics": {
+        "detection_lag": NaN,
+        "recovery_lag": 6.166666666666667,
+        "final_accuracy": 0.25,
+        "retention": 0.19777777777777777,
+        "stale_rate": NaN,
+        "overupdate_rate": NaN,
+        "interference": NaN,
+        "calibration_error": NaN,
+        "overconfidence": NaN,
+        "parse_failure_rate": 0.0,
+        "cost_per_success": 0.013646350658479866,
+        "final_reward": 0.14333333333333334,
+        "n_changes": 2.0,
+        "cost_usd": 1.9120267999999998
+      },
+      "dimensions": {
+        "adaptation": 0.22388059701492538,
+        "knowledge": 0.2238888888888889,
+        "epistemics": NaN,
+        "efficiency": 0.7114491183952285
+      },
+      "driftlab_score": 0.3864062014330143
+    },
+    "llm_transcript": {
+      "n_runs": 15,
+      "spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "transcript",
+          "window": 40
+        }
+      },
+      "metrics": {
+        "detection_lag": NaN,
+        "recovery_lag": 5.233333333333333,
+        "final_accuracy": 0.25,
+        "retention": 0.20888888888888885,
+        "stale_rate": NaN,
+        "overupdate_rate": NaN,
+        "interference": NaN,
+        "calibration_error": NaN,
+        "overconfidence": NaN,
+        "parse_failure_rate": 0.0,
+        "cost_per_success": 0.013029434007119225,
+        "final_reward": 0.1338888888888889,
+        "n_changes": 2.0,
+        "cost_usd": 1.948707199999999
+      },
+      "dimensions": {
+        "adaptation": 0.24429967426710095,
+        "knowledge": 0.22944444444444442,
+        "epistemics": NaN,
+        "efficiency": 0.717113455695625
+      },
+      "driftlab_score": 0.3969525248023901
+    }
+  },
+  "excluded_quick": 0,
+  "effects": {
+    "field": "final_accuracy",
+    "agent": [
+      {
+        "vary": "agent",
+        "a": "llm_none",
+        "b": "llm_notes",
+        "delta": 0.005555555555555562,
+        "ci": [
+          -0.02777777777777778,
+          0.04444444444444446
+        ],
+        "n": 15
+      },
+      {
+        "vary": "agent",
+        "a": "llm_none",
+        "b": "llm_transcript",
+        "delta": 0.005555555555555558,
+        "ci": [
+          -0.027777777777777776,
+          0.04444444444444443
+        ],
+        "n": 15
+      },
+      {
+        "vary": "agent",
+        "a": "llm_notes",
+        "b": "llm_transcript",
+        "delta": -3.7007434154171884e-18,
+        "ci": [
+          -0.044444444444444446,
+          0.05
+        ],
+        "n": 15
+      }
+    ],
+    "regime": [
+      {
+        "agent": "llm_none",
+        "vary": "regime",
+        "a": "report_10",
+        "b": "report_20",
+        "delta": -0.06666666666666668,
+        "ci": [
+          -0.08333333333333334,
+          -0.03333333333333334
+        ],
+        "n": 5
+      },
+      {
+        "agent": "llm_none",
+        "vary": "regime",
+        "a": "report_10",
+        "b": "report_5",
+        "delta": 0.1,
+        "ci": [
+          0.08333333333333331,
+          0.13333333333333336
+        ],
+        "n": 5
+      },
+      {
+        "agent": "llm_none",
+        "vary": "regime",
+        "a": "report_20",
+        "b": "report_5",
+        "delta": 0.16666666666666666,
+        "ci": [
+          0.11666666666666667,
+          0.21666666666666665
+        ],
+        "n": 5
+      },
+      {
+        "agent": "llm_notes",
+        "vary": "regime",
+        "a": "report_10",
+        "b": "report_20",
+        "delta": -0.05,
+        "ci": [
+          -0.08333333333333334,
+          0.01666666666666666
+        ],
+        "n": 5
+      },
+      {
+        "agent": "llm_notes",
+        "vary": "regime",
+        "a": "report_10",
+        "b": "report_5",
+        "delta": 0.15,
+        "ci": [
+          0.06666666666666667,
+          0.25
+        ],
+        "n": 5
+      },
+      {
+        "agent": "llm_notes",
+        "vary": "regime",
+        "a": "report_20",
+        "b": "report_5",
+        "delta": 0.2,
+        "ci": [
+          0.15,
+          0.25
+        ],
+        "n": 5
+      },
+      {
+        "agent": "llm_transcript",
+        "vary": "regime",
+        "a": "report_10",
+        "b": "report_20",
+        "delta": -0.08333333333333334,
+        "ci": [
+          -0.08333333333333334,
+          -0.08333333333333334
+        ],
+        "n": 5
+      },
+      {
+        "agent": "llm_transcript",
+        "vary": "regime",
+        "a": "report_10",
+        "b": "report_5",
+        "delta": 0.08333333333333334,
+        "ci": [
+          -0.016666666666666673,
+          0.18333333333333335
+        ],
+        "n": 5
+      },
+      {
+        "agent": "llm_transcript",
+        "vary": "regime",
+        "a": "report_20",
+        "b": "report_5",
+        "delta": 0.16666666666666669,
+        "ci": [
+          0.06666666666666668,
+          0.2666666666666667
+        ],
+        "n": 5
+      }
+    ]
+  },
+  "runs": [
+    {
+      "agent": "llm_none",
+      "regime": "report_10",
+      "seed": 0,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "none"
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 11.0,
+      "final_accuracy": 0.25,
+      "final_reward": 0.10000000000000002,
+      "retention": 0.2,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.0,
+      "cost_per_success": NaN
+    },
+    {
+      "agent": "llm_none",
+      "regime": "report_10",
+      "seed": 1,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "none"
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 4.0,
+      "final_accuracy": 0.25,
+      "final_reward": 0.11666666666666665,
+      "retention": 0.18333333333333335,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.0,
+      "cost_per_success": NaN
+    },
+    {
+      "agent": "llm_none",
+      "regime": "report_10",
+      "seed": 2,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "none"
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 8.5,
+      "final_accuracy": 0.16666666666666666,
+      "final_reward": 0.08333333333333333,
+      "retention": 0.175,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.0,
+      "cost_per_success": NaN
+    },
+    {
+      "agent": "llm_none",
+      "regime": "report_10",
+      "seed": 3,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "none"
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 4.0,
+      "final_accuracy": 0.25,
+      "final_reward": 0.09999999999999999,
+      "retention": 0.2,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.0,
+      "cost_per_success": NaN
+    },
+    {
+      "agent": "llm_none",
+      "regime": "report_10",
+      "seed": 4,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "none"
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 7.0,
+      "final_accuracy": 0.25,
+      "final_reward": 0.11666666666666665,
+      "retention": 0.2,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.0,
+      "cost_per_success": NaN
+    },
+    {
+      "agent": "llm_none",
+      "regime": "report_20",
+      "seed": 0,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "none"
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 6.0,
+      "final_accuracy": 0.16666666666666666,
+      "final_reward": 0.05833333333333333,
+      "retention": 0.1,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.0,
+      "cost_per_success": NaN
+    },
+    {
+      "agent": "llm_none",
+      "regime": "report_20",
+      "seed": 1,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "none"
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 6.0,
+      "final_accuracy": 0.16666666666666666,
+      "final_reward": 0.06666666666666667,
+      "retention": 0.1,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.0,
+      "cost_per_success": NaN
+    },
+    {
+      "agent": "llm_none",
+      "regime": "report_20",
+      "seed": 2,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "none"
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 6.0,
+      "final_accuracy": 0.16666666666666666,
+      "final_reward": 0.08333333333333333,
+      "retention": 0.1,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.0,
+      "cost_per_success": NaN
+    },
+    {
+      "agent": "llm_none",
+      "regime": "report_20",
+      "seed": 3,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "none"
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 6.0,
+      "final_accuracy": 0.16666666666666666,
+      "final_reward": 0.06666666666666667,
+      "retention": 0.1,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.0,
+      "cost_per_success": NaN
+    },
+    {
+      "agent": "llm_none",
+      "regime": "report_20",
+      "seed": 4,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "none"
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 6.0,
+      "final_accuracy": 0.16666666666666666,
+      "final_reward": 0.08333333333333333,
+      "retention": 0.1,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.0,
+      "cost_per_success": NaN
+    },
+    {
+      "agent": "llm_none",
+      "regime": "report_5",
+      "seed": 0,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "none"
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 11.0,
+      "final_accuracy": 0.4166666666666667,
+      "final_reward": 0.25,
+      "retention": 0.2833333333333333,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.0917886,
+      "cost_per_success": 0.004830978947368421
+    },
+    {
+      "agent": "llm_none",
+      "regime": "report_5",
+      "seed": 1,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "none"
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 4.5,
+      "final_accuracy": 0.3333333333333333,
+      "final_reward": 0.25,
+      "retention": 0.25,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.08733240000000009,
+      "cost_per_success": 0.0054582750000000055
+    },
+    {
+      "agent": "llm_none",
+      "regime": "report_5",
+      "seed": 2,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "none"
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 7.0,
+      "final_accuracy": 0.25,
+      "final_reward": 0.20833333333333334,
+      "retention": 0.3333333333333333,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.07414620000000038,
+      "cost_per_success": 0.003530771428571447
+    },
+    {
+      "agent": "llm_none",
+      "regime": "report_5",
+      "seed": 3,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "none"
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 6.5,
+      "final_accuracy": 0.3333333333333333,
+      "final_reward": 0.16666666666666666,
+      "retention": 0.30833333333333335,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.055492399999999775,
+      "cost_per_success": 0.0032642588235293987
+    },
+    {
+      "agent": "llm_none",
+      "regime": "report_5",
+      "seed": 4,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "none"
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 4.0,
+      "final_accuracy": 0.3333333333333333,
+      "final_reward": 0.25,
+      "retention": 0.4083333333333333,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.05093579999999909,
+      "cost_per_success": 0.002122324999999962
+    },
+    {
+      "agent": "llm_notes",
+      "regime": "report_10",
+      "seed": 0,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "notes",
+          "every": 10
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 4.0,
+      "final_accuracy": 0.25,
+      "final_reward": 0.16666666666666666,
+      "retention": 0.2,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.13552260000000071,
+      "cost_per_success": 0.01129355000000006
+    },
+    {
+      "agent": "llm_notes",
+      "regime": "report_10",
+      "seed": 1,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "notes",
+          "every": 10
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 16.0,
+      "final_accuracy": 0.25,
+      "final_reward": 0.06666666666666667,
+      "retention": 0.2,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.12865900000000074,
+      "cost_per_success": 0.010721583333333395
+    },
+    {
+      "agent": "llm_notes",
+      "regime": "report_10",
+      "seed": 2,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "notes",
+          "every": 10
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 4.0,
+      "final_accuracy": 0.08333333333333333,
+      "final_reward": 0.03333333333333333,
+      "retention": 0.13333333333333333,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.14739540000000062,
+      "cost_per_success": 0.016377266666666737
+    },
+    {
+      "agent": "llm_notes",
+      "regime": "report_10",
+      "seed": 3,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "notes",
+          "every": 10
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 4.0,
+      "final_accuracy": 0.25,
+      "final_reward": 0.08333333333333333,
+      "retention": 0.18333333333333335,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.14274100000000067,
+      "cost_per_success": 0.012976454545454607
+    },
+    {
+      "agent": "llm_notes",
+      "regime": "report_10",
+      "seed": 4,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "notes",
+          "every": 10
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 5.0,
+      "final_accuracy": 0.25,
+      "final_reward": 0.16666666666666666,
+      "retention": 0.2,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.12310519999999991,
+      "cost_per_success": 0.01025876666666666
+    },
+    {
+      "agent": "llm_notes",
+      "regime": "report_20",
+      "seed": 0,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "notes",
+          "every": 10
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 6.0,
+      "final_accuracy": 0.16666666666666666,
+      "final_reward": 0.06666666666666667,
+      "retention": 0.1,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.13614239999999933,
+      "cost_per_success": 0.02269039999999989
+    },
+    {
+      "agent": "llm_notes",
+      "regime": "report_20",
+      "seed": 1,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "notes",
+          "every": 10
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 6.0,
+      "final_accuracy": 0.16666666666666666,
+      "final_reward": 0.09166666666666667,
+      "retention": 0.1,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.1365299999999996,
+      "cost_per_success": 0.02275499999999993
+    },
+    {
+      "agent": "llm_notes",
+      "regime": "report_20",
+      "seed": 2,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "notes",
+          "every": 10
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 11.0,
+      "final_accuracy": 0.16666666666666666,
+      "final_reward": 0.13333333333333333,
+      "retention": 0.08333333333333334,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.15434279999999978,
+      "cost_per_success": 0.030868559999999955
+    },
+    {
+      "agent": "llm_notes",
+      "regime": "report_20",
+      "seed": 3,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "notes",
+          "every": 10
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 6.0,
+      "final_accuracy": 0.16666666666666666,
+      "final_reward": 0.05833333333333333,
+      "retention": 0.1,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.11065159999999952,
+      "cost_per_success": 0.018441933333333254
+    },
+    {
+      "agent": "llm_notes",
+      "regime": "report_20",
+      "seed": 4,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "notes",
+          "every": 10
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 6.0,
+      "final_accuracy": 0.16666666666666666,
+      "final_reward": 0.075,
+      "retention": 0.1,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.09675059999999891,
+      "cost_per_success": 0.01612509999999982
+    },
+    {
+      "agent": "llm_notes",
+      "regime": "report_5",
+      "seed": 0,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "notes",
+          "every": 10
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 4.0,
+      "final_accuracy": 0.25,
+      "final_reward": 0.125,
+      "retention": 0.225,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.08974340000000003,
+      "cost_per_success": 0.005279023529411766
+    },
+    {
+      "agent": "llm_notes",
+      "regime": "report_5",
+      "seed": 1,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "notes",
+          "every": 10
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 4.0,
+      "final_accuracy": 0.3333333333333333,
+      "final_reward": 0.25,
+      "retention": 0.26666666666666666,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.12199000000000071,
+      "cost_per_success": 0.006420526315789511
+    },
+    {
+      "agent": "llm_notes",
+      "regime": "report_5",
+      "seed": 2,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "notes",
+          "every": 10
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 7.0,
+      "final_accuracy": 0.4166666666666667,
+      "final_reward": 0.2916666666666667,
+      "retention": 0.375,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.12562139999999977,
+      "cost_per_success": 0.005981971428571418
+    },
+    {
+      "agent": "llm_notes",
+      "regime": "report_5",
+      "seed": 3,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "notes",
+          "every": 10
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 5.5,
+      "final_accuracy": 0.4166666666666667,
+      "final_reward": 0.20833333333333334,
+      "retention": 0.4,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.13010679999999908,
+      "cost_per_success": 0.005656817391304308
+    },
+    {
+      "agent": "llm_notes",
+      "regime": "report_5",
+      "seed": 4,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "notes",
+          "every": 10
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 4.0,
+      "final_accuracy": 0.4166666666666667,
+      "final_reward": 0.3333333333333333,
+      "retention": 0.30000000000000004,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.13272460000000041,
+      "cost_per_success": 0.008848306666666694
+    },
+    {
+      "agent": "llm_transcript",
+      "regime": "report_10",
+      "seed": 0,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "transcript",
+          "window": 40
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 4.0,
+      "final_accuracy": 0.25,
+      "final_reward": 0.11666666666666665,
+      "retention": 0.18333333333333335,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.14195240000000076,
+      "cost_per_success": 0.012904763636363704
+    },
+    {
+      "agent": "llm_transcript",
+      "regime": "report_10",
+      "seed": 1,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "transcript",
+          "window": 40
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 4.0,
+      "final_accuracy": 0.25,
+      "final_reward": 0.10000000000000002,
+      "retention": 0.2,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.13447100000000023,
+      "cost_per_success": 0.011205916666666685
+    },
+    {
+      "agent": "llm_transcript",
+      "regime": "report_10",
+      "seed": 2,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "transcript",
+          "window": 40
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 8.5,
+      "final_accuracy": 0.25,
+      "final_reward": 0.10000000000000002,
+      "retention": 0.2,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.13764200000000115,
+      "cost_per_success": 0.011470166666666762
+    },
+    {
+      "agent": "llm_transcript",
+      "regime": "report_10",
+      "seed": 3,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "transcript",
+          "window": 40
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 4.0,
+      "final_accuracy": 0.25,
+      "final_reward": 0.13333333333333333,
+      "retention": 0.2,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.14511560000000046,
+      "cost_per_success": 0.012092966666666705
+    },
+    {
+      "agent": "llm_transcript",
+      "regime": "report_10",
+      "seed": 4,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "transcript",
+          "window": 40
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 4.0,
+      "final_accuracy": 0.25,
+      "final_reward": 0.11666666666666665,
+      "retention": 0.18333333333333335,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.1394143999999995,
+      "cost_per_success": 0.012674036363636317
+    },
+    {
+      "agent": "llm_transcript",
+      "regime": "report_20",
+      "seed": 0,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "transcript",
+          "window": 40
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 6.0,
+      "final_accuracy": 0.16666666666666666,
+      "final_reward": 0.09999999999999999,
+      "retention": 0.1,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.1496061999999989,
+      "cost_per_success": 0.024934366666666485
+    },
+    {
+      "agent": "llm_transcript",
+      "regime": "report_20",
+      "seed": 1,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "transcript",
+          "window": 40
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 6.0,
+      "final_accuracy": 0.16666666666666666,
+      "final_reward": 0.049999999999999996,
+      "retention": 0.1,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.12114459999999894,
+      "cost_per_success": 0.020190766666666488
+    },
+    {
+      "agent": "llm_transcript",
+      "regime": "report_20",
+      "seed": 2,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "transcript",
+          "window": 40
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 6.0,
+      "final_accuracy": 0.16666666666666666,
+      "final_reward": 0.09166666666666667,
+      "retention": 0.1,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.1376790000000001,
+      "cost_per_success": 0.02294650000000002
+    },
+    {
+      "agent": "llm_transcript",
+      "regime": "report_20",
+      "seed": 3,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "transcript",
+          "window": 40
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 6.0,
+      "final_accuracy": 0.16666666666666666,
+      "final_reward": 0.09166666666666667,
+      "retention": 0.1,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.10780719999999944,
+      "cost_per_success": 0.01796786666666657
+    },
+    {
+      "agent": "llm_transcript",
+      "regime": "report_20",
+      "seed": 4,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "transcript",
+          "window": 40
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 6.0,
+      "final_accuracy": 0.16666666666666666,
+      "final_reward": 0.06666666666666667,
+      "retention": 0.1,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.10064399999999929,
+      "cost_per_success": 0.016773999999999883
+    },
+    {
+      "agent": "llm_transcript",
+      "regime": "report_5",
+      "seed": 0,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "transcript",
+          "window": 40
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 5.0,
+      "final_accuracy": 0.5,
+      "final_reward": 0.2916666666666667,
+      "retention": 0.33333333333333337,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.11654160000000036,
+      "cost_per_success": 0.006133768421052651
+    },
+    {
+      "agent": "llm_transcript",
+      "regime": "report_5",
+      "seed": 1,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "transcript",
+          "window": 40
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 4.5,
+      "final_accuracy": 0.16666666666666666,
+      "final_reward": 0.125,
+      "retention": 0.30833333333333335,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.11327600000000038,
+      "cost_per_success": 0.005663800000000019
+    },
+    {
+      "agent": "llm_transcript",
+      "regime": "report_5",
+      "seed": 2,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "transcript",
+          "window": 40
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 6.0,
+      "final_accuracy": 0.4166666666666667,
+      "final_reward": 0.3333333333333333,
+      "retention": 0.4083333333333333,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.1206843999999998,
+      "cost_per_success": 0.005247147826086948
+    },
+    {
+      "agent": "llm_transcript",
+      "regime": "report_5",
+      "seed": 3,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "transcript",
+          "window": 40
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 4.5,
+      "final_accuracy": 0.3333333333333333,
+      "final_reward": 0.16666666666666666,
+      "retention": 0.3,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.12140339999999983,
+      "cost_per_success": 0.0067446333333333235
+    },
+    {
+      "agent": "llm_transcript",
+      "regime": "report_5",
+      "seed": 4,
+      "agent_spec": {
+        "type": "reference",
+        "model": "openai/gpt-5.6-luna",
+        "substrate": {
+          "kind": "transcript",
+          "window": 40
+        }
+      },
+      "world": "campaign_desk",
+      "n_steps": 60,
+      "n_changes": 2,
+      "detection_lag": NaN,
+      "recovery_lag": 4.0,
+      "final_accuracy": 0.25,
+      "final_reward": 0.125,
+      "retention": 0.31666666666666665,
+      "stale_rate": NaN,
+      "overupdate_rate": NaN,
+      "interference": NaN,
+      "calibration_error": NaN,
+      "overconfidence": NaN,
+      "parse_failure_rate": 0.0,
+      "cost_usd": 0.16132539999999973,
+      "cost_per_success": 0.008490810526315775
+    }
+  ]
+}

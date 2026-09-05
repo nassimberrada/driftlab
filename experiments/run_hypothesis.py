@@ -113,10 +113,14 @@ def main():
     for s in steps:
         out = out_dir(s["eid"], args.world, lambda n: s["cells"][:1] or [{}])
         print(f"\n=== {s['eid']} -> {out}")
-        grid = expand(s["cells"], resolve_agents(args, s["mod"].REFERENCE_AGENTS))
-        asyncio.run(run_cells(grid, s["mod"].scenario, factory, out, args.concurrency,
-                              config={"mode": MODE, "quick": MODE == "smoke", "world": args.world,
-                                      "hypothesis_run": hid, "registry": s["entry"]}, resume=args.resume))
+        try:
+            grid = expand(s["cells"], resolve_agents(args, s["mod"].REFERENCE_AGENTS))
+            asyncio.run(run_cells(grid, s["mod"].scenario, factory, out, args.concurrency,
+                                  config={"mode": MODE, "quick": MODE == "smoke", "world": args.world,
+                                          "hypothesis_run": hid, "registry": s["entry"]}, resume=args.resume))
+        except SystemExit as e:  # a capability gate: this world can't host the experiment — skip, don't die
+            print(f"  {s['eid']} skipped on this world: {e}")
+            continue
         buf = io.StringIO()
         with contextlib.redirect_stdout(buf):
             s["mod"].analyze(out)

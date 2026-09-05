@@ -1,0 +1,63 @@
+{
+  "runs": [
+    {
+      "run": "tabular__changing__seed0",
+      "path": "runs/exp02/rule_world/tabular__changing__seed0.jsonl",
+      "cost": {},
+      "wall_s": 0.02728438377380371
+    },
+    {
+      "run": "tabular__changing__seed1",
+      "path": "runs/exp02/rule_world/tabular__changing__seed1.jsonl",
+      "cost": {},
+      "wall_s": 0.022620677947998047
+    }
+  ],
+  "grid_costs": [],
+  "config": {
+    "mode": "quick",
+    "quick": false,
+    "world": "rule_world",
+    "hypothesis_run": "H001",
+    "registry": {
+      "version": 1,
+      "title": "Does noticing a change mean adjusting to it?",
+      "hypothesis": "Noticing that something changed and getting back to correct behavior are different skills, and how the agent remembers decides which one it is good at.",
+      "design": "The world's rules genuinely change six times on a fixed schedule. After each change, three clocks start: how long until the agent stops giving the now-wrong answer, until it first gives the new right answer, and until it gets it right twice in a row. The agents differ only in how they remember.",
+      "parameters": {
+        "episode length": "120 steps",
+        "changes": "6 real rule changes, evenly spaced after a 20-step warmup",
+        "agents compared": "a lookup-table baseline, plus the same LLM with no memory, a 40-step transcript, self-written notes (rewritten every 10 steps), or extracted procedures",
+        "latency units": "tries on the affected tasks, not raw steps"
+      },
+      "independent": [
+        "how the agent remembers"
+      ],
+      "dependent": [
+        "detection latency",
+        "recovery latency",
+        "stability latency",
+        "the gap between detection and recovery"
+      ],
+      "drift": [
+        "sudden real changes"
+      ],
+      "worlds": [
+        "any"
+      ],
+      "hypotheses": [
+        "H001"
+      ],
+      "predictions": [
+        {
+          "kind": "effect",
+          "field": "recovery_lag",
+          "vary": "agent",
+          "direction": "differs",
+          "claim": "recovery lag differs between memory architectures on the same seeds"
+        }
+      ]
+    }
+  },
+  "unpriced_models": []
+}
