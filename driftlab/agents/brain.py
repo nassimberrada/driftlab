@@ -41,6 +41,10 @@ PRICES = {
     "gpt-4.1": (2.00, 0.50, 8.00),
     "gpt-4.1-mini": (0.40, 0.10, 1.60),
     "gpt-4.1-nano": (0.10, 0.025, 0.40),
+    # quoted by the OpenRouter models API, 2026-09-05
+    "gpt-5.6-luna": (0.20, 0.02, 1.20),
+    "gemini-3.6-flash": (0.75, 0.075, 3.75),
+    "claude-sonnet-5": (2.00, 0.20, 10.00),
 }
 
 

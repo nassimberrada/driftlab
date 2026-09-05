@@ -92,6 +92,21 @@ def evaluate_prediction(pred: dict, rows: list[dict], min_pairs: int) -> list[di
                           f"the 95% CI is entirely on the other side of zero: the data points the opposite way" if verdict == "contradicted" else
                           f"the 95% CI includes zero: {n} pairs cannot separate '{pred['b']}' from '{pred['a']}' on {field}")
             out.append({"agent": agent, "delta": delta, "ci": ci, "n": n, "verdict": verdict, "reason": reason})
+    elif kind == "effect" and pred.get("direction") in (">", "<"):  # a specific, oriented agent pair
+        fx = paired_effects(rows, field, "agent")
+        delta, ci, n = _oriented(fx, pred["a"], pred["b"])
+        label = f"{pred['b']} vs {pred['a']}"
+        if n == 0:
+            verdict, reason = "inconclusive", f"no runs matched across '{pred['a']}' and '{pred['b']}' on the same seeds"
+        elif n < min_pairs:
+            verdict, reason = "inconclusive", f"only {n} matched pairs; {min_pairs} needed before a verdict is allowed"
+        else:
+            verdict = _conclusive(delta, ci, pred["direction"])
+            want = "above" if pred["direction"] == ">" else "below"
+            reason = (f"the 95% CI of {field}({pred['b']}) − {field}({pred['a']}) is entirely {want} zero across {n} seed-matched pairs" if verdict == "supported" else
+                      "the 95% CI is entirely on the other side of zero: the data points the opposite way" if verdict == "contradicted" else
+                      f"the 95% CI includes zero: {n} pairs cannot separate '{pred['b']}' from '{pred['a']}' on {field}")
+        out.append({"agent": label, "delta": delta, "ci": ci, "n": n, "verdict": verdict, "reason": reason})
     elif kind == "effect":  # vary == "agent", direction "differs": any agent pair separates
         fx = [e for e in paired_effects(rows, field, "agent") if e["n"] >= min_pairs]
         hits = [e for e in fx if e["ci"] and (e["ci"][0] > 0 or e["ci"][1] < 0)]

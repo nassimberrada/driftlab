@@ -141,6 +141,7 @@
   table.cohort td { padding: 4px 8px; text-align: right; font-variant-numeric: tabular-nums; border-bottom: 1px solid var(--grid); }
   table.cohort td:first-child { text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 140px; }
   table.cohort td.score { font-weight: 600; }
+  table.cohort tr.mgroup td { text-align: left; font-weight: 600; background: var(--surface-2); max-width: none; }
   ul.fx { list-style: none; margin: 4px 0 0; padding: 0; font-size: 12px; }
   ul.fx li { padding: 3px 0; border-bottom: 1px solid var(--grid); display: flex; justify-content: space-between; gap: 10px; }
   ul.fx li .d { font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--text-secondary); }
@@ -459,33 +460,70 @@
   // What to call an agent, from the run header's spec: the memory architecture and model for
   // reference agents (the ablation arms are the same model with different memory), the harness
   // and pinned model for external agents. Falls back to the raw name for old records.
+  function memLabel(s) {
+    if (!s || !s.kind) return "";
+    return s.kind === "none" ? "no memory"
+      : s.kind === "transcript" ? `transcript${s.window ? ` (last ${s.window} steps)` : ""}${s.wipe_at != null ? `, wiped at step ${s.wipe_at}` : ""}`
+      : s.kind === "notes" ? `notes${s.budget_chars ? ` (max ${s.budget_chars} chars)` : ""}${s.wipe_at != null ? `, wiped at step ${s.wipe_at}` : ""}`
+      : s.kind === "skills" ? "skills"
+      : s.kind === "beliefs" ? "beliefs"
+      : s.kind === "fastslow" ? "fast+slow memory" : human(s.kind);
+  }
+  // The identity splits in two: the base model, and the configuration branching under it
+  // (route, reasoning mode, memory). Grouped views group by the model; flat views join both.
+  // Some harnesses bake the reasoning effort into the model id (gemini-3.6-flash-medium);
+  // splitModel peels it off so the same model groups together whatever the route.
+  function splitModel(model) {
+    const m = String(model || "").split("/").pop();
+    for (const e of ["minimal", "low", "medium", "high"])
+      if (m.endsWith("-" + e)) return { base: m.slice(0, -(e.length + 1)), effort: e };
+    return { base: m, effort: null };
+  }
+  function baseModel(a) {
+    if (!a || !a.name) return "";
+    if (a.type === "tabular" || a.name === "tabular") return "tabular baseline";
+    return a.model ? splitModel(a.model).base : human(a.name);
+  }
+  function configLabel(a) {
+    if (!a || a.type === "tabular" || a.name === "tabular") return "";
+    if (a.type === "harness_cli" || a.type === "harness") {
+      const effort = a.reasoning_effort || splitModel(a.model).effort;
+      return a.harness ? `via ${a.harness}${effort ? ` (${effort})` : ""}` : (a.model ? "harness" : "");
+    }
+    if (a.type === "reference")
+      return [`api${a.reasoning_effort ? ` (${a.reasoning_effort})` : ""}`, memLabel(a.substrate)].filter(Boolean).join(" · ");
+    return "";
+  }
   function agentLabel(a) {
     if (!a || !a.name) return "";
-    const s = a.substrate || {};
-    if (a.type === "tabular" || a.name === "tabular") return "tabular baseline";
-    if (a.type === "reference") {  // model first, then the route, then the memory
-      const mem = s.kind === "none" ? "no memory"
-        : s.kind === "transcript" ? `transcript${s.window ? ` (last ${s.window} steps)` : ""}`
-        : s.kind === "notes" ? `notes${s.budget_chars ? ` (max ${s.budget_chars} chars)` : ""}`
-        : s.kind === "skills" ? "skills"
-        : s.kind === "beliefs" ? "beliefs"
-        : s.kind === "fastslow" ? "fast+slow memory" : human(s.kind || "");
-      const route = `api${a.reasoning_effort ? ` (${a.reasoning_effort})` : ""}`;
-      return [a.model ? a.model.split("/").pop() : human(a.name), route, mem].filter(Boolean).join(" · ");
-    }
-    if (a.type === "harness_cli" || a.type === "harness") {
-      const base = a.harness || human(a.name);
-      return a.model ? `${a.model} · ${base}` : base;
-    }
-    return human(a.name) + (a.model ? ` · ${a.model}` : "");
+    const cfg = configLabel(a);
+    return cfg ? `${baseModel(a)} · ${cfg}` : baseModel(a);
   }
-  const WORLD_INFO = {
-    rule_world: ["Intake desk", "The agent sends each incoming request to one of four handling desks. Hidden rules decide which desk is right. A real change flips one of those rules, a cosmetic change renames the desks, and a desk the agent overloads can shed its work on its own."],
-    form_filler: ["Order-form data entry", "The agent copies source records into an order form. A real change renames a field or alters its format or limits, a cosmetic change renames the source columns, and IT sometimes quietly starts accepting a wrong field name the agent keeps typing."],
-    inventory: ["Inventory buyer", "The agent orders stock for one product line without seeing true demand. A real change moves the demand rate, a cosmetic change rewords the daily report, and a huge order strains the supplier, which slows deliveries for a while."],
-    codebase: ["Platform developer", "The agent implements tickets against a style guide it cannot read. A real change revises the guide, a cosmetic change rewords the ticket template, and the reviewer picks up habits from the agent's recent submissions."],
-    claims_desk: ["Claims desk", "The agent approves or rejects insurance claims while a fraud ring adapts against it: when too many fraudulent claims get caught, the ring re-styles them to mimic the traffic the agent has been approving. The drift aims exactly where the agent is weakest."],
-    campaign_desk: ["Campaign desk", "The agent picks each day's outreach angle but never sees how a single push performs: results arrive only as a pooled report every ten days. Audience tastes shift, and an angle used relentlessly wears out on its own."],
+  function groupByModel(items) {  // items: [{spec, ...}] -> Map(base model -> items), sorted
+    items.sort((x, y) => (baseModel(x.spec) + configLabel(x.spec)).localeCompare(baseModel(y.spec) + configLabel(y.spec)));
+    const g = new Map();
+    items.forEach(it => { const k = baseModel(it.spec); if (!g.has(k)) g.set(k, []); g.get(k).push(it); });
+    return g;
+  }
+  const WORLD_INFO = {  // [job title, one-line description, how the world works]
+    rule_world: ["Intake desk",
+      "The agent sends each incoming request to one of four handling desks. Hidden rules decide which desk is right. A real change flips one of those rules, a cosmetic change renames the desks, and a desk the agent overloads can shed its work on its own.",
+      "Requests arrive one at a time, each a combination of type, region and size. A hidden rule table maps every combination to the one desk that will accept it; the agent picks a desk and hears accepted or rejected, nothing more. A real change flips entries in that table, so requests the agent had mastered suddenly belong somewhere else; a cosmetic change only relabels the desk descriptions; and with the self-caused mechanism on, a desk that receives too much of the recent traffic sheds one of its request types by itself. Because the same combinations keep recurring, the logs can count exactly how many encounters it takes an agent to notice and adapt."],
+    form_filler: ["Order-form data entry",
+      "The agent copies source records into an order form. A real change renames a field or alters its format or limits, a cosmetic change renames the source columns, and IT sometimes quietly starts accepting a wrong field name the agent keeps typing.",
+      "Each step the agent gets a source record and must submit it as a filled form, matching the schema's field names, formats and limits. The submission is checked field by field, with a few attempts allowed per record; richer feedback levels name what was wrong. A real change mutates the schema itself: a field renamed, a format tightened, a cap moved. A cosmetic change renames the source record's columns while the form stays the same. With the self-caused mechanism on, IT quietly adds an alias for a wrong field name the agent keeps typing, so the world bends around the agent's habit."],
+    inventory: ["Inventory buyer",
+      "The agent orders stock for one product line without seeing true demand. A real change moves the demand rate, a cosmetic change rewords the daily report, and a huge order strains the supplier, which slows deliveries for a while.",
+      "Each morning the agent sees stock on hand, orders in transit and yesterday's sales (capped by what was in stock), then orders a quantity that arrives after the lead time. Demand is drawn from a hidden rate; the day's score combines holding costs, lost sales and a fixed ordering fee. A real change jumps the demand rate from that day on; a cosmetic change only rewords the daily report; and with the self-caused mechanism on, an oversized order strains the supplier and lengthens the lead time for a stretch. The right order quantity is a genuine calculation, not a choice from a list."],
+    codebase: ["Platform developer",
+      "The agent implements tickets against a style guide it cannot read. A real change revises the guide, a cosmetic change rewords the ticket template, and the reviewer picks up habits from the agent's recent submissions.",
+      "Tickets ask for small Python functions. Every submission is actually executed in a sandbox against the ticket's tests, and also checked against a style guide the agent can never read: full credit needs both. Reviews may run several rounds per ticket, and richer feedback levels name what failed. A real change revises the style guide, so code that used to pass review stops passing; a cosmetic change rewords the ticket template; and with the self-caused mechanism on, the reviewer starts expecting habits it has seen in the agent's own recent submissions."],
+    claims_desk: ["Claims desk",
+      "The agent approves or rejects insurance claims while a fraud ring adapts against it: when too many fraudulent claims get caught, the ring re-styles them to mimic the traffic the agent has been approving. The drift aims exactly where the agent is weakest.",
+      "Claims arrive one at a time as short narratives with three underlying attributes: type, filing channel and amount band. A fraud ring operates with a signature, a pair of attribute values its claims always carry, and legitimate claims never fully match it, so tracking the signature is the whole game. The agent approves or rejects, and the audit reveals the truth in feedback. A scheduled change moves the signature at random; with the adversary on, the ring watches what gets through and re-styles its claims to mimic whatever the agent has been approving, so the change is aimed rather than random."],
+    campaign_desk: ["Campaign desk",
+      "The agent picks each day's outreach angle but never sees how a single push performs: results arrive only as a pooled report every ten days. Audience tastes shift, and an angle used relentlessly wears out on its own.",
+      "Each day the agent picks one of four angles for that day's push. Every push lands or falls flat according to a hidden per-angle engagement rate, but no single result is ever shown: the only feedback is a pooled total every report period, with no breakdown. Connecting reports back to choices is the whole game, and it takes memory. A real change redraws the engagement rates (an audience shift); a cosmetic change rewords the angle descriptions; and with fatigue on, an angle used relentlessly wears out and recovers with rest."],
   };
   const AGENT_NOTES = {
     reference: "An LLM agent that lives inside driftlab, with a pluggable memory. When it rewrites its notes, the new version shows on the Activity tab.",
@@ -563,8 +601,8 @@
     hRegistry: "One entry per experiment: what it does, its settings, what it varies and measures, and the claim it is built to test. An experiment is a protocol, not a belief, so verdicts and evidence live under Hypotheses. The same definition is stamped into every run's record.",
     hHyp: "The lab's claims, one per entry: the claim in plain words, its current status, the verdict the run data supports so far, and the numbers behind that verdict. A verdict only speaks for the agents and worlds actually tested.",
     hWorldCfg: "The job the agent was doing and the kinds of change this world can throw at it.",
-    hWorlds: "The jobs agents can be dropped into. Each entry lists what kinds of change the world supports, which experiments can run on it, and the exact job description the agent receives.",
-    hAgents: "Every agent this lab has configured or run, built from the run records plus agents.json. Each entry says what the agent is, how it remembers, and where it has played.",
+    hWorlds: "The jobs agents can be dropped into. Each entry explains how the world actually works, which experiments can run on it, and the exact job description the agent receives.",
+    hAgents: "Every agent this lab has configured or run, grouped by base model: unfold a model to see its configurations (route, reasoning mode, memory), what each one is, and where it has played.",
     hGloss: "Plain definitions of every number in the tables on this page.",
   };
   function applyTutorial() {  // explanations are always shown, under the values
@@ -649,10 +687,14 @@
     let html = `<div class="benchhint">Each agent's four score dimensions (0 to 1) over this experiment's runs, and their average as the driftlab score. Hover a column heading for what it measures. A dash means these runs do not measure it.</div>` +
       `<div class="tablewrap"><table class="cohort">` +
       `<tr><th>agent</th>${dims.map(d => `<th title="${escapeHtml(METRIC_HELP[d] || "")}">${d}</th>`).join("")}<th title="${escapeHtml(METRIC_HELP["driftlab score"] || "")}">score</th></tr>` +
-      Object.entries(p.agents).map(([name, a]) =>
-        `<tr><td style="text-align:left" title="${escapeHtml(name)}">${escapeHtml(agentLabel({ name, ...(a.spec || {}) }) || human(name))}</td>` +
-        dims.map(d => `<td>${f(a.dimensions[d])}</td>`).join("") +
-        `<td class="score">${f(a.driftlab_score)}</td></tr>`).join("") + `</table></div>`;
+      [...groupByModel(Object.entries(p.agents).map(([name, a]) => ({ name, a, spec: { name, ...(a.spec || {}) } }))).entries()]
+        .map(([model, items]) =>
+          (items.length > 1 ? `<tr class="mgroup"><td colspan="99">${escapeHtml(model)}</td></tr>` : "") +
+          items.map(it =>
+            `<tr><td style="text-align:left;${items.length > 1 ? "padding-left:20px" : ""}" title="${escapeHtml(it.name)}">` +
+            `${escapeHtml(items.length > 1 ? (configLabel(it.spec) || human(it.name)) : (agentLabel(it.spec) || human(it.name)))}</td>` +
+            dims.map(d => `<td>${f(it.a.dimensions[d])}</td>`).join("") +
+            `<td class="score">${f(it.a.driftlab_score)}</td></tr>`).join("")).join("") + `</table></div>`;
     const fx = (p.effects?.agent || []).concat(p.effects?.regime || []);
     if (fx.length) {
       html += `<h3>Paired effects on ${escapeHtml(human(p.effects.field))}</h3>` +
@@ -988,12 +1030,15 @@
     const ul = $("homeFindings"); if (!ul) return;
     ul.innerHTML = rows.map(r => {
       const title = (REGISTRY[r.exp] || {}).title || r.exp;
-      const who = r.agent && r.agent !== "all pairs" ? ` (${human(r.agent)})` : "";
-      const held = r.verdict === "supported" ? "The data supports it" : "The data points the other way";
-      const num = r.delta != null ? ` The measured difference is ${r.delta >= 0 ? "+" : ""}${r.delta.toFixed(2)}${r.ci ? ` [${r.ci[0].toFixed(2)}, ${r.ci[1].toFixed(2)}]` : ""} over ${r.n} matched runs.` : "";
-      return `<li style="display:block;padding:6px 0"><span class="v-${r.verdict}" style="font-weight:600">${r.verdict.toUpperCase()}</span> · ` +
-        `${escapeHtml(title)}, ${escapeHtml(human(r.world))}${escapeHtml(who)}: ${escapeHtml(r.claim)}. ${held}.${num}` +
-        (r.reason ? `<br><span class="muted" style="font-size:11.5px">${escapeHtml(r.reason)}</span>` : "") + `</li>`;
+      const claim = r.claim ? r.claim[0].toUpperCase() + r.claim.slice(1) : "";
+      const backed = r.verdict === "supported" ? "The data backs this" : "The data says otherwise";
+      const who = r.agent && r.agent !== "all pairs" ? `, with ${human(r.agent)}` : "";
+      const sg = v => `${v >= 0 ? "+" : ""}${v.toFixed(2)}`;
+      const num = r.delta != null
+        ? ` The effect measured ${sg(r.delta)}${r.ci ? `; allowing for the margin of error, it lands between ${sg(r.ci[0])} and ${sg(r.ci[1])}` : ""}, across ${r.n} paired runs.`
+        : "";
+      return `<li style="display:block;padding:6px 0;max-width:94ch"><strong>${escapeHtml(claim)}</strong><br>` +
+        `<span class="v-${r.verdict}" style="font-weight:600">${backed}</span>, in "${escapeHtml(title)}" on the ${escapeHtml(human(r.world))}${escapeHtml(who)}.${escapeHtml(num)}</li>`;
     }).join("") || `<li style="display:block" class="muted">No conclusive results yet. A finding appears here once validation measures a difference the seeds cannot explain away.</li>`;
   }
   for (const [k, [btn]] of Object.entries(TOP)) { const b = $(btn); if (b) b.onclick = () => setTop(k); }
@@ -1025,23 +1070,30 @@
     const f = v => (v == null || Number.isNaN(+v)) ? "—" : (+v).toFixed(2);
     if (m) {
       const exps = m.suite;
-      const rowName = (a, row) => agentLabel({ name: a, ...(row.spec || {}) }) || human(a);
       const anyQuick = Object.values(m.agents).some(r => Object.values(r.experiments).some(e => e.quick));
       const anyPartial = Object.values(m.agents).some(r => Object.values(r.experiments).some(e => e.partial));
+      // rows grouped by base model: one header per model, one row per configuration under it
+      const groups = groupByModel(Object.entries(m.agents).map(([a, row]) => ({ a, row, spec: { name: a, ...(row.spec || {}) } })));
+      const nameCell = it => {
+        const solo = groups.get(baseModel(it.spec)).length === 1;
+        const label = solo ? agentLabel(it.spec) : (configLabel(it.spec) || human(it.a));
+        return `<td style="text-align:left;${solo ? "" : "padding-left:20px"}" title="${escapeHtml(it.a)}">${escapeHtml(label)}</td>`;
+      };
+      const bodyRows = cellsFn => [...groups.entries()].map(([model, items]) =>
+        (items.length > 1 ? `<tr class="mgroup"><td colspan="99">${escapeHtml(model)}</td></tr>` : "") +
+        items.map(it => `<tr>${nameCell(it)}${cellsFn(it)}</tr>`).join("")).join("");
       $("benchMatrix").innerHTML = `<table class="cohort"><tr><th>agent</th>${exps.map(e => `<th title="${escapeHtml((REGISTRY[e] || {}).title || "")}">${e}</th>`).join("")}<th>mean</th></tr>` +
-        Object.entries(m.agents).map(([a, row]) =>
-          `<tr><td style="text-align:left" title="${escapeHtml(a)}">${escapeHtml(rowName(a, row))}</td>` + exps.map(e => {
-            const cell = row.experiments[e], sc = cell ? cell.driftlab_score : null;
+        bodyRows(it => exps.map(e => {
+            const cell = it.row.experiments[e], sc = cell ? cell.driftlab_score : null;
             const tint = sc != null && !Number.isNaN(+sc) ? ` style="background:color-mix(in srgb, var(--series-3) ${Math.round(sc * 35)}%, transparent)"` : "";
             const q = cell && cell.quick, pt = cell && cell.partial;
-            return `<td class="cell-drill" data-exp="${e}" data-agent="${escapeHtml(a)}"${tint} title="${q ? "smoke runs only, not comparable to full-length scores. " : ""}${pt ? "covers only the conditions a hypothesis run needed. " : ""}open these runs">${f(sc)}${q ? '<span class="muted">*</span>' : ""}${pt ? '<span class="muted">°</span>' : ""}</td>`;
-          }).join("") + `<td class="score"${row.quick_only ? ' title="quick-mode runs only"' : ""}>${f(row.mean_score)}${row.quick_only ? '<span class="muted">*</span>' : ""}</td></tr>`).join("") + `</table>` +
+            return `<td class="cell-drill" data-exp="${e}" data-agent="${escapeHtml(it.a)}"${tint} title="${q ? "smoke runs only, not comparable to full-length scores. " : ""}${pt ? "covers only the conditions a hypothesis run needed. " : ""}open these runs">${f(sc)}${q ? '<span class="muted">*</span>' : ""}${pt ? '<span class="muted">°</span>' : ""}</td>`;
+          }).join("") + `<td class="score"${it.row.quick_only ? ' title="quick-mode runs only"' : ""}>${f(it.row.mean_score)}${it.row.quick_only ? '<span class="muted">*</span>' : ""}</td>`) + `</table>` +
         ((anyQuick || anyPartial) ? `<div class="benchhint" style="margin-top:4px">${anyQuick ? "* from smoke runs, which verify the plumbing and are not comparable to full-length scores. " : ""}${anyPartial ? "° from a hypothesis run: valid full-length episodes, but covering only the conditions that hypothesis's predictions needed — a later full grid fills the rest." : ""}</div>` : "");
       document.querySelectorAll("#benchMatrix td.cell-drill").forEach(td => td.onclick = () => drillTo(td.dataset.agent, td.dataset.exp));
       const dims = ["adaptation", "knowledge", "epistemics", "efficiency"];
       $("benchDims").innerHTML = `<table class="cohort"><tr><th>agent</th>${dims.map(d => `<th>${d}</th>`).join("")}</tr>` +
-        Object.entries(m.agents).map(([a, row]) => `<tr><td style="text-align:left" title="${escapeHtml(a)}">${escapeHtml(rowName(a, row))}</td>` +
-          dims.map(d => `<td>${f(row.mean_dimensions[d])}</td>`).join("") + `</tr>`).join("") + `</table>`;
+        bodyRows(it => dims.map(d => `<td>${f(it.row.mean_dimensions[d])}</td>`).join("")) + `</table>`;
     } else { $("benchMatrix").innerHTML = '<p class="muted">no matrix yet</p>'; $("benchDims").innerHTML = ""; }
     // one panel per experiment directory: the cohort profile, effects, and the analyze() tables
     const expSet = new Set(m ? m.suite : []);
@@ -1079,30 +1131,18 @@
   let valData, worldData = null;
   const VCHIP = { "SUPPORTED": "good", "NOT SUPPORTED": "bad", "PARTIALLY SUPPORTED": "mixed", "INCONCLUSIVE": "" };
   // what each world capability means, in plain words (internal-only capabilities are omitted)
-  const CAP_HELP = {
-    change_latent: "real changes: what counts as correct can genuinely move",
-    change_surface: "cosmetic changes: wording and labels can move while the rules stay put",
-    endogenous: "self-caused changes: the agent's own behavior can change the world",
-    introduce_novelty: "new kinds of task can appear mid-run",
-    ask_confidence: "can ask the agent to state a confidence with each action",
-    probe: "can quiz the agent without feedback, for held-out tests",
-    task_key: "tasks repeat identically, so latencies can be counted per kind of task",
-    sample_task: "a teacher can choose which task comes next",
-    sample_contrast_pair: "a teacher can build pairs of tasks that differ in exactly one attribute",
-    task_fn: "supports scripted task streams and multi-step tasks",
-  };
   function renderWorlds() {
     const el = $("worldList"); if (!el) return;
     el.innerHTML = (worldData || []).map(w => {
-      const info = WORLD_INFO[w.id] || [human(w.id), ""];
-      const caps = (w.capabilities || []).filter(c => CAP_HELP[c]).map(c => `<li>${escapeHtml(CAP_HELP[c])}</li>`).join("");
+      const info = WORLD_INFO[w.id] || [human(w.id), "", ""];
       const used = Object.entries(REGISTRY)
         .filter(([, e]) => (e.worlds || []).some(x => x === w.id || String(x).startsWith("any")))
-        .map(([id, e]) => `${id.replace("exp", "")} ${e.title}`);
+        .map(([id, e]) => `<span class="k">${id.replace("exp", "")}</span><span>${escapeHtml(e.title)}</span>`).join("");
       return `<details class="hyp"><summary><strong>${escapeHtml(info[0])}</strong> <span class="muted">${escapeHtml(human(w.id))}</span></summary>` +
         (info[1] ? `<div class="subtile"><h4 class="evhead">The job</h4><p style="margin:2px 0;max-width:90ch">${escapeHtml(info[1])}</p></div>` : "") +
-        `<div class="subtile"><h4 class="evhead">What can happen here</h4><ul style="margin:4px 0 2px;padding-left:18px;font-size:12.5px">${caps}</ul></div>` +
-        `<div class="subtile"><h4 class="evhead">Experiments that can run here</h4><p style="margin:2px 0;max-width:90ch">${used.map(escapeHtml).join(" · ") || "none"}</p></div>` +
+        (info[2] ? `<div class="subtile"><h4 class="evhead">How it works</h4><p style="margin:2px 0;max-width:90ch">${escapeHtml(info[2])}</p></div>` : "") +
+        `<div class="subtile"><h4 class="evhead">Experiments that can run here</h4>` +
+        (used ? `<div class="kv" style="max-width:560px">${used}</div>` : `<p class="muted" style="margin:2px 0">none</p>`) + `</div>` +
         `<div class="subtile"><h4 class="evhead">The job description the agent receives, verbatim</h4><pre style="max-height:240px">${escapeHtml(w.system_prompt || "")}</pre></div></details>`;
     }).join("") || '<p class="muted">the dashboard server is running an older version and does not know this view yet. Stop it and start it again, then reopen this tab.</p>';
   }
@@ -1193,12 +1233,14 @@
       if (!roster.has(s.name)) roster.set(s.name, { spec: s, runs: 0, exps: new Set(), worlds: new Set(), cost: 0 });
       roster.get(s.name).declared = true;
     });
-    el.innerHTML = [...roster.entries()].sort((x, y) => y[1].runs - x[1].runs).map(([name, r]) => {
+    const configHTML = (name, r, nested) => {
       const a = r.spec, s = a.substrate || {};
       const mem = !s.kind ? "" : s.kind === "none" ? "none: every step starts from scratch"
-        : s.kind === "transcript" ? `a transcript of the last ${s.window ?? "?"} steps`
-        : s.kind === "notes" ? `self-written notes${s.budget_chars ? `, capped at ${s.budget_chars} characters` : ""}${s.every ? `, rewritten every ${s.every} steps` : ""}`
-        : s.kind === "skills" ? `extracted procedures${s.every ? `, updated every ${s.every} steps` : ""}` : human(s.kind);
+        : s.kind === "transcript" ? `a transcript of the last ${s.window ?? "?"} steps${s.wipe_at != null ? `, erased at step ${s.wipe_at}` : ""}`
+        : s.kind === "notes" ? `self-written notes${s.budget_chars ? `, capped at ${s.budget_chars} characters` : ""}${s.every ? `, rewritten every ${s.every} steps` : ""}${s.wipe_at != null ? `, raw history erased at step ${s.wipe_at}` : ""}`
+        : s.kind === "skills" ? `extracted procedures${s.every ? `, updated every ${s.every} steps` : ""}`
+        : s.kind === "beliefs" ? `a structured belief file (belief, confidence, what would change it)${s.every ? `, rewritten every ${s.every} steps` : ""}`
+        : s.kind === "fastslow" ? `two timescales at once: a short transcript plus consolidated notes` : human(s.kind);
       const rows = [["kind", human(a.type || "unknown")]];
       if (a.model) rows.push(["model", a.model]);
       if (a.harness) rows.push(["harness", a.harness]);
@@ -1209,11 +1251,22 @@
         ? `${r.runs} finished run${r.runs === 1 ? "" : "s"} across ${[...r.exps].sort().join(", ")} on ${[...r.worlds].sort().map(human).join(", ")}` +
           (r.cost > 0 ? ` · $${r.cost.toFixed(2)} spent` : "")
         : "no runs yet";
-      return `<details class="hyp"><summary><strong>${escapeHtml(agentLabel(a) || human(name))}</strong> <span class="muted">${escapeHtml(name)}</span></summary>` +
+      const title = nested ? (configLabel(a) || human(name)) : (agentLabel(a) || human(name));
+      return `<details class="hyp"${nested ? ' style="margin-left:20px;border-bottom:none;padding:2px 0"' : ""}>` +
+        `<summary><strong>${escapeHtml(title)}</strong> <span class="muted">${escapeHtml(name)} · ${r.runs} run${r.runs === 1 ? "" : "s"}</span></summary>` +
         `<div class="subtile"><h4 class="evhead">What it is</h4>` +
         `<p style="margin:2px 0 6px;max-width:90ch">${escapeHtml(AGENT_NOTES[a.type] || "An agent known only from its run records.")}</p>` +
         `<div class="kv">${rows.map(([k, v]) => `<span class="k">${escapeHtml(k)}</span><span>${escapeHtml(v)}</span>`).join("")}</div></div>` +
         `<div class="subtile"><h4 class="evhead">Where it has played</h4><p style="margin:2px 0;max-width:90ch">${escapeHtml(played)}</p></div></details>`;
+    };
+    // one entry per base model; its configurations (route, memory, reasoning mode) branch underneath
+    const groups = groupByModel([...roster.entries()].map(([name, r]) => ({ name, r, spec: { name, ...r.spec } })));
+    el.innerHTML = [...groups.entries()].map(([model, items]) => {
+      if (items.length === 1) return configHTML(items[0].name, items[0].r, false);
+      const runs = items.reduce((n, it) => n + it.r.runs, 0);
+      return `<details class="hyp" open><summary><strong>${escapeHtml(model)}</strong> ` +
+        `<span class="muted">${items.length} configurations · ${runs} finished run${runs === 1 ? "" : "s"}</span></summary>` +
+        items.map(it => configHTML(it.name, it.r, true)).join("") + `</details>`;
     }).join("") || '<p class="muted">no agents yet: none declared in agents.json and no run records on disk</p>';
   }
   async function renderResearch() {
